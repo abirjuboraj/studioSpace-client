@@ -62,19 +62,18 @@ const LinkedInIcon = ({ className }: { className?: string }) => (
 const QUICK_LINKS = [
   { label: "Home", href: "/" },
   { label: "Explore Studios", href: "/studios" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "About Us", href: "/about" },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "About Us", href: "/#about" },
   { label: "Creator Guidelines", href: "/guidelines" },
   { label: "List a Studio", href: "/studios/new" },
 ];
 
 const STUDIO_CATEGORIES = [
-  { label: "Photography Cyc Walls", href: "/studios?category=photography" },
-  { label: "Music & Audio Recording Suites", href: "/studios?category=recording" },
-  { label: "Dedicated Podcast Lounges", href: "/studios?category=podcast" },
-  { label: "Cinema Sound Stages", href: "/studios?category=film" },
-  { label: "Creative Art & Craft Workshops", href: "/studios?category=art" },
-  { label: "Rehearsal & Dance Rooms", href: "/studios?category=rehearsal" },
+  { label: "Photo Studios", href: "/studios?category=Photo+Studios" },
+  { label: "Sound Stages", href: "/studios?category=Sound+Stages" },
+  { label: "Podcast Rooms", href: "/studios?category=Podcast+Rooms" },
+  { label: "Music Suites", href: "/studios?category=Music+Suites" },
+  { label: "Art Workshops", href: "/studios?category=Art+Workshops" },
 ];
 
 const SOCIAL_LINKS = [
@@ -94,34 +93,34 @@ const Footer = () => {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       {/* ── Main Footer Grid ──────────────────────────────────────── */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-14 pb-12">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12">
-          {/* Col 1 — Brand Story (4 cols) */}
-          <div className="lg:col-span-4 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-2.5 group">
-              <div className="flex size-9 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-primary/20">
-                <Aperture className="size-5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-10">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+
+          {/* Col 1 — Brand Story (Full width on mobile, 4 cols on desktop) */}
+          <div className="lg:col-span-4 space-y-3">
+            <Link href="/" className="inline-flex items-center gap-2 group">
+              <div className="flex size-8 sm:size-9 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-primary/20">
+                <Aperture className="size-4.5 sm:size-5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
               </div>
               <span
                 style={{ fontFamily: "var(--font-display)" }}
-                className="text-lg font-bold tracking-tight text-text-primary"
+                className="text-base sm:text-lg font-bold tracking-tight text-text-primary"
               >
                 Studio<span className="text-primary">Space</span>
               </span>
             </Link>
 
-            <p className="text-xs leading-relaxed text-text-secondary max-w-sm">
-              The modern marketplace for creators, filmmakers, photographers, and audio engineers.
-              Discover curated creative stages, reserve hours with transparent pricing, and unleash your next project.
+            <p className="text-[11px] sm:text-xs leading-relaxed text-text-secondary max-w-sm">
+              The peer-to-peer marketplace for creators, filmmakers, photographers, and audio engineers. Reserve vetted studios with transparent pricing.
             </p>
 
-            <div className="flex items-center gap-2 pt-1 text-xs text-text-muted">
-              <ShieldCheck className="size-4 text-emerald-500" />
+            <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
+              <ShieldCheck className="size-3.5 text-emerald-500 shrink-0" />
               <span>Verified studio hosts & safe checkout</span>
             </div>
 
             {/* Social Icons */}
-            <div className="pt-2 flex items-center gap-2">
+            <div className="pt-1 flex items-center gap-2">
               {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
                 <a
                   key={label}
@@ -130,82 +129,85 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   aria-label={label}
                   className={cn(
-                    "flex size-8.5 items-center justify-center rounded-lg",
+                    "flex size-7.5 sm:size-8.5 items-center justify-center rounded-lg",
                     "border border-border/80 bg-surface-2/60 text-text-secondary",
                     "transition-all duration-200",
                     "hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:scale-105"
                   )}
                 >
-                  <Icon className="size-3.5" />
+                  <Icon className="size-3 sm:size-3.5" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Col 2 — Quick Links (2 cols) */}
-          <div className="lg:col-span-2 space-y-3.5">
-            <h4
-              style={{ fontFamily: "var(--font-display)" }}
-              className="text-xs font-semibold uppercase tracking-wider text-text-primary"
-            >
-              Navigation
-            </h4>
-            <ul className="space-y-2.5">
-              {QUICK_LINKS.map(({ label, href }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="text-xs text-text-secondary transition-colors duration-150 hover:text-primary"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 3 — Studio Categories (3 cols) */}
-          <div className="lg:col-span-3 space-y-3.5">
-            <h4
-              style={{ fontFamily: "var(--font-display)" }}
-              className="text-xs font-semibold uppercase tracking-wider text-text-primary"
-            >
-              Studio Types
-            </h4>
-            <ul className="space-y-2.5">
-              {STUDIO_CATEGORIES.map(({ label, href }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="text-xs text-text-secondary transition-colors duration-150 hover:text-primary flex items-center gap-1.5 group"
-                  >
-                    <span className="size-1 rounded-full bg-border group-hover:bg-primary transition-colors" />
-                    <span>{label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 4 — Newsletter Box (3 cols) */}
-          <div className="lg:col-span-3 space-y-3.5">
-            <div className="flex items-center gap-1.5">
-              <Sparkles className="size-3.5 text-primary" />
-              <h4
+          {/* ── Mobile: Side-by-Side Grid for Navigation & Studio Types (8 cols on desktop split into 2 + 3) ── */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:col-span-5 lg:grid-cols-5">
+            {/* Quick Links (2 cols on lg) */}
+            <div className="lg:col-span-2 space-y-2.5">
+              <h5
                 style={{ fontFamily: "var(--font-display)" }}
-                className="text-xs font-semibold uppercase tracking-wider text-text-primary"
+                className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-text-primary"
               >
-                Creator Dispatch
-              </h4>
+                Navigation
+              </h5>
+              <ul className="space-y-1.5 sm:space-y-2">
+                {QUICK_LINKS.map(({ label, href }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className="text-[11px] sm:text-xs text-text-secondary transition-colors duration-150 hover:text-primary block truncate"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <p className="text-xs text-text-secondary leading-normal">
-              Get weekly updates on newly listed studios, equipment drops, and community studio hours.
+            {/* Studio Types (3 cols on lg) */}
+            <div className="lg:col-span-3 space-y-2.5">
+              <h5
+                style={{ fontFamily: "var(--font-display)" }}
+                className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-text-primary"
+              >
+                Studio Types
+              </h5>
+              <ul className="space-y-1.5 sm:space-y-2">
+                {STUDIO_CATEGORIES.map(({ label, href }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className="text-[11px] sm:text-xs text-text-secondary transition-colors duration-150 hover:text-primary flex items-center gap-1.5 group truncate"
+                    >
+                      <span className="size-1 rounded-full bg-border group-hover:bg-primary transition-colors shrink-0" />
+                      <span className="truncate">{label}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Col 4 — Newsletter Box (3 cols on desktop, compact on mobile) */}
+          <div className="lg:col-span-3 space-y-2.5 pt-2 lg:pt-0 border-t border-border/40 lg:border-t-0">
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="size-3.5 text-primary shrink-0" />
+              <h5
+                style={{ fontFamily: "var(--font-display)" }}
+                className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-text-primary"
+              >
+                Creator Dispatch
+              </h5>
+            </div>
+
+            <p className="text-[11px] sm:text-xs text-text-secondary leading-normal">
+              Weekly updates on newly listed studios, equipment drops, and community hours.
             </p>
 
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="flex flex-col gap-2 pt-1"
+              className="flex flex-col gap-1.5 pt-0.5"
             >
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
@@ -214,7 +216,7 @@ const Footer = () => {
                   type="email"
                   placeholder="Enter your email"
                   className={cn(
-                    "h-9 w-full rounded-xl border border-border/80 bg-surface-2/60 pl-8.5 pr-20 text-xs text-text-primary",
+                    "h-8.5 w-full rounded-xl border border-border/80 bg-surface-2/60 pl-8.5 pr-18 text-[11px] sm:text-xs text-text-primary",
                     "placeholder:text-text-muted transition-all duration-200",
                     "focus:border-primary/60 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
                   )}
@@ -222,13 +224,13 @@ const Footer = () => {
                 <button
                   type="submit"
                   className={cn(
-                    "absolute right-1 top-1 h-7 px-2.5 rounded-lg",
-                    "bg-primary text-primary-fg text-[11px] font-semibold",
+                    "absolute right-1 top-1 h-6.5 px-2.5 rounded-lg",
+                    "bg-primary text-primary-fg text-[10px] sm:text-[11px] font-semibold",
                     "hover:bg-primary-hover transition-colors duration-150 flex items-center gap-1"
                   )}
                 >
                   <span>Join</span>
-                  <ArrowRight className="size-3" />
+                  <ArrowRight className="size-2.5 sm:size-3" />
                 </button>
               </div>
               <span className="text-[10px] text-text-muted">No spam. Unsubscribe anytime.</span>
@@ -239,12 +241,12 @@ const Footer = () => {
 
       {/* ── Sub-footer Copyright & Legal Links ────────────────────── */}
       <div className="border-t border-border/50 bg-surface-1/80">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 sm:flex-row sm:px-6 lg:px-8">
-          <p className="text-[11px] text-text-muted">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2.5 px-4 py-3.5 sm:flex-row sm:px-6 lg:px-8">
+          <p className="text-[10px] sm:text-[11px] text-text-muted">
             &copy; {year} StudioSpace Inc. Designed for creators worldwide.
           </p>
 
-          <div className="flex items-center gap-4 text-[11px] text-text-muted">
+          <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-[11px] text-text-muted">
             <Link
               href="/privacy"
               className="transition-colors hover:text-text-primary"

@@ -36,15 +36,15 @@ import {
     SheetClose,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { authClient, signOut, useSession } from "@/lib/auth-client";
+import { signOut, useSession } from "@/lib/auth-client";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 /* ─── Nav Links ─────────────────────────────────────────────────────── */
 const NAV_LINKS = [
     { label: "Home", href: "/" },
     { label: "Explore Studios", href: "/studios" },
-    { label: "How It Works", href: "/how-it-works" },
-    { label: "About Us", href: "/about" },
+    { label: "How It Works", href: "/#how-it-works" },
+    { label: "About Us", href: "/#about" },
 ] as const;
 
 /* ─── Authenticated Dropdown Items ──────────────────────────────────── */
