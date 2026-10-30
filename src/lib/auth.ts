@@ -6,8 +6,8 @@ const client = new MongoClient(process.env.MONGODB_URL as string);
 const db = client.db("studioSpace");
 
 export const auth = betterAuth({
-    emailAndPassword: { 
-    enabled: true, 
+  emailAndPassword: {
+    enabled: true,
   },
   database: mongodbAdapter(db, {
     client,
