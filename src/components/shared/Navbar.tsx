@@ -12,6 +12,7 @@ import {
   CalendarCheck,
   LogOut,
   ChevronDown,
+  Sparkles,
 } from "lucide-react";
 import {
   Avatar,
@@ -34,23 +35,24 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 /* ─── Nav Links ─────────────────────────────────────────────────────── */
 const NAV_LINKS = [
-  { label: "Home",            href: "/" },
+  { label: "Home", href: "/" },
   { label: "Explore Studios", href: "/studios" },
-  { label: "How It Works",   href: "/how-it-works" },
-  { label: "About Us",       href: "/about" },
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "About Us", href: "/about" },
 ] as const;
 
 /* ─── Authenticated Dropdown Items ──────────────────────────────────── */
 const USER_MENU_ITEMS = [
-  { label: "Dashboard",          href: "/dashboard",   icon: LayoutDashboard },
-  { label: "Add New Studio",     href: "/studios/new", icon: PlusSquare },
-  { label: "My Studio Listings", href: "/my-studios",  icon: Building2 },
-  { label: "My Bookings",        href: "/my-bookings", icon: CalendarCheck },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Add New Studio", href: "/studios/new", icon: PlusSquare },
+  { label: "My Studio Listings", href: "/my-studios", icon: Building2 },
+  { label: "My Bookings", href: "/my-bookings", icon: CalendarCheck },
 ] as const;
 
 /* ─── Component ─────────────────────────────────────────────────────── */
@@ -77,38 +79,47 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full",
-        "border-b border-[#1E1E22] bg-[#0C0C0F]/90 backdrop-blur-md"
+        "sticky top-0 z-50 w-full transition-colors duration-200",
+        "border-b border-border/60 bg-background/85 backdrop-blur-xl shadow-xs"
       )}
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-
         {/* ── Logo ─────────────────────────────────────────────────── */}
         <Link
           href="/"
-          className="flex items-center gap-2 shrink-0 group"
-          aria-label="StudioSpace home"
+          className="group flex items-center gap-2.5 shrink-0"
+          aria-label="StudioSpace Home"
         >
-          <span
+          <div
             className={cn(
-              "flex items-center justify-center rounded-lg p-1.5",
-              "bg-[#F59E0B]/10 text-[#F59E0B]",
-              "transition-all duration-200",
-              "group-hover:bg-[#F59E0B]/20 group-hover:shadow-[0_0_16px_rgba(245,158,11,0.3)]"
+              "relative flex size-9 items-center justify-center rounded-xl",
+              "border border-primary/20 bg-primary/10 text-primary",
+              "transition-all duration-300",
+              "group-hover:border-primary/50 group-hover:bg-primary/20 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.35)]"
             )}
           >
-            <Aperture className="size-5" strokeWidth={1.75} />
-          </span>
-          <span
-            style={{ fontFamily: "var(--font-display)" }}
-            className="text-lg font-bold tracking-tight text-[#F4F4F6]"
-          >
-            Studio<span className="text-[#F59E0B]">Space</span>
-          </span>
+            <Aperture className="size-5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
+            <span className="absolute -top-1 -right-1 flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60" />
+              <span className="relative inline-flex size-2 rounded-full bg-primary" />
+            </span>
+          </div>
+
+          <div className="flex flex-col">
+            <span
+              style={{ fontFamily: "var(--font-display)" }}
+              className="text-[17px] font-bold tracking-tight text-text-primary"
+            >
+              Studio<span className="text-primary">Space</span>
+            </span>
+            <span className="text-[10px] uppercase font-semibold tracking-widest text-text-muted -mt-1 hidden sm:block">
+              Creator Studios
+            </span>
+          </div>
         </Link>
 
         {/* ── Desktop Nav Links ─────────────────────────────────────── */}
-        <ul className="hidden md:flex items-center gap-1">
+        <ul className="hidden md:flex items-center gap-1.5 rounded-full border border-border/50 bg-surface-1/60 p-1 backdrop-blur-md">
           {NAV_LINKS.map(({ label, href }) => {
             const isActive =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -117,15 +128,15 @@ const Navbar = () => {
                 <Link
                   href={href}
                   className={cn(
-                    "relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150",
+                    "relative px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-200",
                     isActive
-                      ? "text-[#F59E0B]"
-                      : "text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#1C1C20]"
+                      ? "bg-primary/15 text-primary shadow-xs font-semibold"
+                      : "text-text-secondary hover:text-text-primary hover:bg-surface-2"
                   )}
                 >
                   {label}
                   {isActive && (
-                    <span className="absolute inset-x-3 -bottom-[17px] h-[2px] rounded-full bg-[#F59E0B]" />
+                    <span className="absolute inset-x-2 -bottom-1 h-0.5 rounded-full bg-primary shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
                   )}
                 </Link>
               </li>
@@ -133,43 +144,49 @@ const Navbar = () => {
           })}
         </ul>
 
-        {/* ── Desktop Auth Area ─────────────────────────────────────── */}
-        <div className="hidden md:flex items-center gap-2">
+        {/* ── Desktop Action Area ───────────────────────────────────── */}
+        <div className="hidden md:flex items-center gap-2.5">
+          {/* Light / Dark Mode Toggle */}
+          <ThemeToggle />
+
+          <div className="h-4 w-px bg-border/60 mx-1" />
+
           {user ? (
-            /* Authenticated — Avatar + Dropdown */
+            /* Authenticated — Profile Avatar & Dropdown */
             <DropdownMenu>
               <DropdownMenuTrigger
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-2 py-1.5",
-                  "border border-transparent transition-all duration-150",
-                  "hover:border-[#2E2E34] hover:bg-[#141417]",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B]/40"
+                  "flex items-center gap-2 rounded-xl p-1.5 pr-2.5",
+                  "border border-border/60 bg-surface-1/70 backdrop-blur-md transition-all duration-200",
+                  "hover:border-primary/40 hover:bg-surface-2",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                 )}
               >
-                <Avatar size="default">
+                <Avatar size="default" className="size-7.5 ring-1 ring-border">
                   <AvatarImage
                     src={user.image ?? undefined}
                     alt={user.name ?? "User"}
                   />
-                  <AvatarFallback className="bg-[#F59E0B]/10 text-[#F59E0B] text-xs font-semibold">
+                  <AvatarFallback className="bg-primary/15 text-primary text-[11px] font-bold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <span className="max-w-[120px] truncate text-sm font-medium text-[#F4F4F6]">
+                <span className="max-w-[110px] truncate text-xs font-semibold text-text-primary">
                   {user.name ?? user.email}
                 </span>
-                <ChevronDown className="size-3.5 text-[#52525B] shrink-0" />
+                <ChevronDown className="size-3.5 text-text-muted shrink-0" />
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
                 align="end"
                 sideOffset={8}
-                className="w-52 bg-[#141417] border-[#2E2E34]"
+                className="w-56 rounded-xl border-border/80 bg-surface-1/95 p-1.5 shadow-xl backdrop-blur-xl"
               >
-                <DropdownMenuLabel className="text-[#52525B]">
-                  {user.email}
+                <DropdownMenuLabel className="px-2 py-1.5">
+                  <p className="text-xs font-semibold text-text-primary truncate">{user.name ?? "Creator"}</p>
+                  <p className="text-[11px] text-text-muted truncate">{user.email}</p>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-border/60 my-1" />
 
                 {USER_MENU_ITEMS.map(({ label, href, icon: Icon }) => (
                   <DropdownMenuItem
@@ -177,35 +194,35 @@ const Navbar = () => {
                     render={
                       <Link
                         href={href}
-                        className="flex items-center gap-2 w-full text-[#A1A1AA] hover:text-[#F4F4F6]"
+                        className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors"
                       >
-                        <Icon className="size-4" />
+                        <Icon className="size-3.5 text-text-muted" />
                         {label}
                       </Link>
                     }
                   />
                 ))}
 
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-border/60 my-1" />
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={handleSignOut}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-xs flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-danger hover:bg-danger/10"
                 >
-                  <LogOut className="size-4" />
+                  <LogOut className="size-3.5" />
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            /* Unauthenticated — Login + Register */
-            <>
+            /* Unauthenticated — Login & Register buttons */
+            <div className="flex items-center gap-2">
               <Link
                 href="/login"
                 className={cn(
-                  "inline-flex items-center justify-center h-8 px-2.5 text-sm font-medium rounded-lg",
-                  "text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#1C1C20]",
-                  "transition-colors duration-150"
+                  "inline-flex items-center justify-center h-8.5 px-3.5 text-xs font-medium rounded-lg",
+                  "text-text-secondary hover:text-text-primary hover:bg-surface-2/80",
+                  "transition-all duration-150"
                 )}
               >
                 Login
@@ -213,172 +230,171 @@ const Navbar = () => {
               <Link
                 href="/register"
                 className={cn(
-                  "inline-flex items-center justify-center h-8 px-2.5 text-sm font-semibold rounded-lg",
-                  "bg-[#F59E0B] text-[#0C0C0F]",
-                  "hover:bg-[#D97706] hover:shadow-[0_0_16px_rgba(245,158,11,0.3)]",
-                  "transition-all duration-200"
+                  "inline-flex items-center justify-center gap-1.5 h-8.5 px-4 text-xs font-semibold rounded-lg",
+                  "bg-primary text-primary-fg shadow-xs",
+                  "hover:bg-primary-hover hover:shadow-[0_0_18px_rgba(245,158,11,0.35)]",
+                  "active:scale-95 transition-all duration-200"
                 )}
               >
-                Register
+                <Sparkles className="size-3" />
+                <span>Register</span>
               </Link>
-            </>
+            </div>
           )}
         </div>
 
-        {/* ── Mobile Hamburger ──────────────────────────────────────── */}
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger
-            className={cn(
-              "md:hidden flex items-center justify-center size-8 rounded-md",
-              "text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#1C1C20]",
-              "transition-colors duration-150"
-            )}
-            aria-label="Open menu"
-          >
-            <Menu className="size-5" />
-          </SheetTrigger>
+        {/* ── Mobile View Controls ─────────────────────────────────── */}
+        <div className="flex md:hidden items-center gap-2">
+          <ThemeToggle />
 
-          <SheetContent
-            side="right"
-            className="w-72 bg-[#141417] border-[#2E2E34] p-0"
-          >
-            <SheetHeader className="border-b border-[#2E2E34] px-5 py-4">
-              <SheetTitle className="flex items-center gap-2">
-                <Link
-                  href="/"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2"
-                >
-                  <Aperture
-                    className="size-5 text-[#F59E0B]"
-                    strokeWidth={1.75}
-                  />
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger
+              className={cn(
+                "flex size-9 items-center justify-center rounded-xl border border-border/60 bg-surface-1/70",
+                "text-text-secondary hover:text-text-primary hover:bg-surface-2",
+                "transition-colors"
+              )}
+              aria-label="Open navigation menu"
+            >
+              <Menu className="size-4.5" />
+            </SheetTrigger>
+
+            <SheetContent
+              side="right"
+              className="w-80 border-border/80 bg-surface-1/95 backdrop-blur-2xl p-0"
+            >
+              <SheetHeader className="border-b border-border/60 px-5 py-4">
+                <SheetTitle className="flex items-center gap-2.5">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Aperture className="size-4.5" strokeWidth={1.8} />
+                  </div>
                   <span
                     style={{ fontFamily: "var(--font-display)" }}
-                    className="text-base font-bold text-[#F4F4F6]"
+                    className="text-base font-bold text-text-primary"
                   >
-                    Studio<span className="text-[#F59E0B]">Space</span>
+                    Studio<span className="text-primary">Space</span>
                   </span>
-                </Link>
-              </SheetTitle>
-            </SheetHeader>
+                </SheetTitle>
+              </SheetHeader>
 
-            <div className="flex flex-col gap-1 px-3 py-4">
-              {/* Nav links */}
-              {NAV_LINKS.map(({ label, href }) => {
-                const isActive =
-                  href === "/" ? pathname === "/" : pathname.startsWith(href);
-                return (
-                  <SheetClose
-                    key={href}
-                    render={
-                      <Link
-                        href={href}
-                        className={cn(
-                          "flex items-center rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                          isActive
-                            ? "bg-[#F59E0B]/10 text-[#F59E0B]"
-                            : "text-[#A1A1AA] hover:bg-[#1C1C20] hover:text-[#F4F4F6]"
-                        )}
-                      >
-                        {label}
-                      </Link>
-                    }
-                  />
-                );
-              })}
-
-              <div className="my-2 h-px bg-[#2E2E34]" />
-
-              {user ? (
-                <>
-                  {/* Authenticated user info */}
-                  <div className="flex items-center gap-3 px-3 py-2">
-                    <Avatar size="default">
-                      <AvatarImage
-                        src={user.image ?? undefined}
-                        alt={user.name ?? "User"}
-                      />
-                      <AvatarFallback className="bg-[#F59E0B]/10 text-[#F59E0B] text-xs font-semibold">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-[#F4F4F6]">
-                        {user.name}
-                      </p>
-                      <p className="truncate text-xs text-[#52525B]">
-                        {user.email}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="my-1 h-px bg-[#2E2E34]" />
-
-                  {USER_MENU_ITEMS.map(({ label, href, icon: Icon }) => (
+              <div className="flex flex-col gap-1 px-4 py-5">
+                <p className="px-3 text-[10px] uppercase font-semibold tracking-wider text-text-muted mb-1">
+                  Menu
+                </p>
+                {NAV_LINKS.map(({ label, href }) => {
+                  const isActive =
+                    href === "/" ? pathname === "/" : pathname.startsWith(href);
+                  return (
                     <SheetClose
                       key={href}
                       render={
                         <Link
                           href={href}
-                          className="flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm text-[#A1A1AA] hover:bg-[#1C1C20] hover:text-[#F4F4F6] transition-colors"
+                          className={cn(
+                            "flex items-center rounded-lg px-3 py-2 text-xs font-medium transition-colors",
+                            isActive
+                              ? "bg-primary/15 text-primary font-semibold"
+                              : "text-text-secondary hover:bg-surface-2 hover:text-text-primary"
+                          )}
                         >
-                          <Icon className="size-4 shrink-0" />
                           {label}
                         </Link>
                       }
                     />
-                  ))}
+                  );
+                })}
 
-                  <div className="my-1 h-px bg-[#2E2E34]" />
-                  <button
-                    onClick={() => {
-                      handleSignOut();
-                      setMobileOpen(false);
-                    }}
-                    className="flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors w-full text-left"
-                  >
-                    <LogOut className="size-4 shrink-0" />
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <div className="flex flex-col gap-2 px-3 pt-1">
-                  <SheetClose
-                    render={
-                      <Link
-                        href="/login"
-                        className={cn(
-                          "inline-flex items-center justify-center w-full h-8 px-3 text-sm font-medium rounded-lg",
-                          "border border-[#2E2E34] text-[#A1A1AA]",
-                          "hover:bg-[#1C1C20] hover:text-[#F4F4F6]",
-                          "transition-colors duration-150"
-                        )}
-                      >
-                        Login
-                      </Link>
-                    }
-                  />
-                  <SheetClose
-                    render={
-                      <Link
-                        href="/register"
-                        className={cn(
-                          "inline-flex items-center justify-center w-full h-8 px-3 text-sm font-semibold rounded-lg",
-                          "bg-[#F59E0B] text-[#0C0C0F]",
-                          "hover:bg-[#D97706]",
-                          "transition-colors duration-150"
-                        )}
-                      >
-                        Register
-                      </Link>
-                    }
-                  />
-                </div>
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
+                <div className="my-3 h-px bg-border/60" />
+
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-surface-2/40 p-2.5 mb-2">
+                      <Avatar size="default" className="size-8">
+                        <AvatarImage
+                          src={user.image ?? undefined}
+                          alt={user.name ?? "User"}
+                        />
+                        <AvatarFallback className="bg-primary/15 text-primary text-xs font-semibold">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-semibold text-text-primary">
+                          {user.name}
+                        </p>
+                        <p className="truncate text-[11px] text-text-muted">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="px-3 text-[10px] uppercase font-semibold tracking-wider text-text-muted mb-1">
+                      Creator Account
+                    </p>
+
+                    {USER_MENU_ITEMS.map(({ label, href, icon: Icon }) => (
+                      <SheetClose
+                        key={href}
+                        render={
+                          <Link
+                            href={href}
+                            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-text-secondary hover:bg-surface-2 hover:text-text-primary transition-colors"
+                          >
+                            <Icon className="size-4 shrink-0 text-text-muted" />
+                            {label}
+                          </Link>
+                        }
+                      />
+                    ))}
+
+                    <div className="my-2 h-px bg-border/60" />
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        setMobileOpen(false);
+                      }}
+                      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-danger hover:bg-danger/10 transition-colors w-full text-left"
+                    >
+                      <LogOut className="size-4 shrink-0" />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2 pt-2">
+                    <SheetClose
+                      render={
+                        <Link
+                          href="/login"
+                          className={cn(
+                            "inline-flex items-center justify-center w-full h-9 text-xs font-medium rounded-lg",
+                            "border border-border text-text-secondary",
+                            "hover:bg-surface-2 hover:text-text-primary transition-colors"
+                          )}
+                        >
+                          Login
+                        </Link>
+                      }
+                    />
+                    <SheetClose
+                      render={
+                        <Link
+                          href="/register"
+                          className={cn(
+                            "inline-flex items-center justify-center w-full h-9 text-xs font-semibold rounded-lg",
+                            "bg-primary text-primary-fg shadow-xs",
+                            "hover:bg-primary-hover transition-colors"
+                          )}
+                        >
+                          Register
+                        </Link>
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </nav>
     </header>
   );

@@ -1,8 +1,10 @@
-"use client"
-import Link from "next/link";
-import { Aperture, Mail, ArrowRight } from "lucide-react";
+"use client";
 
-/* ─── Social icon: X (formerly Twitter) ─────────────────────────────── */
+import Link from "next/link";
+import { Aperture, Mail, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+/* ─── Social icon: X (Official new branding) ────────────────────────── */
 const XIcon = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 24 24"
@@ -56,23 +58,23 @@ const LinkedInIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/* ─── Data ───────────────────────────────────────────────────────────── */
+/* ─── Navigation Data ───────────────────────────────────────────────── */
 const QUICK_LINKS = [
   { label: "Home", href: "/" },
   { label: "Explore Studios", href: "/studios" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "About Us", href: "/about" },
-  { label: "Login", href: "/login" },
-  { label: "Register", href: "/register" },
+  { label: "Creator Guidelines", href: "/guidelines" },
+  { label: "List a Studio", href: "/studios/new" },
 ];
 
 const STUDIO_CATEGORIES = [
-  { label: "Photography Studios", href: "/studios?category=photography" },
-  { label: "Music Recording Suites", href: "/studios?category=recording" },
-  { label: "Podcast Lounges", href: "/studios?category=podcast" },
+  { label: "Photography Cyc Walls", href: "/studios?category=photography" },
+  { label: "Music & Audio Recording Suites", href: "/studios?category=recording" },
+  { label: "Dedicated Podcast Lounges", href: "/studios?category=podcast" },
   { label: "Cinema Sound Stages", href: "/studios?category=film" },
-  { label: "Art & Craft Workshops", href: "/studios?category=art" },
-  { label: "Cyc Wall Studios", href: "/studios?category=cyc" },
+  { label: "Creative Art & Craft Workshops", href: "/studios?category=art" },
+  { label: "Rehearsal & Dance Rooms", href: "/studios?category=rehearsal" },
 ];
 
 const SOCIAL_LINKS = [
@@ -87,35 +89,39 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-[#1E1E22] bg-[#0C0C0F]">
-      {/* ── Main Footer Grid ──────────────────────────────────────── */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="relative mt-auto border-t border-border/60 bg-surface-1/50 transition-colors duration-200">
+      {/* Top ambient highlight line */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-          {/* Col 1 — Brand + Mission */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            {/* Logo */}
-            <Link href="/" className="inline-flex items-center gap-2 group mb-4">
-              <span className="flex items-center justify-center rounded-lg p-1.5 bg-[#F59E0B]/10 text-[#F59E0B] transition-all duration-200 group-hover:bg-[#F59E0B]/20">
-                <Aperture className="size-5" strokeWidth={1.75} />
-              </span>
+      {/* ── Main Footer Grid ──────────────────────────────────────── */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-14 pb-12">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12">
+          {/* Col 1 — Brand Story (4 cols) */}
+          <div className="lg:col-span-4 space-y-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <div className="flex size-9 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-primary/20">
+                <Aperture className="size-5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
+              </div>
               <span
                 style={{ fontFamily: "var(--font-display)" }}
-                className="text-lg font-bold tracking-tight text-[#F4F4F6]"
+                className="text-lg font-bold tracking-tight text-text-primary"
               >
-                Studio<span className="text-[#F59E0B]">Space</span>
+                Studio<span className="text-primary">Space</span>
               </span>
             </Link>
 
-            {/* Mission */}
-            <p className="text-sm leading-relaxed text-[#52525B] max-w-xs">
-              The peer-to-peer marketplace where creators find, book, and thrive
-              in world-class studios — from photography cyc walls to cinema
-              sound stages.
+            <p className="text-xs leading-relaxed text-text-secondary max-w-sm">
+              The modern marketplace for creators, filmmakers, photographers, and audio engineers.
+              Discover curated creative stages, reserve hours with transparent pricing, and unleash your next project.
             </p>
 
-            {/* Social Links */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="flex items-center gap-2 pt-1 text-xs text-text-muted">
+              <ShieldCheck className="size-4 text-emerald-500" />
+              <span>Verified studio hosts & safe checkout</span>
+            </div>
+
+            {/* Social Icons */}
+            <div className="pt-2 flex items-center gap-2">
               {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
                 <a
                   key={label}
@@ -123,28 +129,33 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex size-9 items-center justify-center rounded-lg border border-[#2E2E34] bg-[#141417] text-[#52525B] transition-all duration-200 hover:border-[#F59E0B]/40 hover:bg-[#F59E0B]/10 hover:text-[#F59E0B]"
+                  className={cn(
+                    "flex size-8.5 items-center justify-center rounded-lg",
+                    "border border-border/80 bg-surface-2/60 text-text-secondary",
+                    "transition-all duration-200",
+                    "hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:scale-105"
+                  )}
                 >
-                  <Icon className="size-4" />
+                  <Icon className="size-3.5" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Col 2 — Quick Links */}
-          <div>
-            <h3
+          {/* Col 2 — Quick Links (2 cols) */}
+          <div className="lg:col-span-2 space-y-3.5">
+            <h4
               style={{ fontFamily: "var(--font-display)" }}
-              className="mb-4 text-xs font-semibold uppercase tracking-widest text-[#52525B]"
+              className="text-xs font-semibold uppercase tracking-wider text-text-primary"
             >
-              Quick Links
-            </h3>
+              Navigation
+            </h4>
             <ul className="space-y-2.5">
               {QUICK_LINKS.map(({ label, href }) => (
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-[#A1A1AA] transition-colors duration-150 hover:text-[#F59E0B]"
+                    className="text-xs text-text-secondary transition-colors duration-150 hover:text-primary"
                   >
                     {label}
                   </Link>
@@ -153,94 +164,104 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Col 3 — Studio Categories */}
-          <div>
-            <h3
+          {/* Col 3 — Studio Categories (3 cols) */}
+          <div className="lg:col-span-3 space-y-3.5">
+            <h4
               style={{ fontFamily: "var(--font-display)" }}
-              className="mb-4 text-xs font-semibold uppercase tracking-widest text-[#52525B]"
+              className="text-xs font-semibold uppercase tracking-wider text-text-primary"
             >
-              Studio Categories
-            </h3>
+              Studio Types
+            </h4>
             <ul className="space-y-2.5">
               {STUDIO_CATEGORIES.map(({ label, href }) => (
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-[#A1A1AA] transition-colors duration-150 hover:text-[#F59E0B]"
+                    className="text-xs text-text-secondary transition-colors duration-150 hover:text-primary flex items-center gap-1.5 group"
                   >
-                    {label}
+                    <span className="size-1 rounded-full bg-border group-hover:bg-primary transition-colors" />
+                    <span>{label}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Col 4 — Newsletter */}
-          <div>
-            <h3
-              style={{ fontFamily: "var(--font-display)" }}
-              className="mb-1 text-xs font-semibold uppercase tracking-widest text-[#52525B]"
-            >
-              Stay in the loop
-            </h3>
-            <p className="mb-4 text-sm text-[#52525B]">
-              New studios, creator tips, and platform updates — no spam.
+          {/* Col 4 — Newsletter Box (3 cols) */}
+          <div className="lg:col-span-3 space-y-3.5">
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="size-3.5 text-primary" />
+              <h4
+                style={{ fontFamily: "var(--font-display)" }}
+                className="text-xs font-semibold uppercase tracking-wider text-text-primary"
+              >
+                Creator Dispatch
+              </h4>
+            </div>
+
+            <p className="text-xs text-text-secondary leading-normal">
+              Get weekly updates on newly listed studios, equipment drops, and community studio hours.
             </p>
 
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-2 pt-1"
             >
-              <label htmlFor="footer-email" className="sr-only">
-                Email address
-              </label>
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#52525B]" />
-                  <input
-                    id="footer-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    className="h-9 w-full rounded-lg border border-[#2E2E34] bg-[#141417] pl-9 pr-3 text-sm text-[#F4F4F6] placeholder:text-[#52525B] transition-colors duration-150 focus:border-[#F59E0B] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/15"
-                  />
-                </div>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
+                <input
+                  id="footer-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  className={cn(
+                    "h-9 w-full rounded-xl border border-border/80 bg-surface-2/60 pl-8.5 pr-20 text-xs text-text-primary",
+                    "placeholder:text-text-muted transition-all duration-200",
+                    "focus:border-primary/60 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  )}
+                />
                 <button
                   type="submit"
-                  aria-label="Subscribe"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B] text-[#0C0C0F] transition-all duration-200 hover:bg-[#D97706] hover:shadow-[0_0_16px_rgba(245,158,11,0.3)]"
+                  className={cn(
+                    "absolute right-1 top-1 h-7 px-2.5 rounded-lg",
+                    "bg-primary text-primary-fg text-[11px] font-semibold",
+                    "hover:bg-primary-hover transition-colors duration-150 flex items-center gap-1"
+                  )}
                 >
-                  <ArrowRight className="size-4" strokeWidth={2.25} />
+                  <span>Join</span>
+                  <ArrowRight className="size-3" />
                 </button>
               </div>
+              <span className="text-[10px] text-text-muted">No spam. Unsubscribe anytime.</span>
             </form>
           </div>
         </div>
       </div>
 
-      {/* ── Bottom Bar ───────────────────────────────────────────────── */}
-      <div className="border-t border-[#1E1E22]">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 sm:flex-row sm:px-6 lg:px-8">
-          <p className="text-xs text-[#52525B]">
-            &copy; {year} StudioSpace. All rights reserved.
+      {/* ── Sub-footer Copyright & Legal Links ────────────────────── */}
+      <div className="border-t border-border/50 bg-surface-1/80">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 sm:flex-row sm:px-6 lg:px-8">
+          <p className="text-[11px] text-text-muted">
+            &copy; {year} StudioSpace Inc. Designed for creators worldwide.
           </p>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/terms"
-              className="text-xs text-[#52525B] transition-colors hover:text-[#A1A1AA]"
-            >
-              Terms of Service
-            </Link>
-            <span className="text-[#2E2E34]">&middot;</span>
+
+          <div className="flex items-center gap-4 text-[11px] text-text-muted">
             <Link
               href="/privacy"
-              className="text-xs text-[#52525B] transition-colors hover:text-[#A1A1AA]"
+              className="transition-colors hover:text-text-primary"
             >
               Privacy Policy
             </Link>
-            <span className="text-[#2E2E34]">&middot;</span>
+            <span className="text-border">&bull;</span>
+            <Link
+              href="/terms"
+              className="transition-colors hover:text-text-primary"
+            >
+              Terms of Service
+            </Link>
+            <span className="text-border">&bull;</span>
             <Link
               href="/cookies"
-              className="text-xs text-[#52525B] transition-colors hover:text-[#A1A1AA]"
+              className="transition-colors hover:text-text-primary"
             >
               Cookie Policy
             </Link>
@@ -252,4 +273,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

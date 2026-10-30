@@ -2,61 +2,104 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-
-/* ─── StudioSpace Design Tokens ────────────────────────────────────── */
+/* ─── StudioSpace Design Tokens (Tailwind v4 Theme) ─────────────────── */
 @theme {
-  /* Fonts */
   --font-display: "Outfit", sans-serif;
   --font-body: "Inter", sans-serif;
 
-  /* Background & Surface */
-  --color-background: #0C0C0F;
-  --color-surface-1: #141417;
-  --color-surface-2: #1C1C20;
-  --color-surface-3: #242428;
-  --color-border: #2E2E34;
-  --color-border-subtle: #1E1E22;
+  /* Theme variables mapping to CSS custom properties */
+  --color-background: var(--background);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
 
-  /* Brand — Primary (Amber / Studio Light) */
-  --color-primary: #F59E0B;
-  --color-primary-hover: #D97706;
-  --color-primary-dim: rgba(245, 158, 11, 0.10);
-  --color-primary-fg: #0C0C0F;
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-dim: var(--primary-dim);
+  --color-primary-fg: var(--primary-fg);
 
-  /* Brand — Accent (Violet / Creative) */
-  --color-accent: #8B5CF6;
-  --color-accent-hover: #7C3AED;
-  --color-accent-dim: rgba(139, 92, 246, 0.10);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-dim: var(--accent-dim);
 
-  /* Text */
-  --color-text-primary: #F4F4F6;
-  --color-text-secondary: #A1A1AA;
-  --color-text-muted: #52525B;
-  --color-text-on-primary: #0C0C0F;
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
 
-  /* Semantic */
-  --color-success: #10B981;
-  --color-danger: #EF4444;
-  --color-info: #3B82F6;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
 
-  /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* Shadows / Glows */
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.50);
-  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.60);
+  --shadow-card: var(--shadow-card-val);
+  --shadow-elevated: var(--shadow-elevated-val);
   --glow-primary: 0 0 20px rgba(245, 158, 11, 0.25);
   --glow-accent: 0 0 20px rgba(139, 92, 246, 0.20);
 
-  /* Motion */
   --duration-fast: 120ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
   --ease-default: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── CSS Variables for Light / Dark Mode ──────────────────────────── */
+:root {
+  --background: #0c0c0f;
+  --surface-1: #141417;
+  --surface-2: #1c1c20;
+  --surface-3: #242428;
+  --border: #2e2e34;
+  --border-subtle: #1e1e22;
+
+  --primary: #f59e0b;
+  --primary-hover: #d97706;
+  --primary-dim: rgba(245, 158, 11, 0.12);
+  --primary-fg: #0c0c0f;
+
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --accent-dim: rgba(139, 92, 246, 0.12);
+
+  --text-primary: #f4f4f6;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+
+  --shadow-card-val: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-elevated-val: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --ambient-bg: radial-gradient(ellipse at center top, rgba(245, 158, 11, 0.08) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 70%);
+}
+
+.light {
+  --background: #f8f9fa;
+  --surface-1: #ffffff;
+  --surface-2: #f1f3f5;
+  --surface-3: #e9ecef;
+  --border: #e2e8f0;
+  --border-subtle: #edf2f7;
+
+  --primary: #d97706;
+  --primary-hover: #b45309;
+  --primary-dim: rgba(217, 119, 6, 0.12);
+  --primary-fg: #ffffff;
+
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-dim: rgba(124, 58, 237, 0.1);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --shadow-card-val: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-elevated-val: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --ambient-bg: radial-gradient(ellipse at center top, rgba(245, 158, 11, 0.1) 0%, rgba(139, 92, 246, 0.06) 50%, transparent 70%);
 }
 
 /* ─── Base Styles ───────────────────────────────────────────────────── */
@@ -66,18 +109,15 @@
   box-sizing: border-box;
 }
 
-html {
-  color-scheme: dark;
-}
-
 body {
-  background-color: var(--color-background);
-  color: var(--color-text-secondary);
+  background-color: var(--background);
+  color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 /* ─── Heading Styles ────────────────────────────────────────────────── */
@@ -88,50 +128,50 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
 
 h1 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.25rem, 5vw, 4rem);
   font-weight: 700;
 }
 
 h2 {
-  font-size: clamp(1.875rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
   font-weight: 700;
 }
 
 h3 {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
   font-weight: 600;
 }
 
 h4 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 600;
 }
 
 h5 {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 600;
 }
 
 h6 {
-  font-size: 1.125rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 p {
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   line-height: 1.65;
 }
 
 /* ─── Selection ─────────────────────────────────────────────────────── */
 ::selection {
   background-color: rgba(245, 158, 11, 0.25);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 /* ─── Scrollbar ─────────────────────────────────────────────────────── */
@@ -141,63 +181,50 @@ p {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-surface-1);
+  background: var(--surface-1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--border);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+  background: var(--text-muted);
 }
 
 /* ─── Focus Ring ────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
 /* ─── Utility Classes ───────────────────────────────────────────────── */
-
-/* Text gradient — amber to violet */
 .text-gradient {
-  background: linear-gradient(135deg, #F59E0B 0%, #8B5CF6 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Studio card */
 .card-studio {
-  background-color: var(--color-surface-1);
-  border: 1px solid var(--color-border);
+  background-color: var(--surface-1);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  transition: border-color var(--duration-normal) var(--ease-default),
+  box-shadow: var(--shadow-card-val);
+  transition:
+    border-color var(--duration-normal) var(--ease-default),
     transform var(--duration-normal) var(--ease-default),
     box-shadow var(--duration-normal) var(--ease-default);
 }
 
 .card-studio:hover {
-  border-color: rgba(245, 158, 11, 0.30);
+  border-color: rgba(245, 158, 11, 0.35);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-elevated), var(--glow-primary);
+  box-shadow: var(--shadow-elevated-val), var(--glow-primary);
 }
 
-/* Uppercase label */
-.label-upper {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-/* Ambient gradient — top of page */
 .ambient-top {
   position: fixed;
   top: 0;
@@ -205,10 +232,7 @@ p {
   transform: translateX(-50%);
   width: 800px;
   height: 400px;
-  background: radial-gradient(ellipse at center top,
-      rgba(245, 158, 11, 0.06) 0%,
-      rgba(139, 92, 246, 0.04) 50%,
-      transparent 70%);
+  background: var(--ambient-bg);
   pointer-events: none;
   z-index: 0;
 }
