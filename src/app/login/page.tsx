@@ -10,8 +10,6 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
-  Sparkles,
-  ShieldCheck,
   AlertCircle,
   Loader2,
 } from "lucide-react";
@@ -169,12 +167,7 @@ export default function LoginPage() {
                 >
                   Password
                 </label>
-                <Link
-                  href="#"
-                  className="text-[11px] font-medium text-primary hover:underline"
-                >
-                  Forgot password?
-                </Link>
+
               </div>
               <div className="relative">
                 <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
@@ -265,18 +258,6 @@ export default function LoginPage() {
             <span>Sign in with Google</span>
           </button>
 
-          {/* Trust assurances footer */}
-          <div className="mt-4 sm:mt-5 pt-3.5 sm:pt-4 border-t border-border/50 flex items-center justify-center gap-3 text-[11px] text-text-muted">
-            <span className="flex items-center gap-1">
-              <ShieldCheck className="size-3.5 text-emerald-500" />
-              256-bit SSL Encrypted
-            </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1">
-              <Sparkles className="size-3.5 text-primary" />
-              Creator Account
-            </span>
-          </div>
         </div>
 
         {/* Redirect to Register */}

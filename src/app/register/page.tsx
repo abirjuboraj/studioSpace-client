@@ -101,6 +101,8 @@ export default function RegisterPage() {
         image: image.trim() || undefined,
       });
 
+
+
       if (error) {
         const errorMsg =
           error.message || "Failed to create account. Please check your details.";
@@ -136,7 +138,7 @@ export default function RegisterPage() {
       setIsGoogleLoading(true);
       await signIn.social({
         provider: "google",
-        callbackURL: "/studios",
+        callbackURL: "/",
       });
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : "Google sign-up failed.";
@@ -204,6 +206,7 @@ export default function RegisterPage() {
                 <input
                   id="name"
                   type="text"
+                  name="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Alex Rivera"
@@ -230,6 +233,7 @@ export default function RegisterPage() {
                 <input
                   id="email"
                   type="email"
+                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@creativestudio.com"
@@ -259,6 +263,7 @@ export default function RegisterPage() {
                 <input
                   id="image"
                   type="url"
+                  name="imageUrl"
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
                   placeholder="https://example.com/avatar.jpg"
@@ -284,6 +289,7 @@ export default function RegisterPage() {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
+                  name="password"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);

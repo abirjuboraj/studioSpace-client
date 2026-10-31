@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useState } from "react";
 import {
     Aperture,
@@ -23,6 +23,7 @@ import {
     DropdownMenu,
     DropdownMenuTrigger,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuItem,
@@ -74,6 +75,7 @@ const Navbar = () => {
 
     const handleSignOut = async () => {
         await signOut();
+        redirect('login');
     };
 
     return (
@@ -182,10 +184,12 @@ const Navbar = () => {
                                 sideOffset={8}
                                 className="w-56 rounded-xl border-border/80 bg-surface-1/95 p-1.5 shadow-xl backdrop-blur-xl"
                             >
-                                <DropdownMenuLabel className="px-2 py-1.5">
-                                    <p className="text-xs font-semibold text-text-primary truncate">{user.name ?? "Creator"}</p>
-                                    <p className="text-[11px] text-text-muted truncate">{user.email}</p>
-                                </DropdownMenuLabel>
+                                <DropdownMenuGroup>
+                                    <DropdownMenuLabel className="px-2 py-1.5">
+                                        <p className="text-xs font-semibold text-text-primary truncate">{user.name ?? "Creator"}</p>
+                                        <p className="text-[11px] text-text-muted truncate">{user.email}</p>
+                                    </DropdownMenuLabel>
+                                </DropdownMenuGroup>
                                 <DropdownMenuSeparator className="bg-border/60 my-1" />
 
                                 {USER_MENU_ITEMS.map(({ label, href, icon: Icon }) => (
