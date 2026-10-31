@@ -24,6 +24,7 @@ import {
   CATEGORY_PRESETS,
   STUDIO_CATEGORIES,
   DAYS_OF_WEEK,
+  API_BASE_URL,
 } from "@/types/studio";
 import { useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -185,7 +186,7 @@ export default function NewStudioPage() {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/studios/new", {
+      const res = await fetch(`${API_BASE_URL}/studios/new`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

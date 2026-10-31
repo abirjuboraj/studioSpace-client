@@ -1,86 +1,34 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
-import { Sparkles, ArrowRight } from "lucide-react";
-import { StudioCard, Studio } from "@/components/studios/StudioCard";
+import { Sparkles, ArrowRight, Building2 } from "lucide-react";
+import { StudioCard } from "@/components/studios/StudioCard";
+import { API_BASE_URL, StudioListing } from "@/types/studio";
 
-// 6 Top-Rated Featured Studios (Mock Data formatted identically to future MongoDB Schema)
-export const FEATURED_STUDIOS_MOCK: Studio[] = [
-  {
-    _id: "studio-1",
-    title: "Apex White Cyc Infinity Stage & Daylight Loft",
-    category: "Photo Studios",
-    hourlyRate: 75,
-    rating: 4.96,
-    reviewCount: 84,
-    location: "Downtown Arts District, Los Angeles",
-    image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=900&auto=format&fit=crop",
-    capacity: "Up to 25 people",
-    isSuperhost: true,
-  },
-  {
-    _id: "studio-2",
-    title: "Skyline Audio Lab & Multi-Cam Podcast Lounge",
-    category: "Podcast Rooms",
-    hourlyRate: 60,
-    rating: 4.98,
-    reviewCount: 112,
-    location: "Greenpoint, Brooklyn, NY",
-    image: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=900&auto=format&fit=crop",
-    capacity: "Up to 8 people",
-    isSuperhost: true,
-  },
-  {
-    _id: "studio-3",
-    title: "Stage 4 Cinema Soundstage with 3-Phase Power",
-    category: "Sound Stages",
-    hourlyRate: 140,
-    rating: 4.92,
-    reviewCount: 46,
-    location: "Midtown West, Atlanta, GA",
-    image: "https://images.unsplash.com/photo-1518135714426-c18f5ffb6f4d?q=80&w=900&auto=format&fit=crop",
-    capacity: "Up to 60 people",
-  },
-  {
-    _id: "studio-4",
-    title: "Resonance Dolby Atmos Music Suite & Vocal Booth",
-    category: "Music Suites",
-    hourlyRate: 85,
-    rating: 4.97,
-    reviewCount: 92,
-    location: "East Nashville, TN",
-    image: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=900&auto=format&fit=crop",
-    capacity: "Up to 10 people",
-    isSuperhost: true,
-  },
-  {
-    _id: "studio-5",
-    title: "The Industrial Clay & Ceramic Sculpture Atelier",
-    category: "Art Workshops",
-    hourlyRate: 50,
-    rating: 4.89,
-    reviewCount: 38,
-    location: "West Loop, Chicago, IL",
-    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=900&auto=format&fit=crop",
-    capacity: "Up to 18 people",
-  },
-  {
-    _id: "studio-6",
-    title: "Neon Horizon RGB Pre-Lit Film & Music Stage",
-    category: "Photo Studios",
-    hourlyRate: 95,
-    rating: 4.94,
-    reviewCount: 63,
-    location: "South End, Austin, TX",
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=900&auto=format&fit=crop",
-    capacity: "Up to 30 people",
-    isSuperhost: true,
-  },
-];
+async function getFeaturedStudios(): Promise<StudioListing[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/featured-studios`, {
+      cache: "no-store",
+    });
 
-export function FeaturedStudios() {
-  const studios = FEATURED_STUDIOS_MOCK;
+    if (!res.ok) {
+      console.error("Failed to fetch featured studios:", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    // Return array safely if wrapped in { studios: [...] } or direct array
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.studios)) return data.studios;
+    if (Array.isArray(data.data)) return data.data;
+    return [];
+  } catch (error) {
+    console.error("Error fetching featured studios:", error);
+    return [];
+  }
+}
+
+export async function FeaturedStudios() {
+  const studios = await getFeaturedStudios();
 
   return (
     <section className="relative w-full py-16 sm:py-20 lg:py-24 border-b border-border/60 bg-surface-1/30 overflow-hidden">
@@ -117,12 +65,33 @@ export function FeaturedStudios() {
           </Link>
         </div>
 
-        {/* ── RESPONSIVE STUDIOS GRID (1 col mobile, 2 col tablet, 3 col desktop) ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-          {studios.map((studio) => (
-            <StudioCard key={studio._id} studio={studio} />
-          ))}
-        </div>
+        {/* ── RESPONSIVE STUDIOS GRID ── */}
+        {studios.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+            {studios.map((studio) => {
+              const key =
+                typeof studio._id === "object" && studio._id !== null
+                  ? (studio._id as { $oid: string }).$oid
+                  : studio._id || studio.title;
+              return <StudioCard key={key} studio={studio} />;
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-border/70 bg-surface-1/60">
+            <Building2 className="size-12 text-text-muted mb-3" />
+            <h3 className="text-base font-semibold text-text-primary">No studios available yet</h3>
+            <p className="text-xs text-text-secondary mt-1 max-w-sm">
+              Be the first host to list a creative space and start welcoming creators today.
+            </p>
+            <Link
+              href="/studios/new"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover transition-colors"
+            >
+              <span>List Your Studio</span>
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

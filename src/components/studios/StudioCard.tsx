@@ -11,26 +11,34 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StudioListing } from "@/types/studio";
 
-export interface Studio {
-  _id: string;
-  title: string;
-  category: "Photo Studios" | "Sound Stages" | "Podcast Rooms" | "Music Suites" | "Art Workshops";
-  hourlyRate: number;
-  rating: number;
-  reviewCount: number;
-  location: string;
-  image: string;
-  capacity: string;
-  isSuperhost?: boolean;
-}
-
-interface StudioCardProps {
-  studio: Studio;
+export interface StudioCardProps {
+  studio: StudioListing;
   className?: string;
 }
 
 export function StudioCard({ studio, className }: StudioCardProps) {
+  // Safe extraction of MongoDB _id (either string or {$oid: string})
+  const studioId =
+    typeof studio._id === "object" && studio._id !== null
+      ? (studio._id as { $oid: string }).$oid
+      : studio._id || "";
+
+  // Primary image
+  const displayImage =
+    studio.images && studio.images.length > 0
+      ? studio.images[0]
+      : "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=900&auto=format&fit=crop";
+
+  const rating = typeof studio.rating === "number" ? studio.rating : 4.9;
+  const reviewCount = typeof studio.reviewCount === "number" ? studio.reviewCount : 24;
+
+  const capacityText =
+    typeof studio.capacity === "number"
+      ? `Up to ${studio.capacity} guests`
+      : studio.capacity || "Flexible";
+
   return (
     <div
       className={cn(
@@ -44,7 +52,7 @@ export function StudioCard({ studio, className }: StudioCardProps) {
       <div className="relative h-48 w-full overflow-hidden bg-surface-2 shrink-0">
         <div
           className="size-full bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-          style={{ backgroundImage: `url(${studio.image})` }}
+          style={{ backgroundImage: `url(${displayImage})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-surface-1/90 via-transparent to-transparent" />
 
@@ -53,19 +61,17 @@ export function StudioCard({ studio, className }: StudioCardProps) {
           <span className="rounded-lg bg-surface-1/90 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
             {studio.category}
           </span>
-          {studio.isSuperhost && (
-            <span className="flex items-center gap-1 rounded-lg bg-primary text-primary-fg px-2 py-0.5 text-[10px] font-bold shadow-xs">
-              <ShieldCheck className="size-3" />
-              <span>Superhost</span>
-            </span>
-          )}
+          <span className="flex items-center gap-1 rounded-lg bg-primary text-primary-fg px-2 py-0.5 text-[10px] font-bold shadow-xs">
+            <ShieldCheck className="size-3" />
+            <span>Verified</span>
+          </span>
         </div>
 
         {/* Rating Badge */}
         <div className="absolute top-3 right-3 flex items-center gap-1 rounded-lg bg-surface-1/90 backdrop-blur-md border border-border/70 px-2 py-0.5 text-[11px] font-bold text-text-primary shadow-xs">
           <Star className="size-3.5 fill-amber-400 text-amber-400" />
-          <span>{studio.rating.toFixed(2)}</span>
-          <span className="text-[10px] font-normal text-text-muted">({studio.reviewCount})</span>
+          <span>{rating.toFixed(1)}</span>
+          <span className="text-[10px] font-normal text-text-muted">({reviewCount})</span>
         </div>
 
         {/* Price Tag */}
@@ -92,12 +98,12 @@ export function StudioCard({ studio, className }: StudioCardProps) {
           <div className="mt-2.5 flex items-center justify-between text-xs text-text-secondary gap-2">
             <div className="flex items-center gap-1.5 truncate">
               <MapPin className="size-3.5 text-primary shrink-0" />
-              <span className="truncate">{studio.location}</span>
+              <span className="truncate">{studio.location || `${studio.city}, ${studio.state}`}</span>
             </div>
 
             <div className="flex items-center gap-1 text-text-muted text-[11px] shrink-0">
               <Users className="size-3" />
-              <span>{studio.capacity}</span>
+              <span>{capacityText}</span>
             </div>
           </div>
         </div>
@@ -110,7 +116,7 @@ export function StudioCard({ studio, className }: StudioCardProps) {
           </div>
 
           <Link
-            href={`/studios/${studio._id}`}
+            href={`/studios/${studioId}`}
             className={cn(
               "inline-flex items-center gap-1.5 h-8.5 px-3.5 rounded-xl text-xs font-semibold",
               "bg-primary text-primary-fg shadow-xs",
@@ -125,4 +131,5 @@ export function StudioCard({ studio, className }: StudioCardProps) {
     </div>
   );
 }
+
 

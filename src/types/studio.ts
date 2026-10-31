@@ -1,3 +1,8 @@
+
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+
 export type StudioCategory =
   | "Photo Studios"
   | "Sound Stages"
@@ -18,7 +23,7 @@ export interface StudioBookingSettings {
 }
 
 export interface StudioListing {
-  _id?: string;
+  _id?: string | { $oid: string };
   title: string;
   category: StudioCategory;
   hourlyRate: number;
@@ -30,17 +35,20 @@ export interface StudioListing {
   state: string;
   country: string;
   images: string[];
-  capacity: number;
+  capacity: number | string;
   workspaceSize: string;
   overview: string;
   equipment: string[];
   amenities: string[];
-  availability: StudioAvailability;
+  availability?: StudioAvailability;
   status: "active" | "draft" | "inactive";
   createdAt?: string;
   userName?: string;
   userEmail?: string;
   userId?: string;
+  hostName?: string;
+  hostEmail?: string;
+  hostId?: string;
 }
 
 // Category-specific presets for dynamic amenities & gear
