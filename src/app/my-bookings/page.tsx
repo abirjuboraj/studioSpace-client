@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, BookingReservation, BookingStatus } from "@/types/studio";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 
 // Status badge helper function (essential status indicator only)
 function getStatusBadge(status: string) {
@@ -111,9 +111,17 @@ export default function MyBookingsPage() {
 
     const fetchMyBookings = async () => {
       setLoading(true);
+
+
       try {
+        const { data, error } = await authClient.token();
+
+        const token = data?.token;
         const res = await fetch(`${API_BASE_URL}/bookings/${userEmail}`, {
           cache: "no-store",
+          headers: {
+            authorization: `Bearer ${token}`,
+          }
         });
 
         if (res.ok) {
@@ -122,6 +130,7 @@ export default function MyBookingsPage() {
           if (Array.isArray(data)) rawList = data;
           else if (Array.isArray(data.bookings)) rawList = data.bookings;
           else if (Array.isArray(data.data)) rawList = data.data;
+
 
           // Ensure status is normalized and defaults to "Pending"
           const enriched = rawList.map((item, index) => {
@@ -158,7 +167,6 @@ export default function MyBookingsPage() {
 
   // Cancel booking handler (updates UI optimistically)
   const handleCancelBooking = async (bookingId: string) => {
-
 
 
 

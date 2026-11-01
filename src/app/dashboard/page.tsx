@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, BookingReservation, StudioListing } from "@/types/studio";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -44,12 +44,22 @@ export default function DashboardPage() {
     async function loadDashboardData() {
       setLoading(true);
       try {
+
+        const { data, error } = await authClient.token();
+
+        const token = data?.token;
         const [studiosRes, bookingsRes] = await Promise.all([
           fetch(`${API_BASE_URL}/my-studio-listings/${userEmail}`, {
             cache: "no-store",
+            headers: {
+              authorization: `Bearer ${token}`,
+            }
           }).catch(() => null),
           fetch(`${API_BASE_URL}/bookings/${userEmail}`, {
             cache: "no-store",
+            headers: {
+              authorization: `Bearer ${token}`,
+            }
           }).catch(() => null),
         ]);
 

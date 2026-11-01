@@ -29,16 +29,16 @@ interface PageProps {
 async function getStudioDetails(id: string): Promise<StudioListing | null> {
 
 
-  const jwtToken = await auth.api.getToken({
-    headers: await headers(),
-  })
+  // const jwtToken = await auth.api.getToken({
+  //   headers: await headers(),
+  // })
 
   try {
     const res = await fetch(`${API_BASE_URL}/studios/${id}`, {
       cache: "no-store",
-      headers: {
-        authorization: `Bearer ${jwtToken?.token}`,
-      }
+      // headers: {
+      //   authorization: `Bearer ${jwtToken?.token}`,
+      // }
     });
 
     const data = await res.json();
