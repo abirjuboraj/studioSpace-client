@@ -82,9 +82,9 @@ function getStatusBadge(status: string) {
     return (
       <Badge
         variant="outline"
-        className="gap-1 border-destructive/35 bg-destructive/10 text-destructive font-bold text-[11px] px-2.5 py-0.5 rounded-lg"
+        className="gap-1 border-red-500/35 bg-red-500/10 text-red-600 dark:text-red-400 font-bold text-[11px] px-2.5 py-0.5 rounded-lg"
       >
-        <XCircle className="size-3" />
+        <XCircle className="size-3 text-red-600 dark:text-red-400" />
         <span>Cancelled</span>
       </Badge>
     );
@@ -166,8 +166,8 @@ export default function MyBookingsPage() {
     setIsCancelling(true);
     try {
       const token = await getTokenFromClient();
-      const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
-        method: "DELETE",
+      const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}/cancel`, {
+        method: "PATCH",
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -177,13 +177,13 @@ export default function MyBookingsPage() {
 
       if (res.ok) {
         toast.success("Booking cancelled successfully", {
-          description: "Your reservation has been removed.",
+          description: "Your reservation status is now cancelled.",
         });
-        // Remove cancelled booking from list
+        // Update booking status in state rather than deleting it
         setBookings((prev) =>
-          prev.filter((booking) => {
+          prev.map((booking) => {
             const id = typeof booking._id === "object" ? booking._id.$oid : booking._id;
-            return id !== bookingId;
+            return id === bookingId ? { ...booking, status: "Cancelled" as BookingStatus } : booking;
           })
         );
         setCancelTarget(null);
@@ -370,11 +370,12 @@ export default function MyBookingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
+                  type="button"
                   onClick={() => {
                     setSelectedStatus("All");
                     setSearchQuery("");
                   }}
-                  className="text-xs h-8 px-4 rounded-xl"
+                  className="text-xs h-8 px-4 rounded-xl cursor-pointer hover:border-primary/50"
                 >
                   Reset Filters
                 </Button>
@@ -548,7 +549,7 @@ export default function MyBookingsPage() {
                 Cancel this booking?
               </DialogTitle>
               <DialogDescription className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                Are you sure you want to cancel this pending studio reservation? This action cannot be undone and your slot will be released.
+                Are you sure you want to cancel this pending studio reservation? Its status will be updated to Cancelled and the booking slot will be released.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex-row items-center justify-end gap-2 pt-4 border-t border-border/60">

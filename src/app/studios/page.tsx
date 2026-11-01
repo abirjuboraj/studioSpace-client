@@ -25,15 +25,53 @@ interface CategoryBadgeConfig {
   label: string;
   category: string;
   icon: React.ElementType;
+  badgeColorClass: string;
+  activeColorClass: string;
 }
 
 const CATEGORY_BADGES: CategoryBadgeConfig[] = [
-  { label: "All Studios", category: "All", icon: Layers },
-  { label: "Photo Studios", category: "Photo Studios", icon: Camera },
-  { label: "Sound Stages", category: "Sound Stages", icon: Film },
-  { label: "Podcast Rooms", category: "Podcast Rooms", icon: Mic2 },
-  { label: "Music Suites", category: "Music Suites", icon: Music4 },
-  { label: "Art Workshops", category: "Art Workshops", icon: Palette },
+  {
+    label: "All Studios",
+    category: "All",
+    icon: Layers,
+    badgeColorClass: "text-amber-500 bg-amber-500/10 border-amber-500/30",
+    activeColorClass: "border-primary bg-primary text-primary-fg shadow-sm shadow-primary/25",
+  },
+  {
+    label: "Photo Studios",
+    category: "Photo Studios",
+    icon: Camera,
+    badgeColorClass: "text-cyan-500 bg-cyan-500/10 border-cyan-500/30",
+    activeColorClass: "border-cyan-500 bg-cyan-600 text-white shadow-sm shadow-cyan-500/25",
+  },
+  {
+    label: "Sound Stages",
+    category: "Sound Stages",
+    icon: Film,
+    badgeColorClass: "text-rose-500 bg-rose-500/10 border-rose-500/30",
+    activeColorClass: "border-rose-500 bg-rose-600 text-white shadow-sm shadow-rose-500/25",
+  },
+  {
+    label: "Podcast Rooms",
+    category: "Podcast Rooms",
+    icon: Mic2,
+    badgeColorClass: "text-emerald-500 bg-emerald-500/10 border-emerald-500/30",
+    activeColorClass: "border-emerald-500 bg-emerald-600 text-white shadow-sm shadow-emerald-500/25",
+  },
+  {
+    label: "Music Suites",
+    category: "Music Suites",
+    icon: Music4,
+    badgeColorClass: "text-purple-500 bg-purple-500/10 border-purple-500/30",
+    activeColorClass: "border-purple-500 bg-purple-600 text-white shadow-sm shadow-purple-500/25",
+  },
+  {
+    label: "Art Workshops",
+    category: "Art Workshops",
+    icon: Palette,
+    badgeColorClass: "text-orange-500 bg-orange-500/10 border-orange-500/30",
+    activeColorClass: "border-orange-500 bg-orange-600 text-white shadow-sm shadow-orange-500/25",
+  },
 ];
 
 function StudiosListContent() {
@@ -202,13 +240,16 @@ function StudiosListContent() {
                   type="button"
                   onClick={() => handleBadgeClick(badge.category)}
                   className={cn(
-                    "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer",
+                    "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer border",
                     isSelected
-                      ? "border border-primary bg-primary text-primary-fg shadow-sm shadow-primary/25 scale-[1.02]"
-                      : "border border-border/70 bg-surface-1/80 text-text-secondary hover:text-text-primary hover:border-primary/40 hover:bg-surface-2"
+                      ? cn(badge.activeColorClass, "scale-[1.02]")
+                      : cn(
+                          "border-border/70 bg-surface-1/80 text-text-secondary hover:text-text-primary hover:bg-surface-2",
+                          badge.badgeColorClass
+                        )
                   )}
                 >
-                  <Icon className={cn("size-3.5", isSelected ? "text-primary-fg" : "text-primary")} />
+                  <Icon className="size-3.5" />
                   <span>{badge.label}</span>
                   <span
                     className={cn(
@@ -262,7 +303,17 @@ function StudiosListContent() {
               We couldn&apos;t find workspaces matching your current selection. Try selecting another category badge or clear the search.
             </p>
             <div className="mt-4 flex items-center gap-2">
-
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSearchQuery("");
+                  router.push("/studios", { scroll: false });
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border bg-surface-2 text-text-primary hover:border-primary/50 transition-colors cursor-pointer"
+              >
+                <span>Reset Filters</span>
+              </button>
               <Link
                 href="/studios/new"
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover transition-colors"

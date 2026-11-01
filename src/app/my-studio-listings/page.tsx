@@ -366,9 +366,9 @@ export default function MyStudiosPage() {
                         <button
                           type="button"
                           onClick={() => setDeleteTarget(studio)}
-                          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-destructive/30 bg-destructive/10 text-xs font-medium text-destructive hover:bg-destructive/20 active:scale-95 transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-red-500/40 bg-red-500/15 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-500/25 hover:border-red-500/60 active:scale-95 transition-all cursor-pointer shadow-xs"
                         >
-                          <Trash2 className="size-3" />
+                          <Trash2 className="size-3 text-red-600 dark:text-red-400" />
                           <span>Delete</span>
                         </button>
                       </div>
@@ -491,9 +491,9 @@ export default function MyStudiosPage() {
                             <button
                               type="button"
                               onClick={() => setDeleteTarget(studio)}
-                              className="inline-flex items-center gap-1 h-7 px-2 rounded-lg border border-destructive/30 bg-destructive/10 text-[11px] font-medium text-destructive hover:bg-destructive/20 transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1 h-7 px-2 rounded-lg border border-red-500/40 bg-red-500/15 text-[11px] font-semibold text-red-600 dark:text-red-400 hover:bg-red-500/25 hover:border-red-500/60 transition-colors cursor-pointer shadow-xs"
                             >
-                              <Trash2 className="size-3" />
+                              <Trash2 className="size-3 text-red-600 dark:text-red-400" />
                               <span>Delete</span>
                             </button>
                           </div>
