@@ -52,7 +52,7 @@ const NAV_LINKS = [
 const USER_MENU_ITEMS = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "Add New Studio", href: "/studios/new", icon: PlusSquare },
-    { label: "My Studio Listings", href: "/my-studios", icon: Building2 },
+    { label: "My Studio Listings", href: "/my-studio-listings", icon: Building2 },
     { label: "My Bookings", href: "/my-bookings", icon: CalendarCheck },
 ] as const;
 

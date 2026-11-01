@@ -198,7 +198,7 @@ export default function NewStudioPage() {
 
       if (res.ok && (!resData || resData.success !== false)) {
         toast.success("Studio published successfully!");
-        router.push("/my-studios");
+        router.push("/my-studio-listings");
       } else {
         toast.error(resData?.message || "Failed to create studio listing. Please try again.");
       }
