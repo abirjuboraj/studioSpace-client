@@ -19,8 +19,7 @@ import { API_BASE_URL, StudioListing } from "@/types/studio";
 import { StudioImageCarousel } from "@/components/studios/StudioImageCarousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookingCardSidebar } from "@/components/studios/BookingCardSidebar";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -28,17 +27,9 @@ interface PageProps {
 
 async function getStudioDetails(id: string): Promise<StudioListing | null> {
 
-
-  // const jwtToken = await auth.api.getToken({
-  //   headers: await headers(),
-  // })
-
   try {
     const res = await fetch(`${API_BASE_URL}/studios/${id}`, {
       cache: "no-store",
-      // headers: {
-      //   authorization: `Bearer ${jwtToken?.token}`,
-      // }
     });
 
     const data = await res.json();

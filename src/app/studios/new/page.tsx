@@ -28,6 +28,7 @@ import {
 } from "@/types/studio";
 import { authClient, useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { getTokenFromClient } from "@/lib/getToken";
 
 export default function NewStudioPage() {
   const router = useRouter();
@@ -185,11 +186,10 @@ export default function NewStudioPage() {
       createdAt: new Date().toISOString(),
     };
 
-    const { data, error } = await authClient.token();
 
-    const token = data?.token;
 
     try {
+      const token = getTokenFromClient();
       const res = await fetch(`${API_BASE_URL}/studios/new`, {
         method: "POST",
         headers: {

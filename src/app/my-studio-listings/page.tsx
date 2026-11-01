@@ -20,8 +20,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, StudioListing } from "@/types/studio";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { Card, CardContent } from "@/components/ui/card";
+import { getTokenFromClient } from "@/lib/getToken";
 
 export default function MyStudiosPage() {
   const [userStudios, setUserStudios] = useState<StudioListing[]>([]);
@@ -41,7 +42,14 @@ export default function MyStudiosPage() {
     async function getMyStudios() {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/my-studio-listings/${hostEmail}`);
+
+        const token = await getTokenFromClient();
+
+        const res = await fetch(`${API_BASE_URL}/my-studio-listings/${hostEmail}`, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           setUserStudios(data);

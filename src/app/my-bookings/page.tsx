@@ -29,6 +29,8 @@ import {
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, BookingReservation, BookingStatus } from "@/types/studio";
 import { authClient, useSession } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getToken";
+import { toast } from "sonner";
 
 // Status badge helper function (essential status indicator only)
 function getStatusBadge(status: string) {
@@ -114,9 +116,7 @@ export default function MyBookingsPage() {
 
 
       try {
-        const { data, error } = await authClient.token();
-
-        const token = data?.token;
+        const token = await getTokenFromClient();
         const res = await fetch(`${API_BASE_URL}/bookings/${userEmail}`, {
           cache: "no-store",
           headers: {
@@ -131,27 +131,11 @@ export default function MyBookingsPage() {
           else if (Array.isArray(data.bookings)) rawList = data.bookings;
           else if (Array.isArray(data.data)) rawList = data.data;
 
-
-          // Ensure status is normalized and defaults to "Pending"
-          const enriched = rawList.map((item, index) => {
-            let assignedStatus: BookingStatus = "Pending";
-            if (item.status) {
-              const s = item.status.toString().toLowerCase();
-              if (s === "pending") assignedStatus = "Pending";
-              else if (s === "confirmed") assignedStatus = "Confirmed";
-              else if (s === "completed") assignedStatus = "Completed";
-              else if (s === "cancelled") assignedStatus = "Cancelled";
-            } else {
-              // If completely missing from database, assign some variety for testing
-              const STATUS_CYCLE: BookingStatus[] = ["Pending", "Confirmed", "Pending", "Completed", "Cancelled"];
-              assignedStatus = STATUS_CYCLE[index % STATUS_CYCLE.length];
-            }
-
-            return {
-              ...item,
-              status: assignedStatus,
-            };
-          });
+          // Normalize status
+          const enriched = rawList.map((item) => ({
+            ...item,
+            status: (item.status || "Pending") as BookingStatus,
+          }));
 
           setBookings(enriched);
         }
@@ -165,18 +149,41 @@ export default function MyBookingsPage() {
     fetchMyBookings();
   }, [userEmail]);
 
-  // Cancel booking handler (updates UI optimistically)
+  // Cancel booking handler
   const handleCancelBooking = async (bookingId: string) => {
+    try {
+      const token = await getTokenFromClient();
+      const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
 
+      const resData = await res.json().catch(() => null);
 
-
-
-    setBookings((prev) =>
-      prev.map((b) => {
-        const id = typeof b._id === "object" ? b._id.$oid : b._id;
-        return id === bookingId ? { ...b, status: "Cancelled" } : b;
-      })
-    );
+      if (res.ok) {
+        toast.success("Booking cancelled successfully", {
+          description: "Your reservation has been removed.",
+        });
+        // Remove cancelled booking from list
+        setBookings((prev) =>
+          prev.filter((booking) => {
+            const id = typeof booking._id === "object" ? booking._id.$oid : booking._id;
+            return id !== bookingId;
+          })
+        );
+      } else {
+        toast.error("Failed to cancel booking", {
+          description: resData?.message || "Please try again later.",
+        });
+      }
+    } catch (error) {
+      console.error("Cancel booking error:", error);
+      toast.error("Error", {
+        description: "Network error occurred while cancelling booking.",
+      });
+    }
   };
 
   const filteredBookings = useMemo(() => {
@@ -490,12 +497,11 @@ export default function MyBookingsPage() {
                                 render={
                                   <Button
                                     type="button"
-                                    variant="destructive"
                                     size="sm"
                                     onClick={() => handleCancelBooking(bookingId)}
-                                    className="h-8 px-2.5 sm:px-3 rounded-lg text-xs font-semibold cursor-pointer"
+                                    className="h-8 px-2.5 sm:px-3 rounded-lg text-xs font-semibold cursor-pointer border border-red-500/30 bg-red-500/15 text-red-600 dark:text-red-400 hover:bg-red-500/25 hover:text-red-700 dark:hover:text-red-300 transition-colors"
                                   >
-                                    <XCircle className="size-3.5" />
+                                    <XCircle className="size-3.5 text-red-500" />
                                     <span className="hidden sm:inline ml-1">Cancel Booking</span>
                                   </Button>
                                 }

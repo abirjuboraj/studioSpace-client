@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useSession } from "@/lib/auth-client";
 import { API_BASE_URL, StudioListing } from "@/types/studio";
+import { getTokenFromClient } from "@/lib/getToken";
 
 interface BookingModalProps {
   studio: StudioListing;
@@ -129,10 +130,12 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
     };
 
     try {
+      const token = await getTokenFromClient();
       const res = await fetch(`${API_BASE_URL}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`
         },
         body: JSON.stringify(bookingPayload),
       });
