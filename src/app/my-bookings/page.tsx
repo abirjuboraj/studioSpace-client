@@ -15,11 +15,21 @@ import {
   Search,
   Building2,
   FileText,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -91,6 +101,8 @@ export default function MyBookingsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [cancelTarget, setCancelTarget] = useState<string | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const STATUS_FILTERS: Array<"All" | BookingStatus> = [
     "All",
@@ -151,6 +163,7 @@ export default function MyBookingsPage() {
 
   // Cancel booking handler
   const handleCancelBooking = async (bookingId: string) => {
+    setIsCancelling(true);
     try {
       const token = await getTokenFromClient();
       const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
@@ -173,6 +186,7 @@ export default function MyBookingsPage() {
             return id !== bookingId;
           })
         );
+        setCancelTarget(null);
       } else {
         toast.error("Failed to cancel booking", {
           description: resData?.message || "Please try again later.",
@@ -183,6 +197,8 @@ export default function MyBookingsPage() {
       toast.error("Error", {
         description: "Network error occurred while cancelling booking.",
       });
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -498,7 +514,7 @@ export default function MyBookingsPage() {
                                   <Button
                                     type="button"
                                     size="sm"
-                                    onClick={() => handleCancelBooking(bookingId)}
+                                    onClick={() => setCancelTarget(bookingId)}
                                     className="h-8 px-2.5 sm:px-3 rounded-lg text-xs font-semibold cursor-pointer border border-red-500/30 bg-red-500/15 text-red-600 dark:text-red-400 hover:bg-red-500/25 hover:text-red-700 dark:hover:text-red-300 transition-colors"
                                   >
                                     <XCircle className="size-3.5 text-red-500" />
@@ -520,6 +536,51 @@ export default function MyBookingsPage() {
             </div>
           )}
         </div>
+
+        {/* Confirmation Modal for Cancelling Booking */}
+        <Dialog open={!!cancelTarget} onOpenChange={(open) => !open && !isCancelling && setCancelTarget(null)}>
+          <DialogContent className="sm:max-w-md bg-surface-1 border-border">
+            <DialogHeader className="gap-2">
+              <div className="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-1">
+                <AlertTriangle className="size-5" />
+              </div>
+              <DialogTitle className="text-base sm:text-sm font-bold text-text-primary">
+                Cancel this booking?
+              </DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+                Are you sure you want to cancel this pending studio reservation? This action cannot be undone and your slot will be released.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex-row items-center justify-end gap-2 pt-4 border-t border-border/60">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isCancelling}
+                onClick={() => setCancelTarget(null)}
+                className="h-8 rounded-lg text-xs font-semibold cursor-pointer border-border hover:bg-surface-2"
+              >
+                Keep Booking
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                disabled={isCancelling}
+                onClick={() => cancelTarget && handleCancelBooking(cancelTarget)}
+                className="h-8 rounded-lg text-xs font-semibold cursor-pointer border border-red-500/30 bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs"
+              >
+                {isCancelling ? (
+                  <>
+                    <Loader2 className="size-3.5 animate-spin mr-1.5" />
+                    Cancelling...
+                  </>
+                ) : (
+                  "Yes, Cancel"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );

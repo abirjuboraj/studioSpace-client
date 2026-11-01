@@ -297,13 +297,15 @@ export default function MyStudiosPage() {
 
                       <div className="flex items-center gap-1.5">
                         {/* Update Button */}
-                        <button
-                          type="button"
-                          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/80 bg-surface-2 text-xs font-medium text-text-primary hover:border-primary/50 hover:text-primary active:scale-95 transition-all"
-                        >
-                          <Edit3 className="size-3" />
-                          <span>Update</span>
-                        </button>
+                        <Link href={`/studios/edit/${studioId}`}>
+                          <button
+                            type="button"
+                            className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/80 bg-surface-2 text-xs font-medium text-text-primary hover:border-primary/50 hover:text-primary active:scale-95 transition-all cursor-pointer"
+                          >
+                            <Edit3 className="size-3" />
+                            <span>Update</span>
+                          </button>
+                        </Link>
 
                         {/* Delete Button */}
                         <button
@@ -420,13 +422,15 @@ export default function MyStudiosPage() {
                               <Eye className="size-3.5" />
                             </Link>
 
-                            <button
-                              type="button"
-                              className="inline-flex items-center gap-1 h-7 px-2 rounded-lg border border-border/80 bg-surface-2 text-[11px] font-medium text-text-primary hover:border-primary/50 hover:text-primary transition-colors"
-                            >
-                              <Edit3 className="size-3" />
-                              <span>Update</span>
-                            </button>
+                            <Link href={`/studios/edit/${studioId}`}>
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-1 h-7 px-2 rounded-lg border border-border/80 bg-surface-2 text-[11px] font-medium text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+                              >
+                                <Edit3 className="size-3" />
+                                <span>Update</span>
+                              </button>
+                            </Link>
 
                             <button
                               type="button"
