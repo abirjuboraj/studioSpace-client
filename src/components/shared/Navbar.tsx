@@ -75,7 +75,7 @@ const Navbar = () => {
 
     const handleSignOut = async () => {
         await signOut();
-        redirect('login');
+        redirect('/login');
     };
 
     return (

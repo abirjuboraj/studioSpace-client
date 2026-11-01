@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Aperture,
   Mail,
@@ -18,8 +18,10 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { signIn } from "@/lib/auth-client";
 
-export default function LoginPage() {
+function LoginFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   // Form states: strictly email, password, google
   const [email, setEmail] = useState("");
@@ -57,12 +59,12 @@ export default function LoginPage() {
       }
 
       toast.success("Welcome back!", {
-        description: "Redirecting to your dashboard...",
+        description: "Redirecting...",
       });
 
       setTimeout(() => {
-        router.push("/dashboard");
-      }, 800);
+        router.push(callbackUrl);
+      }, 700);
     } catch (err: unknown) {
       const genericMsg =
         err instanceof Error ? err.message : "Failed to sign in. Please try again.";
@@ -77,7 +79,7 @@ export default function LoginPage() {
       setIsGoogleLoading(true);
       await signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: callbackUrl,
       });
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : "Google sign-in failed.";
@@ -272,5 +274,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen py-16 flex items-center justify-center text-xs text-text-muted">Loading sign in...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

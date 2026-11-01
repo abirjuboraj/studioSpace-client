@@ -51,6 +51,33 @@ export interface StudioListing {
   hostId?: string;
 }
 
+export type BookingStatus = "Pending" | "Confirmed" | "Completed" | "Cancelled";
+
+export interface BookingReservation {
+  _id?: string | { $oid: string };
+  studioId: string;
+  studioTitle: string;
+  studioCategory: StudioCategory;
+  studioImage?: string;
+  hourlyRate: number;
+  bookingDate: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  totalCost: number;
+  expectedPersons: number;
+  specialRequirements?: string;
+  userId?: string;
+  userName?: string;
+  userEmail?: string;
+  hostId?: string;
+  hostName?: string;
+  hostEmail?: string;
+  status: BookingStatus;
+  createdAt?: string;
+}
+
+
 // Category-specific presets for dynamic amenities & gear
 export const CATEGORY_PRESETS: Record<
   StudioCategory,

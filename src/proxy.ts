@@ -3,20 +3,23 @@ import type { NextRequest } from "next/server";
 import { auth } from "./lib/auth";
 import { headers } from "next/headers";
 
-
 export async function proxy(request: NextRequest) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-    const user = session?.user;
+  const user = session?.user;
 
-    if (!user) {
-        return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+  if (!user) {
+    const redirectUrl = new URL("/login", request.url);
+    const callback = request.nextUrl.pathname + request.nextUrl.search;
+    redirectUrl.searchParams.set("callbackUrl", callback);
+    return NextResponse.redirect(redirectUrl);
+  }
 
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/my-bookings"],
+  matcher: ["/my-bookings", "/dashboard", "/studios/new", "/my-studio-listings"],
 };

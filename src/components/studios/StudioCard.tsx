@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StudioListing } from "@/types/studio";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 export interface StudioCardProps {
   studio: StudioListing;
@@ -40,9 +41,9 @@ export function StudioCard({ studio, className }: StudioCardProps) {
       : studio.capacity || "Flexible";
 
   return (
-    <div
+    <Card
       className={cn(
-        "group flex flex-col justify-between h-full rounded-2xl overflow-hidden",
+        "group flex flex-col justify-between h-full rounded-2xl overflow-hidden p-0 gap-0 ring-0",
         "border border-border/80 bg-surface-1/80 shadow-sm backdrop-blur-md",
         "transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 hover:shadow-xl",
         className
@@ -84,7 +85,7 @@ export function StudioCard({ studio, className }: StudioCardProps) {
       </div>
 
       {/* ── Content Body (Equal Height Structured Layout) ── */}
-      <div className="p-4 sm:p-5 flex flex-col justify-between flex-1">
+      <CardContent className="p-4 sm:p-5 flex flex-col justify-between flex-1 gap-0">
         <div>
           {/* Full Title (No truncate, min-height for uniform alignment across cards) */}
           <h3
@@ -127,8 +128,8 @@ export function StudioCard({ studio, className }: StudioCardProps) {
             <ArrowRight className="size-3" />
           </Link>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

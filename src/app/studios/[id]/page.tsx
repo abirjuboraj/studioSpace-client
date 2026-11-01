@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { API_BASE_URL, StudioListing } from "@/types/studio";
 import { StudioImageCarousel } from "@/components/studios/StudioImageCarousel";
+import { Card, CardContent } from "@/components/ui/card";
+import { BookingCardSidebar } from "@/components/studios/BookingCardSidebar";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -240,7 +242,7 @@ export default async function StudioDetailsPage({ params }: PageProps) {
 
             {/* ── Host Information Card (At the bottom, showing Host Name & Email only) ── */}
             <div className="pt-6 border-t border-border/60">
-              <div className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 backdrop-blur-md">
+              <Card className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 backdrop-blur-md ring-0 gap-0">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted mb-3">
                   Hosted by
                 </p>
@@ -259,55 +261,13 @@ export default async function StudioDetailsPage({ params }: PageProps) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
 
           {/* ── Right Column: Booking Small Card (Below image, right of workspace content) ── */}
           <div className="lg:col-span-1 lg:sticky lg:top-24">
-            <div className="rounded-2xl border border-border/80 bg-surface-1/95 p-6 shadow-xl backdrop-blur-xl space-y-5">
-              {/* Hourly Rate Display */}
-              <div className="flex items-baseline justify-between border-b border-border/60 pb-4">
-                <div>
-                  <span className="text-3xl font-black text-text-primary tracking-tight">
-                    ${studio.hourlyRate}
-                  </span>
-                  <span className="text-xs text-text-muted font-medium ml-1.5">/ hour</span>
-                </div>
-                <div className="flex items-center gap-1 text-xs font-semibold text-text-primary">
-                  <Star className="size-3.5 fill-amber-400 text-amber-400" />
-                  <span>{rating.toFixed(1)}</span>
-                </div>
-              </div>
-
-              {/* Booking Perks / Guarantee */}
-              <div className="space-y-2 text-xs text-text-secondary">
-                <div className="flex items-center justify-between">
-                  <span>Minimum session</span>
-                  <span className="font-semibold text-text-primary">2 hours</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Instant confirmation</span>
-                  <span className="font-semibold text-emerald-500">Yes</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Cancellation</span>
-                  <span className="font-semibold text-text-primary">Free up to 48 hrs</span>
-                </div>
-              </div>
-
-              {/* Book the workspace button */}
-              <button
-                type="button"
-                className="w-full flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-bold bg-primary text-primary-fg shadow-lg hover:bg-primary-hover hover:shadow-[0_0_24px_rgba(245,158,11,0.35)] active:scale-98 transition-all"
-              >
-                <span>Book the workspace</span>
-              </button>
-
-              <p className="text-[11px] text-center text-text-muted">
-                You won&apos;t be charged yet. Dates and times are selected in the next step.
-              </p>
-            </div>
+            <BookingCardSidebar studio={studio} />
           </div>
         </div>
       </div>

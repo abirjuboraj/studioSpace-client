@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, StudioListing } from "@/types/studio";
 import { useSession } from "@/lib/auth-client";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function MyStudiosPage() {
   const [userStudios, setUserStudios] = useState<StudioListing[]>([]);
@@ -43,13 +44,7 @@ export default function MyStudiosPage() {
         const res = await fetch(`${API_BASE_URL}/my-studio-listings/${hostEmail}`);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data)) {
-            setUserStudios(data);
-          } else if (Array.isArray(data.studios)) {
-            setUserStudios(data.studios);
-          } else if (Array.isArray(data.data)) {
-            setUserStudios(data.data);
-          }
+          setUserStudios(data);
         }
       } catch (err) {
         console.error("Error loading user studio listings:", err);
@@ -82,10 +77,7 @@ export default function MyStudiosPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary mb-2 shadow-xs">
-              <Building2 className="size-3.5" />
-              <span>Host Console</span>
-            </div>
+
             <h3
               style={{ fontFamily: "var(--font-display)" }}
               className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary"
@@ -184,7 +176,7 @@ export default function MyStudiosPage() {
           </div>
         ) : userStudios.length === 0 ? (
           /* ── EMPTY STATE UI ── */
-          <div className="rounded-2xl border border-border/80 bg-surface-1/90 p-8 sm:p-12 text-center backdrop-blur-xl shadow-md">
+          <Card className="rounded-2xl border border-border/80 bg-surface-1/90 p-8 sm:p-12 text-center backdrop-blur-xl shadow-md ring-0 gap-0">
             <div className="mx-auto flex size-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary mb-4 shadow-sm">
               <Building2 className="size-7" strokeWidth={1.75} />
             </div>
@@ -216,7 +208,7 @@ export default function MyStudiosPage() {
                 <ArrowRight className="size-3.5" />
               </Link>
             </div>
-          </div>
+          </Card>
         ) : viewMode === "card" ? (
           /* ── CARD FORMAT ── */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -232,9 +224,9 @@ export default function MyStudiosPage() {
                   : "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=900&auto=format&fit=crop";
 
               return (
-                <div
+                <Card
                   key={studioId}
-                  className="group flex flex-col justify-between rounded-2xl overflow-hidden border border-border/80 bg-surface-1/90 shadow-sm backdrop-blur-md transition-all hover:border-primary/40 hover:shadow-lg"
+                  className="group flex flex-col justify-between rounded-2xl overflow-hidden border border-border/80 bg-surface-1/90 shadow-sm backdrop-blur-md transition-all hover:border-primary/40 hover:shadow-lg p-0 gap-0 ring-0"
                 >
                   {/* Visual Header */}
                   <div className="relative h-44 w-full bg-surface-2 overflow-hidden shrink-0">
@@ -264,7 +256,7 @@ export default function MyStudiosPage() {
                   </div>
 
                   {/* Body Content */}
-                  <div className="p-4 sm:p-5 flex flex-col justify-between flex-1">
+                  <CardContent className="p-4 sm:p-5 flex flex-col justify-between flex-1 gap-0">
                     <div>
                       <h4
                         style={{ fontFamily: "var(--font-display)" }}
@@ -292,7 +284,7 @@ export default function MyStudiosPage() {
                         className="inline-flex items-center gap-1 text-[11px] font-semibold text-text-secondary hover:text-primary transition-colors"
                       >
                         <Eye className="size-3.5" />
-                        <span>View</span>
+                        <span>View Details</span>
                       </Link>
 
                       <div className="flex items-center gap-1.5">
@@ -315,14 +307,14 @@ export default function MyStudiosPage() {
                         </button>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
         ) : (
           /* ── TABLE FORMAT ── */
-          <div className="rounded-2xl border border-border/80 bg-surface-1/90 shadow-md backdrop-blur-md overflow-hidden">
+          <Card className="rounded-2xl border border-border/80 bg-surface-1/90 shadow-md backdrop-blur-md overflow-hidden p-0 gap-0 ring-0">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="border-b border-border/80 bg-surface-2/60 text-[11px] font-bold uppercase tracking-wider text-text-muted">
@@ -443,7 +435,7 @@ export default function MyStudiosPage() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>
