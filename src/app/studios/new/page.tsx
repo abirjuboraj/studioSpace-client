@@ -26,7 +26,7 @@ import {
   DAYS_OF_WEEK,
   API_BASE_URL,
 } from "@/types/studio";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 export default function NewStudioPage() {
@@ -185,11 +185,16 @@ export default function NewStudioPage() {
       createdAt: new Date().toISOString(),
     };
 
+    const { data, error } = await authClient.token();
+
+    const token = data?.token;
+
     try {
       const res = await fetch(`${API_BASE_URL}/studios/new`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(studioData),
       });

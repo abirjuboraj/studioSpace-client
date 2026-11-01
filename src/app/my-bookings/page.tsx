@@ -101,6 +101,7 @@ export default function MyBookingsPage() {
   const { data: session } = useSession();
   const userEmail = session?.user?.email;
 
+
   // Fetch real user bookings from backend
   useEffect(() => {
     if (!userEmail) {
@@ -156,7 +157,11 @@ export default function MyBookingsPage() {
   }, [userEmail]);
 
   // Cancel booking handler (updates UI optimistically)
-  const handleCancelBooking = (bookingId: string) => {
+  const handleCancelBooking = async (bookingId: string) => {
+
+
+
+
 
     setBookings((prev) =>
       prev.map((b) => {
