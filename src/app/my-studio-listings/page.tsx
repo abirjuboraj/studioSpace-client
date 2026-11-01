@@ -17,11 +17,23 @@ import {
   Table as TableIcon,
   ShieldCheck,
   Search,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, StudioListing } from "@/types/studio";
 import { authClient, useSession } from "@/lib/auth-client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { getTokenFromClient } from "@/lib/getToken";
 
 export default function MyStudiosPage() {
@@ -29,6 +41,8 @@ export default function MyStudiosPage() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"card" | "table">("card");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<StudioListing | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: session } = useSession();
   const hostEmail = session?.user?.email;
@@ -63,6 +77,47 @@ export default function MyStudiosPage() {
 
     getMyStudios();
   }, [hostEmail]);
+
+  // Delete studio listing handler (Ready for backend API endpoint)
+  const handleDeleteStudio = async (studio: StudioListing) => {
+    const studioId = typeof studio._id === "object" ? studio._id.$oid : studio._id;
+    if (!studioId) return;
+
+    setIsDeleting(true);
+    try {
+      const token = await getTokenFromClient();
+      const res = await fetch(`${API_BASE_URL}/studios/${studioId}`, {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const resData = await res.json().catch(() => null);
+
+      if (res.ok && resData?.success !== false) {
+        toast.success("Studio deleted successfully", {
+          description: `"${studio.title}" has been permanently removed.`,
+        });
+        setUserStudios((prev) =>
+          prev.filter((item) => {
+            const currentId = typeof item._id === "object" ? item._id.$oid : item._id;
+            return currentId !== studioId;
+          })
+        );
+        setDeleteTarget(null);
+      } else {
+        toast.error("Failed to delete studio", {
+          description: resData?.message || "Please try again later.",
+        });
+      }
+    } catch (err) {
+      console.error("Delete studio error:", err);
+      toast.error("Network error while deleting studio listing.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // Filtered by search query
   const filteredStudios = userStudios.filter((studio) => {
@@ -310,7 +365,8 @@ export default function MyStudiosPage() {
                         {/* Delete Button */}
                         <button
                           type="button"
-                          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-destructive/30 bg-destructive/10 text-xs font-medium text-destructive hover:bg-destructive/20 active:scale-95 transition-all"
+                          onClick={() => setDeleteTarget(studio)}
+                          className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-destructive/30 bg-destructive/10 text-xs font-medium text-destructive hover:bg-destructive/20 active:scale-95 transition-all cursor-pointer"
                         >
                           <Trash2 className="size-3" />
                           <span>Delete</span>
@@ -434,7 +490,8 @@ export default function MyStudiosPage() {
 
                             <button
                               type="button"
-                              className="inline-flex items-center gap-1 h-7 px-2 rounded-lg border border-destructive/30 bg-destructive/10 text-[11px] font-medium text-destructive hover:bg-destructive/20 transition-colors"
+                              onClick={() => setDeleteTarget(studio)}
+                              className="inline-flex items-center gap-1 h-7 px-2 rounded-lg border border-destructive/30 bg-destructive/10 text-[11px] font-medium text-destructive hover:bg-destructive/20 transition-colors cursor-pointer"
                             >
                               <Trash2 className="size-3" />
                               <span>Delete</span>
@@ -450,6 +507,59 @@ export default function MyStudiosPage() {
           </Card>
         )}
       </div>
+
+      {/* Confirmation Modal for Deleting Studio */}
+      <Dialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && !isDeleting && setDeleteTarget(null)}
+      >
+        <DialogContent className="sm:max-w-md bg-surface-1 border-border">
+          <DialogHeader className="gap-2">
+            <div className="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-1">
+              <AlertTriangle className="size-5" />
+            </div>
+            <DialogTitle className="text-base sm:text-lg font-bold text-text-primary">
+              Delete Studio Listing?
+            </DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-text-primary">
+                &ldquo;{deleteTarget?.title}&rdquo;
+              </span>
+              ? This action is permanent and will remove the studio listing, its availability, and details from StudioSpace.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex-row items-center justify-end gap-2 pt-4 border-t border-border/60">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isDeleting}
+              onClick={() => setDeleteTarget(null)}
+              className="h-8 rounded-lg text-xs font-semibold cursor-pointer border-border hover:bg-surface-2"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={isDeleting}
+              onClick={() => deleteTarget && handleDeleteStudio(deleteTarget)}
+              className="h-8 rounded-lg text-xs font-semibold cursor-pointer border border-red-500/30 bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="size-3.5 animate-spin mr-1.5" />
+                  Deleting...
+                </>
+              ) : (
+                "Yes, Delete Studio"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
