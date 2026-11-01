@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Aperture,
     Menu,
@@ -51,7 +51,7 @@ const NAV_LINKS = [
 /* ─── Authenticated Dropdown Items ──────────────────────────────────── */
 const USER_MENU_ITEMS = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Add New Studio", href: "/studios/new", icon: PlusSquare },
+    { label: "Add New Studio", href: "/add-studio", icon: PlusSquare },
     { label: "My Studio Listings", href: "/my-studio-listings", icon: Building2 },
     { label: "My Bookings", href: "/my-bookings", icon: CalendarCheck },
 ] as const;
@@ -61,8 +61,63 @@ const Navbar = () => {
     const pathname = usePathname();
     const { data: session } = useSession();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState<string | null>(null);
 
     const user = session?.user;
+
+    // Track active scroll sections on homepage
+    useEffect(() => {
+        if (pathname !== "/") {
+            setActiveSection(null);
+            return;
+        }
+
+        const handleScroll = () => {
+            const howItWorksEl = document.getElementById("how-it-works");
+            const aboutEl = document.getElementById("about");
+            const scrollPos = window.scrollY + 200;
+
+            if (aboutEl) {
+                const aboutTop = aboutEl.offsetTop;
+                const aboutBottom = aboutTop + aboutEl.offsetHeight;
+                if (scrollPos >= aboutTop && scrollPos < aboutBottom) {
+                    setActiveSection("about");
+                    return;
+                }
+            }
+
+            if (howItWorksEl) {
+                const howTop = howItWorksEl.offsetTop;
+                const howBottom = howTop + howItWorksEl.offsetHeight;
+                if (scrollPos >= howTop && scrollPos < howBottom) {
+                    setActiveSection("how-it-works");
+                    return;
+                }
+            }
+
+            setActiveSection(null);
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [pathname]);
+
+    const isLinkActive = (href: string) => {
+        if (href === "/#how-it-works") {
+            return pathname === "/" && activeSection === "how-it-works";
+        }
+        if (href === "/#about") {
+            return pathname === "/" && activeSection === "about";
+        }
+        if (href === "/") {
+            return pathname === "/" && activeSection === null;
+        }
+        if (href === "/studios") {
+            return pathname === "/studios";
+        }
+        return pathname.startsWith(href);
+    };
 
     const initials = user?.name
         ? user.name
@@ -123,8 +178,7 @@ const Navbar = () => {
                 {/* ── Desktop Nav Links ─────────────────────────────────────── */}
                 <ul className="hidden md:flex items-center gap-1.5 rounded-full border border-border/50 bg-surface-1/60 p-1 backdrop-blur-md">
                     {NAV_LINKS.map(({ label, href }) => {
-                        const isActive =
-                            href === "/" ? pathname === "/" : pathname.startsWith(href);
+                        const isActive = isLinkActive(href);
                         return (
                             <li key={href}>
                                 <Link
@@ -198,10 +252,10 @@ const Navbar = () => {
                                         render={
                                             <Link
                                                 href={href}
-                                                className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors"
+                                                className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-text-secondary hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/15 transition-colors focus:bg-amber-500/15 focus:text-amber-600 dark:focus:text-amber-400"
                                             >
-                                                <Icon className="size-3.5 text-text-muted" />
-                                                {label}
+                                                <Icon className="size-3.5 text-text-muted group-hover/dropdown-menu-item:text-amber-600 dark:group-hover/dropdown-menu-item:text-amber-400" />
+                                                <span className="font-medium">{label}</span>
                                             </Link>
                                         }
                                     />
@@ -211,10 +265,10 @@ const Navbar = () => {
                                 <DropdownMenuItem
                                     variant="destructive"
                                     onClick={handleSignOut}
-                                    className="cursor-pointer text-xs flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-danger hover:bg-danger/10"
+                                    className="cursor-pointer text-xs flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-500/15 transition-colors"
                                 >
-                                    <LogOut className="size-3.5" />
-                                    Logout
+                                    <LogOut className="size-3.5 text-red-600 dark:text-red-400" />
+                                    <span className="font-medium">Logout</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -286,11 +340,11 @@ const Navbar = () => {
                                     Menu
                                 </p>
                                 {NAV_LINKS.map(({ label, href }) => {
-                                    const isActive =
-                                        href === "/" ? pathname === "/" : pathname.startsWith(href);
+                                    const isActive = isLinkActive(href);
                                     return (
                                         <SheetClose
                                             key={href}
+                                            nativeButton={false}
                                             render={
                                                 <Link
                                                     href={href}
@@ -339,10 +393,11 @@ const Navbar = () => {
                                         {USER_MENU_ITEMS.map(({ label, href, icon: Icon }) => (
                                             <SheetClose
                                                 key={href}
+                                                nativeButton={false}
                                                 render={
                                                     <Link
                                                         href={href}
-                                                        className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-text-secondary hover:bg-surface-2 hover:text-text-primary transition-colors"
+                                                        className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-text-secondary hover:bg-primary/10 hover:text-primary transition-colors"
                                                     >
                                                         <Icon className="size-4 shrink-0 text-text-muted" />
                                                         {label}
@@ -366,6 +421,7 @@ const Navbar = () => {
                                 ) : (
                                     <div className="flex flex-col gap-2 pt-2">
                                         <SheetClose
+                                            nativeButton={false}
                                             render={
                                                 <Link
                                                     href="/login"
@@ -380,6 +436,7 @@ const Navbar = () => {
                                             }
                                         />
                                         <SheetClose
+                                            nativeButton={false}
                                             render={
                                                 <Link
                                                     href="/register"

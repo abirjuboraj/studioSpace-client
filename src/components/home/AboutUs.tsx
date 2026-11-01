@@ -122,7 +122,7 @@ export function AboutUs() {
               </Link>
 
               <Link
-                href="/studios/new"
+                href="/add-studio"
                 className={cn(
                   "inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-10 px-4 sm:px-5 rounded-xl",
                   "border border-border/80 bg-surface-1/70 backdrop-blur-md",

@@ -188,7 +188,7 @@ export default function MyStudiosPage() {
             )}
 
             <Link
-              href="/studios/new"
+              href="/add-studio"
               className={cn(
                 "inline-flex items-center justify-center gap-2 h-9 px-4 rounded-xl text-xs font-bold",
                 "bg-primary text-primary-fg shadow-md",
@@ -258,7 +258,7 @@ export default function MyStudiosPage() {
 
             <div className="mt-8 flex justify-center">
               <Link
-                href="/studios/new"
+                href="/add-studio"
                 className={cn(
                   "inline-flex items-center gap-2 h-10 px-6 rounded-xl text-xs font-bold",
                   "bg-primary text-primary-fg shadow-md",
@@ -297,11 +297,11 @@ export default function MyStudiosPage() {
                       className="size-full bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
                       style={{ backgroundImage: `url(${displayImage})` }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-surface-1 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
 
                     {/* Category & Status */}
                     <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
-                      <span className="rounded-lg bg-surface-1/90 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
+                      <span className="rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
                         {studio.category}
                       </span>
                       <span className="rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 px-2 py-0.5 text-[10px] font-bold">
@@ -311,10 +311,10 @@ export default function MyStudiosPage() {
 
                     {/* Hourly Rate */}
                     <div className="absolute bottom-2.5 left-3">
-                      <span className="text-lg font-extrabold text-white drop-shadow-md">
+                      <span className="text-lg font-extrabold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                         ${studio.hourlyRate}
                       </span>
-                      <span className="text-xs font-medium text-white/85 ml-1">/ hr</span>
+                      <span className="text-xs font-semibold text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ml-1">/ hr</span>
                     </div>
                   </div>
 

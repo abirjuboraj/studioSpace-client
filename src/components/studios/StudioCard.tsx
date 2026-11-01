@@ -55,11 +55,11 @@ export function StudioCard({ studio, className }: StudioCardProps) {
           className="size-full bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
           style={{ backgroundImage: `url(${displayImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface-1/90 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
 
         {/* Badges on Image */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap max-w-[70%]">
-          <span className="rounded-lg bg-surface-1/90 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
+          <span className="rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
             {studio.category}
           </span>
           <span className="flex items-center gap-1 rounded-lg bg-primary text-primary-fg px-2 py-0.5 text-[10px] font-bold shadow-xs">
@@ -69,18 +69,18 @@ export function StudioCard({ studio, className }: StudioCardProps) {
         </div>
 
         {/* Rating Badge */}
-        <div className="absolute top-3 right-3 flex items-center gap-1 rounded-lg bg-surface-1/90 backdrop-blur-md border border-border/70 px-2 py-0.5 text-[11px] font-bold text-text-primary shadow-xs">
+        <div className="absolute top-3 right-3 flex items-center gap-1 rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2 py-0.5 text-[11px] font-bold text-text-primary shadow-xs">
           <Star className="size-3.5 fill-amber-400 text-amber-400" />
           <span>{rating.toFixed(1)}</span>
           <span className="text-[10px] font-normal text-text-muted">({reviewCount})</span>
         </div>
 
-        {/* Price Tag */}
+        {/* Price Tag with dark backing protection in light mode */}
         <div className="absolute bottom-2.5 left-3">
-          <span className="text-lg font-extrabold text-white drop-shadow-md">
+          <span className="text-lg font-extrabold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             ${studio.hourlyRate}
           </span>
-          <span className="text-xs font-medium text-white/85 ml-1">/ hr</span>
+          <span className="text-xs font-semibold text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ml-1">/ hr</span>
         </div>
       </div>
 

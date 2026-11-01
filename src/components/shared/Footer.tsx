@@ -65,7 +65,7 @@ const QUICK_LINKS = [
   { label: "How It Works", href: "/#how-it-works" },
   { label: "About Us", href: "/#about" },
   { label: "Creator Guidelines", href: "/guidelines" },
-  { label: "List a Studio", href: "/studios/new" },
+  { label: "List a Studio", href: "/add-studio" },
 ];
 
 const STUDIO_CATEGORIES = [

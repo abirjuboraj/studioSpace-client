@@ -84,7 +84,7 @@ export async function FeaturedStudios() {
               Be the first host to list a creative space and start welcoming creators today.
             </p>
             <Link
-              href="/studios/new"
+              href="/add-studio"
               className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover transition-colors"
             >
               <span>List Your Studio</span>

@@ -21,5 +21,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/my-bookings", "/dashboard", "/studios/new", "/my-studio-listings"],
+  matcher: ["/my-bookings", "/dashboard", "/add-studio", "/my-studio-listings"],
 };

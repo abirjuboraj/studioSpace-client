@@ -63,9 +63,9 @@
   --primary-dim: rgba(245, 158, 11, 0.12);
   --primary-fg: #0c0c0f;
 
-  --accent: #8b5cf6;
-  --accent-hover: #7c3aed;
-  --accent-dim: rgba(139, 92, 246, 0.12);
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --accent-dim: rgba(245, 158, 11, 0.12);
 
   --text-primary: #f4f4f6;
   --text-secondary: #a1a1aa;
@@ -89,17 +89,17 @@
   --primary-dim: rgba(217, 119, 6, 0.12);
   --primary-fg: #ffffff;
 
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-dim: rgba(124, 58, 237, 0.1);
+  --accent: #d97706;
+  --accent-hover: #b45309;
+  --accent-dim: rgba(217, 119, 6, 0.12);
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-primary: #090d16;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
 
   --shadow-card-val: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-elevated-val: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --ambient-bg: radial-gradient(ellipse at center top, rgba(245, 158, 11, 0.1) 0%, rgba(139, 92, 246, 0.06) 50%, transparent 70%);
+  --ambient-bg: radial-gradient(ellipse at center top, rgba(245, 158, 11, 0.05) 0%, rgba(139, 92, 246, 0.03) 50%, transparent 70%);
 }
 
 /* ─── Base Styles ───────────────────────────────────────────────────── */
@@ -107,6 +107,10 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {

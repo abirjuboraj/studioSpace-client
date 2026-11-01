@@ -129,7 +129,7 @@ export default function DashboardPage() {
               </Button>
             </Link>
 
-            <Link href="/studios/new">
+            <Link href="/add-studio">
               <Button
                 size="sm"
                 className="h-9 px-4 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover shadow-md cursor-pointer"
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                   List your creative photography loft, sound stage, or podcast studio to earn hourly revenue.
                 </p>
                 <div className="mt-4">
-                  <Link href="/studios/new">
+                  <Link href="/add-studio">
                     <Button size="sm" className="text-xs h-8 px-3 rounded-lg bg-primary text-primary-fg hover:bg-primary-hover cursor-pointer font-bold">
                       <Plus className="size-3 mr-1" />
                       <span>List a Studio</span>
