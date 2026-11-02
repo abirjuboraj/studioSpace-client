@@ -43,6 +43,10 @@ export default function NewStudioPage() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<StudioCategory>("Photo Studios");
   const [hourlyRate, setHourlyRate] = useState<number | "">("");
+  const [rating, setRating] = useState<number | "">(4.9);
+  const [minimumBookingHours, setMinimumBookingHours] = useState<number | "">(1);
+  const [securityDeposit, setSecurityDeposit] = useState<number | "">(0);
+  const [cancellationNoticeHours, setCancellationNoticeHours] = useState<number | "">(24);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -186,6 +190,10 @@ export default function NewStudioPage() {
       title: title.trim(),
       category,
       hourlyRate: Number(hourlyRate),
+      rating: rating !== "" ? Number(rating) : 4.9,
+      minimumBookingHours: minimumBookingHours !== "" ? Number(minimumBookingHours) : 1,
+      securityDeposit: securityDeposit !== "" ? Number(securityDeposit) : 0,
+      cancellationNoticeHours: cancellationNoticeHours !== "" ? Number(cancellationNoticeHours) : 24,
       capacity: Number(capacity),
       workspaceSize: workspaceSize.trim(),
       overview: overview.trim(),
@@ -219,7 +227,6 @@ export default function NewStudioPage() {
 
     try {
       const token = await getTokenFromClient();
-      console.log("Token:", token);
       const res = await fetch(`${API_BASE_URL}/studios/add-studio`, {
         method: "POST",
         headers: {
@@ -367,8 +374,86 @@ export default function NewStudioPage() {
               </div>
             </div>
 
-            {/* Capacity & Workspace Size */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* Pricing, Security & Booking Policies */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+              <div className="space-y-1">
+                <label htmlFor="minimumBookingHours" className="block text-xs font-semibold text-text-primary">
+                  Minimum Booking (Hours) *
+                </label>
+                <div className="relative">
+                  <Clock className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
+                  <input
+                    id="minimumBookingHours"
+                    type="number"
+                    name="minimumBookingHours"
+                    min={1}
+                    max={24}
+                    value={minimumBookingHours}
+                    onChange={(e) =>
+                      setMinimumBookingHours(e.target.value === "" ? "" : Number(e.target.value))
+                    }
+                    placeholder="1"
+                    className={cn(
+                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-3 text-xs text-text-primary",
+                      "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="securityDeposit" className="block text-xs font-semibold text-text-primary">
+                  Security Deposit ($ USD)
+                </label>
+                <div className="relative">
+                  <DollarSign className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
+                  <input
+                    id="securityDeposit"
+                    type="number"
+                    name="securityDeposit"
+                    min={0}
+                    value={securityDeposit}
+                    onChange={(e) =>
+                      setSecurityDeposit(e.target.value === "" ? "" : Number(e.target.value))
+                    }
+                    placeholder="0"
+                    className={cn(
+                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-3 text-xs text-text-primary",
+                      "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="cancellationNoticeHours" className="block text-xs font-semibold text-text-primary">
+                  Cancellation Notice (Min Hours) *
+                </label>
+                <div className="relative">
+                  <Clock className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
+                  <input
+                    id="cancellationNoticeHours"
+                    type="number"
+                    name="cancellationNoticeHours"
+                    min={0}
+                    value={cancellationNoticeHours}
+                    onChange={(e) =>
+                      setCancellationNoticeHours(e.target.value === "" ? "" : Number(e.target.value))
+                    }
+                    placeholder="24"
+                    className={cn(
+                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-3 text-xs text-text-primary",
+                      "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    )}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Capacity, Dimensions & Initial Rating */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div className="space-y-1">
                 <label htmlFor="capacity" className="block text-xs font-semibold text-text-primary">
                   Max Capacity (Persons) *
@@ -414,6 +499,27 @@ export default function NewStudioPage() {
                     required
                   />
                 </div>
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="rating" className="block text-xs font-semibold text-text-primary">
+                  Initial Host Rating (1.0 - 5.0)
+                </label>
+                <input
+                  id="rating"
+                  type="number"
+                  name="rating"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                  value={rating}
+                  onChange={(e) => setRating(e.target.value === "" ? "" : Number(e.target.value))}
+                  placeholder="4.9"
+                  className={cn(
+                    "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 px-3 text-xs text-text-primary",
+                    "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  )}
+                />
               </div>
             </div>
 

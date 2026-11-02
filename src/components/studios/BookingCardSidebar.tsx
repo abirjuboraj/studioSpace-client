@@ -25,6 +25,9 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
       : studio._id || "";
 
   const rating = typeof studio.rating === "number" ? studio.rating : 4.9;
+  const minHours = studio.minimumBookingHours || 1;
+  const securityDeposit = typeof studio.securityDeposit === "number" ? studio.securityDeposit : 0;
+  const cancelHours = studio.cancellationNoticeHours || 24;
 
   const handleOpenBooking = () => {
     // If not logged in, redirect directly to login with callback URL
@@ -57,19 +60,29 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
           </div>
         </div>
 
-        {/* Booking Perks / Guarantee */}
-        <div className="space-y-2 text-xs text-text-secondary">
+        {/* Booking Info / Guidelines */}
+        <div className="space-y-2.5 text-xs text-text-secondary border-b border-border/60 pb-4">
           <div className="flex items-center justify-between">
-            <span>Minimum session</span>
-            <span className="font-semibold text-text-primary">1 hour</span>
+            <span>Minimum booking</span>
+            <span className="font-semibold text-text-primary">
+              {minHours} {minHours === 1 ? "hour" : "hours"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Security deposit</span>
+            <span className="font-semibold text-text-primary">
+              ${securityDeposit}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Cancellation window</span>
+            <span className="font-semibold text-text-primary">
+              {cancelHours} hrs prior
+            </span>
           </div>
           <div className="flex items-center justify-between">
             <span>Instant confirmation</span>
             <span className="font-semibold text-emerald-500">Yes</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Cancellation</span>
-            <span className="font-semibold text-text-primary">Free up to 48 hrs</span>
           </div>
         </div>
 

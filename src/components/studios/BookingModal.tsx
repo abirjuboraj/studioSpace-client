@@ -56,10 +56,14 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
       ? (studio._id as { $oid: string }).$oid
       : studio._id || "";
 
+  const minBookingHours = studio.minimumBookingHours || 1;
+  const securityDeposit = typeof studio.securityDeposit === "number" ? studio.securityDeposit : 0;
+  const cancellationNoticeHours = studio.cancellationNoticeHours || 24;
+
   // Dynamic cost calculation based on booking hours
-  const { totalHours, totalCost, isValidTimeRange } = useMemo(() => {
+  const { totalHours, bookingCost, totalCost, isValidTimeRange } = useMemo(() => {
     if (!startTime || !endTime) {
-      return { totalHours: 0, totalCost: 0, isValidTimeRange: false };
+      return { totalHours: 0, bookingCost: 0, totalCost: 0, isValidTimeRange: false };
     }
 
     const [startH, startM] = startTime.split(":").map(Number);
@@ -70,14 +74,20 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
 
     const diffMinutes = endMinutes - startMinutes;
     if (diffMinutes <= 0) {
-      return { totalHours: 0, totalCost: 0, isValidTimeRange: false };
+      return { totalHours: 0, bookingCost: 0, totalCost: 0, isValidTimeRange: false };
     }
 
     const hours = Math.round((diffMinutes / 60) * 10) / 10;
-    const cost = Math.round(hours * studio.hourlyRate);
+    const timeCost = Math.round(hours * studio.hourlyRate);
+    const finalTotal = timeCost + securityDeposit;
 
-    return { totalHours: hours, totalCost: cost, isValidTimeRange: true };
-  }, [startTime, endTime, studio.hourlyRate]);
+    return {
+      totalHours: hours,
+      bookingCost: timeCost,
+      totalCost: finalTotal,
+      isValidTimeRange: true,
+    };
+  }, [startTime, endTime, studio.hourlyRate, securityDeposit]);
 
   // Minimum date allowed is today
   const todayString = new Date().toISOString().split("T")[0];
@@ -102,6 +112,13 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
       return;
     }
 
+    if (totalHours < minBookingHours) {
+      toast.error("Minimum Booking Duration Required", {
+        description: `This workspace requires a minimum reservation of ${minBookingHours} hour${minBookingHours > 1 ? "s" : ""}.`,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     const bookingPayload = {
@@ -114,7 +131,10 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
       startTime,
       endTime,
       totalHours,
+      bookingCost,
+      securityDeposit,
       totalCost,
+      cancellationNoticeHours,
       expectedPersons: Number(expectedPersons) || 1,
       specialRequirements: specialRequirements.trim(),
       // User / creator info
@@ -294,24 +314,49 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
             </div>
 
             <div className="flex items-center justify-between text-xs text-text-secondary">
-              <span>Estimated Duration</span>
+              <span>
+                Estimated Duration{" "}
+                <span className="text-[11px] text-text-muted">
+                  (min {minBookingHours} hr{minBookingHours > 1 ? "s" : ""})
+                </span>
+              </span>
               <span className="font-semibold text-text-primary">
                 {isValidTimeRange ? `${totalHours} hrs` : "Select times"}
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-text-muted">
-              <span>Security Deposit</span>
-              <span className="italic">Added later prior to check-in</span>
+            <div className="flex items-center justify-between text-xs text-text-secondary">
+              <span>Time Booking Cost</span>
+              <span className="font-semibold text-text-primary">
+                ${bookingCost}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-xs text-text-secondary">
+              <span className="flex items-center gap-1">
+                <span>Security Deposit</span>
+                <span className="text-[10px] text-text-muted">(refundable)</span>
+              </span>
+              <span className="font-semibold text-text-primary">
+                {securityDeposit > 0 ? `+$${securityDeposit}` : "$0"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-text-muted pt-1">
+              <span>Cancellation Window</span>
+              <span>Up to {cancellationNoticeHours} hrs prior</span>
             </div>
 
             <Separator className="bg-border/60 my-1.5" />
 
             {/* Total Cost Display */}
             <div className="flex items-baseline justify-between pt-0.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-text-primary">
-                Total Workspace Cost
-              </span>
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-text-primary">
+                  Total Due
+                </span>
+                <p className="text-[10px] text-text-muted">Booking time + security deposit</p>
+              </div>
               <div className="text-right">
                 <span className="text-xl sm:text-2xl font-black text-primary">
                   ${totalCost}

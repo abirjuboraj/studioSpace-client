@@ -28,7 +28,9 @@ export interface StudioListing {
   category: StudioCategory;
   hourlyRate: number;
   rating?: number;
-  reviewCount?: number;
+  minimumBookingHours?: number;
+  securityDeposit?: number;
+  cancellationNoticeHours?: number;
   location: string;
   address: string;
   city: string;

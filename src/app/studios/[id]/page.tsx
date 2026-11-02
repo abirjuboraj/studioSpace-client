@@ -49,7 +49,6 @@ export default async function StudioDetailsPage({ params }: PageProps) {
   }
 
   const rating = typeof studio.rating === "number" ? studio.rating : 4.9;
-  const reviewCount = typeof studio.reviewCount === "number" ? studio.reviewCount : 24;
 
   const hostName = studio.hostName || studio.userName || "Verified Host";
   const hostEmail = studio.hostEmail || studio.userEmail || "host@studiospace.com";
@@ -95,7 +94,6 @@ export default async function StudioDetailsPage({ params }: PageProps) {
               <div className="flex items-center gap-1.5 text-text-primary font-semibold">
                 <Star className="size-4 fill-amber-400 text-amber-400" />
                 <span>{rating.toFixed(1)}</span>
-                <span className="text-text-muted font-normal">({reviewCount} reviews)</span>
               </div>
               <span className="text-border">•</span>
               <div className="flex items-center gap-1">

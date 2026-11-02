@@ -33,7 +33,6 @@ export function StudioCard({ studio, className }: StudioCardProps) {
       : "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=900&auto=format&fit=crop";
 
   const rating = typeof studio.rating === "number" ? studio.rating : 4.9;
-  const reviewCount = typeof studio.reviewCount === "number" ? studio.reviewCount : 24;
 
   const capacityText =
     typeof studio.capacity === "number"
@@ -69,10 +68,9 @@ export function StudioCard({ studio, className }: StudioCardProps) {
         </div>
 
         {/* Rating Badge */}
-        <div className="absolute top-3 right-3 flex items-center gap-1 rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2 py-0.5 text-[11px] font-bold text-text-primary shadow-xs">
+        <div className="absolute top-3 right-3 flex items-center gap-1 rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-bold text-text-primary shadow-xs">
           <Star className="size-3.5 fill-amber-400 text-amber-400" />
           <span>{rating.toFixed(1)}</span>
-          <span className="text-[10px] font-normal text-text-muted">({reviewCount})</span>
         </div>
 
         {/* Price Tag with dark backing protection in light mode */}
