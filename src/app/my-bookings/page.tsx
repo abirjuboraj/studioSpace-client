@@ -221,9 +221,9 @@ export default function MyBookingsPage() {
 
   return (
     <TooltipProvider delay={150}>
-      <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background">
+      <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
         {/* Background ambient lighting */}
-        <div className="absolute top-20 right-1/4 size-[400px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[400px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
         <div className="relative mx-auto max-w-6xl z-10 space-y-6 sm:space-y-8">
           {/* Page Header */}
@@ -258,9 +258,9 @@ export default function MyBookingsPage() {
 
           {/* ── Filter Bar: Status Filters & Search (Shown when user has bookings) ── */}
           {!loading && bookings.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pt-1">
               {/* Status Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar shrink-0">
                 {STATUS_FILTERS.map((status) => {
                   const isSelected = selectedStatus === status;
                   const count =
@@ -297,7 +297,7 @@ export default function MyBookingsPage() {
               </div>
 
               {/* Quick Search Input */}
-              <div className="relative w-full sm:w-64">
+              <div className="relative w-full lg:w-72 shrink-0">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
                 <Input
                   type="text"
@@ -520,7 +520,7 @@ export default function MyBookingsPage() {
 
         {/* Confirmation Modal for Cancelling Booking */}
         <Dialog open={!!cancelTarget} onOpenChange={(open) => !open && !isCancelling && setCancelTarget(null)}>
-          <DialogContent className="sm:max-w-md bg-surface-1 border-border">
+          <DialogContent className="sm:max-w-md bg-surface-1 border-border max-h-[85vh] overflow-y-auto">
             <DialogHeader className="gap-2">
               <div className="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-1">
                 <AlertTriangle className="size-5" />

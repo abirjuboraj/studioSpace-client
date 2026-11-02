@@ -134,15 +134,14 @@ export default function MyStudiosPage() {
   });
 
   return (
-    <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background">
+    <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-20 left-1/3 size-[350px] sm:size-[450px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[450px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-6xl z-10 space-y-6 sm:space-y-8">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-6">
-          <div>
-
+          <div className="space-y-1">
             <h3
               style={{ fontFamily: "var(--font-display)" }}
               className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary"
@@ -154,7 +153,7 @@ export default function MyStudiosPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             {userStudios.length > 0 && (
               /* View Toggle: Card vs Table */
               <div className="flex items-center rounded-xl border border-border/80 bg-surface-1 p-0.5 text-text-muted">
@@ -373,9 +372,9 @@ export default function MyStudiosPage() {
           </div>
         ) : (
           /* ── TABLE FORMAT ── */
-          <Card className="rounded-2xl border border-border/80 bg-surface-1/90 shadow-md backdrop-blur-md overflow-hidden p-0 gap-0 ring-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+          <Card className="rounded-2xl border border-border/80 bg-surface-1/90 shadow-md backdrop-blur-md overflow-hidden p-0 gap-0 ring-0 max-w-full">
+            <div className="w-full overflow-x-auto no-scrollbar">
+              <table className="w-full min-w-[640px] text-left text-xs">
                 <thead className="border-b border-border/80 bg-surface-2/60 text-[11px] font-bold uppercase tracking-wider text-text-muted">
                   <tr>
                     <th scope="col" className="py-3.5 pl-4 pr-3 sm:pl-6">
@@ -506,7 +505,7 @@ export default function MyStudiosPage() {
         open={!!deleteTarget}
         onOpenChange={(open) => !open && !isDeleting && setDeleteTarget(null)}
       >
-        <DialogContent className="sm:max-w-md bg-surface-1 border-border">
+        <DialogContent className="sm:max-w-md bg-surface-1 border-border max-h-[85vh] overflow-y-auto">
           <DialogHeader className="gap-2">
             <div className="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-1">
               <AlertTriangle className="size-5" />

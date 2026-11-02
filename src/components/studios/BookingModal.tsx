@@ -182,7 +182,7 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-full max-w-lg p-5 sm:p-6 bg-surface-1 border border-border/80 shadow-2xl rounded-2xl max-h-[92vh] overflow-y-auto"
+        className="w-[calc(100%-2rem)] max-w-lg p-4 sm:p-6 bg-surface-1 border border-border/80 shadow-2xl rounded-2xl max-h-[85vh] overflow-y-auto no-scrollbar"
         showCloseButton={true}
       >
         <DialogHeader className="gap-1.5 text-left border-b border-border/60 pb-3.5">
@@ -193,17 +193,14 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
             >
               {studio.category}
             </Badge>
-            <span className="inline-flex items-center gap-1 text-[11px] text-text-muted">
-              <ShieldCheck className="size-3 text-emerald-500" />
-              <span>Instant Confirmation</span>
-            </span>
+
           </div>
 
           <DialogTitle
             style={{ fontFamily: "var(--font-display)" }}
-            className="text-xs sm:text-sm font-bold tracking-tight text-text-primary leading-snug"
+            className="text-lg sm:text-2xl font-bold tracking-tight text-text-primary leading-snug"
           >
-            Reserve: {studio.title}
+            Book {studio.title}
           </DialogTitle>
           <DialogDescription className="text-xs text-text-secondary">
             Select your session schedule, guest headcount, and requirements for the host.
@@ -400,7 +397,7 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
               ) : (
                 <>
                   <Sparkles className="size-3.5 mr-1.5" />
-                  <span>Confirm & Book for ${totalCost}</span>
+                  <span>Confirm & Book</span>
                 </>
               )}
             </Button>

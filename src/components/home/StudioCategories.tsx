@@ -171,7 +171,7 @@ export function StudioCategories() {
                   <Link
                     href={`/studios?category=${encodeURIComponent(cat.queryParam)}`}
                     className={cn(
-                      "group relative flex flex-col justify-end h-72 rounded-2xl p-4.5 overflow-hidden",
+                      "group relative flex flex-col justify-between h-72 rounded-2xl p-4.5 overflow-hidden",
                       "border border-border/80 bg-surface-1 shadow-md transition-all",
                       "active:scale-95"
                     )}
@@ -185,16 +185,18 @@ export function StudioCategories() {
                     <div className="absolute inset-0 bg-background/30" />
 
                     {/* Content overlay */}
-                    <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex size-8 items-center justify-center rounded-lg bg-primary/20 text-primary border border-primary/30 backdrop-blur-md">
-                          <Icon className="size-4" />
-                        </div>
-                        <span className="rounded-full border border-border/70 bg-surface-1/90 px-2 py-0.5 text-[10px] font-semibold text-text-secondary backdrop-blur-md">
-                          {cat.count}
-                        </span>
+                    {/* Top Row: Icon and Badge at the top */}
+                    <div className="relative z-10 flex items-center justify-between w-full">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-primary/20 text-primary border border-primary/30 backdrop-blur-md">
+                        <Icon className="size-4" />
                       </div>
+                      <span className="rounded-full border border-border/70 bg-surface-1/90 px-2 py-0.5 text-[10px] font-semibold text-text-secondary backdrop-blur-md">
+                        {cat.count}
+                      </span>
+                    </div>
 
+                    {/* Bottom Row: Title, Tagline and Link */}
+                    <div className="relative z-10">
                       <h3
                         style={{ fontFamily: "var(--font-display)" }}
                         className="text-base font-bold text-text-primary"
@@ -242,7 +244,7 @@ export function StudioCategories() {
                 key={cat.id}
                 href={`/studios?category=${encodeURIComponent(cat.queryParam)}`}
                 className={cn(
-                  "group relative flex flex-col justify-end h-80 rounded-2xl p-5 overflow-hidden",
+                  "group relative flex flex-col justify-between h-80 rounded-2xl p-5 overflow-hidden",
                   "border border-border/80 bg-surface-1/80 shadow-md backdrop-blur-md",
                   "transition-all duration-300 hover:border-primary/50 hover:-translate-y-1 hover:shadow-xl"
                 )}
@@ -257,8 +259,8 @@ export function StudioCategories() {
                 <div className="absolute inset-0 bg-background/25 transition-opacity group-hover:opacity-10" />
 
                 {/* Content */}
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
+                {/* Top Row: Icon and Badge at the top */}
+                  <div className="relative z-10 flex items-center justify-between w-full">
                     <div className="flex size-9 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-fg">
                       <Icon className="size-4.5" />
                     </div>
@@ -267,22 +269,24 @@ export function StudioCategories() {
                     </span>
                   </div>
 
-                  <h3
-                    style={{ fontFamily: "var(--font-display)" }}
-                    className="text-base font-bold text-text-primary group-hover:text-primary transition-colors"
-                  >
-                    {cat.name}
-                  </h3>
+                  {/* Bottom Row: Title, Tagline and Link */}
+                  <div className="relative z-10">
+                    <h3
+                      style={{ fontFamily: "var(--font-display)" }}
+                      className="text-base font-bold text-text-primary group-hover:text-primary transition-colors"
+                    >
+                      {cat.name}
+                    </h3>
 
-                  <p className="mt-1 text-xs text-text-secondary line-clamp-2 leading-relaxed">
-                    {cat.tagline}
-                  </p>
+                    <p className="mt-1 text-xs text-text-secondary line-clamp-2 leading-relaxed">
+                      {cat.tagline}
+                    </p>
 
-                  <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-semibold text-primary">
-                    <span>Explore spaces</span>
-                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                    <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-semibold text-primary">
+                      <span>Explore spaces</span>
+                      <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                    </div>
                   </div>
-                </div>
               </Link>
             );
           })}

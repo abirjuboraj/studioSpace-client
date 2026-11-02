@@ -176,7 +176,7 @@ const Navbar = () => {
                 </Link>
 
                 {/* ── Desktop Nav Links ─────────────────────────────────────── */}
-                <ul className="hidden md:flex items-center gap-1 rounded-full border border-border/60 bg-surface-1/70 p-1 backdrop-blur-md shadow-xs">
+                <ul className="hidden lg:flex items-center gap-1 rounded-full border border-border/60 bg-surface-1/70 p-1 backdrop-blur-md shadow-xs">
                     {NAV_LINKS.map(({ label, href }) => {
                         const isActive = isLinkActive(href);
                         return (
@@ -184,7 +184,7 @@ const Navbar = () => {
                                 <Link
                                     href={href}
                                     className={cn(
-                                        "relative px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5",
+                                        "relative px-3.5 xl:px-4 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5",
                                         isActive
                                             ? "bg-primary text-primary-fg shadow-sm shadow-primary/30"
                                             : "text-text-secondary hover:text-text-primary hover:bg-surface-2"
@@ -193,7 +193,7 @@ const Navbar = () => {
                                     {isActive && (
                                         <span className="size-1.5 rounded-full bg-white dark:bg-black animate-pulse" />
                                     )}
-                                    <span>{label}</span>
+                                    <span className="whitespace-nowrap">{label}</span>
                                 </Link>
                             </li>
                         );
@@ -201,7 +201,7 @@ const Navbar = () => {
                 </ul>
 
                 {/* ── Desktop Action Area ───────────────────────────────────── */}
-                <div className="hidden md:flex items-center gap-2.5">
+                <div className="hidden lg:flex items-center gap-2.5">
                     {/* Light / Dark Mode Toggle */}
                     <ThemeToggle />
 
@@ -306,8 +306,8 @@ const Navbar = () => {
                     )}
                 </div>
 
-                {/* ── Mobile View Controls ─────────────────────────────────── */}
-                <div className="flex md:hidden items-center gap-2">
+                {/* ── Mobile & Tablet View Controls ─────────────────────────── */}
+                <div className="flex lg:hidden items-center gap-2">
                     <ThemeToggle />
 
                     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

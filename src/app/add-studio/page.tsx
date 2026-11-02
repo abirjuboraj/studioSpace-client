@@ -257,9 +257,9 @@ export default function NewStudioPage() {
   };
 
   return (
-    <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background">
+    <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-20 right-1/4 size-[350px] sm:size-[450px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[450px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-3xl z-10">
         {/* Navigation back and header */}

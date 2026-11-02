@@ -34,9 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${outfit.variable} ${inter.variable} h-full antialiased`}
+      className={`${outfit.variable} ${inter.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-text-secondary selection:bg-primary/20 selection:text-text-primary">
+      <body className="min-h-screen flex flex-col bg-background text-text-secondary selection:bg-primary/20 selection:text-text-primary">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
