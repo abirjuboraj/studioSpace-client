@@ -227,15 +227,17 @@ export default async function StudioDetailsPage({ params }: PageProps) {
                   Active Booking Days
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {studio.availability.days.map((day) => (
-                    <span
-                      key={day}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-primary/30 bg-primary/10 text-xs font-semibold text-primary"
-                    >
-                      <Calendar className="size-3" />
-                      <span>{day}</span>
-                    </span>
-                  ))}
+                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                    .filter((d) => studio.availability?.days?.includes(d))
+                    .map((day) => (
+                      <span
+                        key={day}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-primary/30 bg-primary/10 text-xs font-semibold text-primary"
+                      >
+                        <Calendar className="size-3" />
+                        <span>{day}</span>
+                      </span>
+                    ))}
                 </div>
               </div>
             )}

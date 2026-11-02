@@ -64,8 +64,6 @@ const QUICK_LINKS = [
   { label: "Explore Studios", href: "/studios" },
   { label: "How It Works", href: "/#how-it-works" },
   { label: "About Us", href: "/#about" },
-  { label: "Creator Guidelines", href: "/guidelines" },
-  { label: "List a Studio", href: "/add-studio" },
 ];
 
 const STUDIO_CATEGORIES = [
@@ -114,10 +112,7 @@ const Footer = () => {
               The peer-to-peer marketplace for creators, filmmakers, photographers, and audio engineers. Reserve vetted studios with transparent pricing.
             </p>
 
-            <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
-              <ShieldCheck className="size-3.5 text-emerald-500 shrink-0" />
-              <span>Verified studio hosts & safe checkout</span>
-            </div>
+
 
             {/* Social Icons */}
             <div className="pt-1 flex items-center gap-2">
@@ -197,7 +192,7 @@ const Footer = () => {
                 style={{ fontFamily: "var(--font-display)" }}
                 className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-text-primary"
               >
-                Creator Dispatch
+                StudioSpace Newsletter
               </h5>
             </div>
 
@@ -233,7 +228,7 @@ const Footer = () => {
                   <ArrowRight className="size-2.5 sm:size-3" />
                 </button>
               </div>
-              <span className="text-[10px] text-text-muted">No spam. Unsubscribe anytime.</span>
+
             </form>
           </div>
         </div>

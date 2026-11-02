@@ -89,53 +89,53 @@ function LoginFormContent() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-10 sm:py-16 px-4 overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 size-[350px] sm:size-[500px] rounded-full bg-primary/8 blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 right-1/4 size-[300px] sm:size-[400px] rounded-full bg-accent/5 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 size-[320px] rounded-full bg-primary/8 blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 size-[260px] rounded-full bg-accent/5 blur-[160px] pointer-events-none" />
 
-      <div className="w-full max-w-md sm:max-w-lg relative z-10">
+      <div className="w-full max-w-[370px] relative z-10">
         {/* Brand Header */}
-        <div className="text-center mb-5 sm:mb-6">
-          <Link href="/" className="inline-flex items-center gap-2 group mb-2.5 sm:mb-3">
-            <div className="flex size-8.5 sm:size-9 items-center justify-center rounded-xl border border-primary/30 bg-primary/10 text-primary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-primary/20 shadow-xs">
-              <Aperture className="size-4.5 sm:size-5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
+        <div className="text-center mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 group mb-3">
+            <div className="flex size-9 items-center justify-center rounded-xl border border-primary/30 bg-primary/10 text-primary transition-all duration-300 group-hover:border-primary/50 group-hover:bg-primary/20 shadow-xs">
+              <Aperture className="size-5 transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.8} />
             </div>
             <span
               style={{ fontFamily: "var(--font-display)" }}
-              className="text-lg sm:text-xl font-bold tracking-tight text-text-primary"
+              className="text-xl font-bold tracking-tight text-text-primary"
             >
               Studio<span className="text-primary">Space</span>
             </span>
           </Link>
           <h2
             style={{ fontFamily: "var(--font-display)" }}
-            className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary"
+            className="text-2xl font-bold tracking-tight text-text-primary"
           >
             Welcome Back
           </h2>
-          <p className="mt-1 text-[11px] sm:text-xs text-text-secondary">
+          <p className="mt-1 text-xs text-text-secondary">
             Sign in to manage your studio bookings, slots, and listings
           </p>
         </div>
 
-        {/* Login Card (Mirrors Register Card architecture) */}
-        <div className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 sm:p-8 backdrop-blur-xl shadow-xl relative overflow-hidden">
+        {/* Login Card */}
+        <div className="rounded-2xl border border-border/80 bg-surface-1/90 px-6 py-8 sm:px-7 sm:py-9 backdrop-blur-xl shadow-xl relative overflow-hidden">
           {/* Top highlight bar */}
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
           {/* Form Error Alert */}
           {formError && (
-            <div className="mb-4 sm:mb-5 flex items-start gap-2.5 rounded-xl border border-destructive/40 bg-destructive/10 p-2.5 sm:p-3 text-[11px] sm:text-xs text-destructive">
+            <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
               <AlertCircle className="size-4 shrink-0 mt-0.5" />
               <div className="flex-1 font-medium">{formError}</div>
             </div>
           )}
 
           {/* Login Form: Strictly Email and Password */}
-          <form onSubmit={handleLogin} className="space-y-3 sm:space-y-3.5">
+          <form onSubmit={handleLogin} className="space-y-4">
             {/* Email Field */}
-            <div className="space-y-1 sm:space-y-1.5">
+            <div className="space-y-1.5">
               <label
                 htmlFor="email"
                 className="block text-xs font-semibold text-text-primary"
@@ -143,7 +143,7 @@ function LoginFormContent() {
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
                 <input
                   id="email"
                   type="email"
@@ -151,7 +151,7 @@ function LoginFormContent() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="creator@studiospace.com"
                   className={cn(
-                    "h-9.5 sm:h-10 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-9 pr-3 text-xs text-text-primary",
+                    "h-11 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-10 pr-3.5 text-xs text-text-primary",
                     "placeholder:text-text-muted transition-all duration-200",
                     "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
                   )}
@@ -161,7 +161,7 @@ function LoginFormContent() {
             </div>
 
             {/* Password Field */}
-            <div className="space-y-1 sm:space-y-1.5">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
@@ -169,10 +169,9 @@ function LoginFormContent() {
                 >
                   Password
                 </label>
-
               </div>
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
+                <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -183,7 +182,7 @@ function LoginFormContent() {
                   }}
                   placeholder="••••••••"
                   className={cn(
-                    "h-9.5 sm:h-10 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-9 pr-10 text-xs text-text-primary",
+                    "h-11 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-10 pr-10 text-xs text-text-primary",
                     "placeholder:text-text-muted transition-all duration-200",
                     "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
                   )}
@@ -193,7 +192,7 @@ function LoginFormContent() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors cursor-pointer"
                 >
                   {showPassword ? (
                     <EyeOff className="size-4" />
@@ -209,11 +208,11 @@ function LoginFormContent() {
               type="submit"
               disabled={isSubmitting}
               className={cn(
-                "flex items-center justify-center gap-2 w-full h-9.5 sm:h-10 px-4 rounded-xl text-xs font-bold",
+                "flex items-center justify-center gap-2 w-full h-11 px-4 rounded-xl text-xs font-bold cursor-pointer",
                 "bg-primary text-primary-fg shadow-md",
                 "hover:bg-primary-hover hover:shadow-[0_0_20px_rgba(245,158,11,0.35)]",
                 "disabled:opacity-60 disabled:cursor-not-allowed",
-                "active:scale-98 transition-all duration-200 mt-2"
+                "active:scale-98 transition-all duration-200 pt-0.5 mt-2"
               )}
             >
               {isSubmitting ? (
@@ -231,7 +230,7 @@ function LoginFormContent() {
           </form>
 
           {/* Divider */}
-          <div className="relative my-4 sm:my-5 flex items-center justify-center">
+          <div className="relative my-5 flex items-center justify-center">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border/70" />
             </div>
@@ -246,7 +245,7 @@ function LoginFormContent() {
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
             className={cn(
-              "flex items-center justify-center gap-2.5 w-full h-9.5 sm:h-10 px-4 rounded-xl text-xs font-semibold",
+              "flex items-center justify-center gap-2.5 w-full h-11 px-4 rounded-xl text-xs font-semibold cursor-pointer",
               "border border-border/80 bg-surface-2/60 text-text-primary",
               "hover:border-primary/40 hover:bg-surface-2 transition-all duration-200 shadow-xs active:scale-98",
               "disabled:opacity-60 disabled:cursor-not-allowed"
@@ -269,7 +268,7 @@ function LoginFormContent() {
             href="/register"
             className="font-bold text-primary hover:text-primary-hover underline underline-offset-4"
           >
-            Create Creator Account
+            Create Account
           </Link>
         </p>
       </div>

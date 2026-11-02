@@ -313,15 +313,15 @@ export default function MyStudiosPage() {
 
                   {/* Body Content */}
                   <CardContent className="p-4 sm:p-5 flex flex-col justify-between flex-1 gap-0">
-                    <div>
+                    <div className="space-y-2">
                       <h4
                         style={{ fontFamily: "var(--font-display)" }}
-                        className="text-sm sm:text-base font-bold text-text-primary line-clamp-1 group-hover:text-primary transition-colors"
+                        className="text-sm sm:text-base font-bold text-text-primary group-hover:text-primary transition-colors min-h-[2.75rem] leading-snug"
                       >
                         {studio.title}
                       </h4>
 
-                      <div className="mt-2 flex items-center justify-between text-xs text-text-secondary gap-2">
+                      <div className="flex items-center justify-between text-xs text-text-secondary gap-2">
                         <div className="flex items-center gap-1.5 truncate">
                           <MapPin className="size-3.5 text-primary shrink-0" />
                           <span className="truncate">{studio.location || `${studio.city}, ${studio.state}`}</span>
@@ -511,7 +511,7 @@ export default function MyStudiosPage() {
             <div className="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-1">
               <AlertTriangle className="size-5" />
             </div>
-            <DialogTitle className="text-base sm:text-lg font-bold text-text-primary">
+            <DialogTitle className="text-base sm:text-2xl font-bold text-text-primary tracking-normal leading-snug">
               Delete Studio Listing?
             </DialogTitle>
             <DialogDescription className="text-xs sm:text-sm text-text-secondary leading-relaxed">

@@ -5,19 +5,19 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-6 overflow-hidden">
       {/* Background ambient decorative light */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[420px] sm:size-[560px] rounded-full bg-primary/10 blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[320px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-xl w-full mx-auto text-center space-y-6">
+      <div className="relative z-10 max-w-md w-full mx-auto text-center space-y-4">
         {/* Creative Studio 404 Illustration / Art */}
-        <div className="relative mx-auto size-52 sm:size-64 flex items-center justify-center">
+        <div className="relative mx-auto size-32 sm:size-44 flex items-center justify-center">
           {/* Subtle glowing backdrop circle */}
-          <div className="absolute inset-0 rounded-full bg-surface-1/80 border border-border/80 shadow-2xl backdrop-blur-md" />
+          <div className="absolute inset-0 rounded-full bg-surface-1/80 border border-border/80 shadow-lg backdrop-blur-md" />
 
           {/* Studio Set Illustration in SVG */}
           <svg
-            className="relative size-40 sm:size-48 text-text-primary"
+            className="relative size-24 sm:size-28 text-text-primary"
             viewBox="0 0 200 200"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -164,40 +164,42 @@ export default function NotFound() {
         </div>
 
         {/* Text Header */}
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-bold tracking-wide uppercase">
-            <span>Studio Space Not Found</span>
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-[10px] font-bold tracking-wide uppercase">
+            <span>Stage Not Found</span>
           </div>
 
-          <h1
+          <h2
             style={{ fontFamily: "var(--font-display)" }}
-            className="text-2xl sm:text-3xl md:text-4xl font-black text-text-primary tracking-tight"
+            className="text-lg sm:text-3xl font-bold text-text-primary tracking-tight"
           >
             Lights Out! This Stage Doesn&apos;t Exist.
-          </h1>
+          </h2>
 
-          <p className="text-xs sm:text-sm text-text-secondary max-w-md mx-auto leading-relaxed">
-            The studio listing, workspace page, or creative room you are looking for has been moved, unpublished, or does not exist.
+          <p className="text-[11px] sm:text-xs text-text-secondary max-w-sm mx-auto leading-normal">
+            The studio listing or creative room you are looking for has been moved or unpublished.
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link href="/" className="w-full sm:w-auto">
+        <div className="pt-1 flex flex-row items-center justify-center gap-2.5">
+          <Link href="/">
             <Button
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-xs sm:text-sm font-bold bg-primary text-primary-fg hover:bg-primary-hover shadow-lg hover:shadow-[0_0_24px_rgba(245,158,11,0.35)] active:scale-98 transition-all cursor-pointer"
+              size="sm"
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover shadow-md active:scale-98 transition-all cursor-pointer"
             >
-              <Home className="size-4" />
+              <Home className="size-3.5" />
               <span>Return to Home</span>
             </Button>
           </Link>
 
-          <Link href="/studios" className="w-full sm:w-auto">
+          <Link href="/studios">
             <Button
+              size="sm"
               variant="outline"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl text-xs sm:text-sm font-semibold border-border/80 bg-surface-1 text-text-primary hover:border-primary/50 hover:bg-surface-2 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xl text-xs font-semibold border-border/80 bg-surface-1 text-text-primary hover:border-primary/50 hover:bg-surface-2 transition-all cursor-pointer"
             >
-              <Compass className="size-4" />
+              <Compass className="size-3.5" />
               <span>Explore Studios</span>
             </Button>
           </Link>

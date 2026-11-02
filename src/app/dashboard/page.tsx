@@ -268,14 +268,23 @@ export default function DashboardPage() {
                 {bookings.slice(0, 3).map((booking) => {
                   const id = typeof booking._id === "object" ? booking._id.$oid : booking._id || "";
                   const status = (booking.status || "Pending").toLowerCase();
+                  const displayImage =
+                    booking.studioImage ||
+                    "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=300&auto=format&fit=crop";
 
                   return (
                     <Card
                       key={id}
-                      className="rounded-2xl border border-border/80 bg-surface-1/90 p-4 shadow-xs backdrop-blur-md ring-0 gap-0 hover:border-primary/40 transition-colors"
+                      className="rounded-2xl border border-border/80 bg-surface-1/90 p-3.5 shadow-xs backdrop-blur-md ring-0 gap-0 hover:border-primary/40 transition-colors"
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="space-y-1 min-w-0">
+                      <div className="flex items-center gap-3">
+                        {/* Studio Workspace Thumbnail Image */}
+                        <div
+                          className="size-12 rounded-xl bg-cover bg-center shrink-0 border border-border/60 bg-surface-2"
+                          style={{ backgroundImage: `url(${displayImage})` }}
+                        />
+
+                        <div className="flex-1 min-w-0 space-y-1">
                           <Link
                             href={`/studios/${booking.studioId}`}
                             className="font-bold text-xs sm:text-sm text-text-primary hover:text-primary transition-colors line-clamp-1"

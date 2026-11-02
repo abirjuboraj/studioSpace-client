@@ -205,9 +205,11 @@ export default function EditStudioPage() {
   };
 
   const toggleDay = (day: string) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
+    setSelectedDays((prev) => {
+      const next = prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day];
+      // Keep days sorted chronologically (Mon -> Sun)
+      return DAYS_OF_WEEK.filter((d) => next.includes(d));
+    });
   };
 
   const toggleAmenity = (item: string) => {
@@ -331,7 +333,9 @@ export default function EditStudioPage() {
         country: country.trim(),
         location: `${city.trim()}, ${state.trim()}`,
         capacity: Number(capacity),
-        workspaceSize: workspaceSize.trim(),
+        workspaceSize: workspaceSize.trim().toLowerCase().includes("sq ft")
+          ? workspaceSize.trim()
+          : `${workspaceSize.trim()} sq ft`,
         overview: overview.trim(),
         status,
         images: existingImages, // Existing hosted URLs
@@ -424,9 +428,6 @@ export default function EditStudioPage() {
             <span className="text-[11px] font-semibold uppercase tracking-wider text-primary">
               Listing Management
             </span>
-            <Badge variant="outline" className="text-[10px] border-primary/30 bg-primary/5 text-primary">
-              ID: {studioId.slice(0, 8)}...
-            </Badge>
           </div>
 
           <h3
@@ -478,11 +479,6 @@ export default function EditStudioPage() {
                     {hostInfo.email || currentUser?.email || "host@studiospace.com"}
                   </p>
                 </div>
-              </div>
-
-              <div className="text-[11px] text-text-muted sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-border/60">
-                <span className="block text-[10px] uppercase font-bold tracking-wider text-text-muted">Host ID</span>
-                <span className="font-mono text-[10px] text-text-secondary">{hostInfo.id || "system-linked"}</span>
               </div>
             </div>
           </div>
@@ -673,23 +669,27 @@ export default function EditStudioPage() {
 
               <div className="space-y-1">
                 <label htmlFor="workspaceSize" className="block text-xs font-semibold text-text-primary">
-                  Floor Dimensions *
+                  Floor Dimensions (sq ft) *
                 </label>
                 <div className="relative">
                   <Maximize2 className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
                   <input
                     id="workspaceSize"
-                    type="text"
+                    type="number"
+                    min={1}
                     name="workspaceSize"
-                    value={workspaceSize}
+                    value={workspaceSize.replace(/[^0-9]/g, "")}
                     onChange={(e) => setWorkspaceSize(e.target.value)}
-                    placeholder="e.g. 2,200 sq ft"
+                    placeholder="2200"
                     className={cn(
-                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-3 text-xs text-text-primary",
+                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-14 text-xs text-text-primary",
                       "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                     )}
                     required
                   />
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-text-muted">
+                    sq ft
+                  </span>
                 </div>
               </div>
 

@@ -201,9 +201,9 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
 
           <DialogTitle
             style={{ fontFamily: "var(--font-display)" }}
-            className="text-lg sm:text-xl font-bold tracking-tight text-text-primary line-clamp-1"
+            className="text-xs sm:text-sm font-bold tracking-tight text-text-primary leading-snug"
           >
-            Book {studio.title}
+            Reserve: {studio.title}
           </DialogTitle>
           <DialogDescription className="text-xs text-text-secondary">
             Select your session schedule, guest headcount, and requirements for the host.

@@ -17,6 +17,7 @@ import {
   Plus,
   FileCheck2,
   Loader2,
+  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -87,9 +88,11 @@ export default function NewStudioPage() {
   };
 
   const toggleDay = (day: string) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
+    setSelectedDays((prev) => {
+      const next = prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day];
+      // Keep days sorted chronologically (Mon -> Sun)
+      return DAYS_OF_WEEK.filter((d) => next.includes(d));
+    });
   };
 
   const toggleAmenity = (item: string) => {
@@ -195,7 +198,9 @@ export default function NewStudioPage() {
       securityDeposit: securityDeposit !== "" ? Number(securityDeposit) : 0,
       cancellationNoticeHours: cancellationNoticeHours !== "" ? Number(cancellationNoticeHours) : 24,
       capacity: Number(capacity),
-      workspaceSize: workspaceSize.trim(),
+      workspaceSize: workspaceSize.trim().toLowerCase().includes("sq ft")
+        ? workspaceSize.trim()
+        : `${workspaceSize.trim()} sq ft`,
       overview: overview.trim(),
       address: address.trim(),
       city: city.trim(),
@@ -481,23 +486,27 @@ export default function NewStudioPage() {
 
               <div className="space-y-1">
                 <label htmlFor="workspaceSize" className="block text-xs font-semibold text-text-primary">
-                  Floor Dimensions *
+                  Floor Dimensions (sq ft) *
                 </label>
                 <div className="relative">
                   <Maximize2 className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
                   <input
                     id="workspaceSize"
-                    type="text"
+                    type="number"
+                    min={1}
                     name="workspaceSize"
                     value={workspaceSize}
                     onChange={(e) => setWorkspaceSize(e.target.value)}
-                    placeholder="e.g. 2,200 sq ft"
+                    placeholder="2200"
                     className={cn(
-                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-3 text-xs text-text-primary",
+                      "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-14 text-xs text-text-primary",
                       "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                     )}
                     required
                   />
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-text-muted">
+                    sq ft
+                  </span>
                 </div>
               </div>
 
@@ -644,14 +653,14 @@ export default function NewStudioPage() {
                 Studio Photos
               </h4>
               <span className="text-[11px] text-text-muted">
-                {imageEntries.length} of {MAX_IMAGES} uploaded (ImgBB)
+                {imageEntries.length} of {MAX_IMAGES} uploaded
               </span>
             </div>
 
             {/* Choose from local computer */}
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-text-primary">
-                Upload from Local Device (Max {MAX_IMAGES} photos, 10MB each) *
+                Upload from Local Device (Max {MAX_IMAGES} photos, Max Size 10MB each) *
               </label>
               <div>
                 <input
@@ -675,9 +684,7 @@ export default function NewStudioPage() {
                   </div>
                   <div>
                     <span className="font-semibold text-text-primary">Click to select studio images</span>
-                    <p className="text-[11px] text-text-muted mt-0.5">
-                      Images will be uploaded to ImgBB and saved to your listing
-                    </p>
+
                   </div>
                 </label>
               </div>
@@ -974,17 +981,23 @@ export default function NewStudioPage() {
             </div>
           </div>
 
-          {/* Form Actions (UI only) */}
-          <div className="pt-4 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <span className="text-[11px] text-text-muted text-center sm:text-left">
-              Host verification notice: Your host profile name and email will be linked automatically when published.
-            </span>
+          {/* Form Actions & Verification Notice */}
+          <div className="pt-4 border-t border-border/60 space-y-4">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl border border-border/80 bg-surface-2/60 text-xs">
+              <ShieldCheck className="size-4.5 text-primary shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <p className="font-semibold text-text-primary">Host Identity Verification Notice</p>
+                <p className="text-[11px] text-text-secondary leading-relaxed">
+                  Your registered profile name and email address will be automatically linked and publicly displayed on the listing as the verified host contact.
+                </p>
+              </div>
+            </div>
 
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <div className="flex items-center justify-end gap-2.5">
               <Link
                 href="/my-studio-listings"
                 className={cn(
-                  "flex-1 sm:flex-none flex items-center justify-center h-9 px-4 rounded-xl text-xs font-semibold",
+                  "flex items-center justify-center h-9 px-4 rounded-xl text-xs font-semibold",
                   "border border-border bg-surface-2 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
                 )}
               >

@@ -176,7 +176,7 @@ const Navbar = () => {
                 </Link>
 
                 {/* ── Desktop Nav Links ─────────────────────────────────────── */}
-                <ul className="hidden md:flex items-center gap-1.5 rounded-full border border-border/50 bg-surface-1/60 p-1 backdrop-blur-md">
+                <ul className="hidden md:flex items-center gap-1 rounded-full border border-border/60 bg-surface-1/70 p-1 backdrop-blur-md shadow-xs">
                     {NAV_LINKS.map(({ label, href }) => {
                         const isActive = isLinkActive(href);
                         return (
@@ -184,16 +184,16 @@ const Navbar = () => {
                                 <Link
                                     href={href}
                                     className={cn(
-                                        "relative px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-200",
+                                        "relative px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1.5",
                                         isActive
-                                            ? "bg-primary/15 text-primary shadow-xs font-semibold"
+                                            ? "bg-primary text-primary-fg shadow-sm shadow-primary/30"
                                             : "text-text-secondary hover:text-text-primary hover:bg-surface-2"
                                     )}
                                 >
-                                    {label}
                                     {isActive && (
-                                        <span className="absolute inset-x-2 -bottom-1 h-0.5 rounded-full bg-primary shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+                                        <span className="size-1.5 rounded-full bg-white dark:bg-black animate-pulse" />
                                     )}
+                                    <span>{label}</span>
                                 </Link>
                             </li>
                         );
@@ -212,23 +212,28 @@ const Navbar = () => {
                         <DropdownMenu>
                             <DropdownMenuTrigger
                                 className={cn(
-                                    "flex items-center gap-2 rounded-xl p-1.5 pr-2.5",
+                                    "flex items-center gap-2 rounded-xl p-1.5 pr-3 cursor-pointer",
                                     "border border-border/60 bg-surface-1/70 backdrop-blur-md transition-all duration-200",
                                     "hover:border-primary/40 hover:bg-surface-2",
                                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                                 )}
                             >
                                 <Avatar size="default" className="size-7.5 ring-1 ring-border">
-                                    <AvatarImage
-                                        src={user.image ?? undefined}
-                                        alt={user.name ?? "User"}
-                                    />
-                                    <AvatarFallback className="bg-primary/15 text-primary text-[11px] font-bold">
-                                        {initials}
-                                    </AvatarFallback>
+                                    {user.image ? (
+                                        <img
+                                            src={user.image}
+                                            alt={user.name ?? "User"}
+                                            referrerPolicy="no-referrer"
+                                            className="aspect-square size-full rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <AvatarFallback className="bg-primary/15 text-primary text-[11px] font-bold">
+                                            {initials}
+                                        </AvatarFallback>
+                                    )}
                                 </Avatar>
-                                <span className="max-w-[110px] truncate text-xs font-semibold text-text-primary">
-                                    {user.name ?? user.email}
+                                <span className="text-xs font-semibold text-text-primary whitespace-nowrap">
+                                    {user.name || user.email}
                                 </span>
                                 <ChevronDown className="size-3.5 text-text-muted shrink-0" />
                             </DropdownMenuTrigger>

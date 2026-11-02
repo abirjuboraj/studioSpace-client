@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -17,6 +18,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 // Swiper core & modules styles
 import "swiper/css";
@@ -81,8 +84,22 @@ const HERO_SLIDES: SlideData[] = [
 ];
 
 export function HeroSlider() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleHostSpaceClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!session?.user) {
+      toast.info("Account Required", {
+        description: "Please sign in to list and monetize your space.",
+      });
+      router.push("/login?callbackUrl=/add-studio");
+      return;
+    }
+    router.push("/add-studio");
+  };
 
   return (
     <section className="relative w-full overflow-hidden border-b border-border/60 bg-background">
@@ -109,13 +126,19 @@ export function HeroSlider() {
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out scale-105"
                 style={{ backgroundImage: `url(${slide.image})` }}
               >
-                {/* Multi-layer studio lighting gradient overlays - supports both light and dark theme */}
-                <div className="absolute inset-0 bg-background/85 sm:bg-background/80 backdrop-blur-[2px]" />
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
-                {/* Amber/Violet spot glow */}
+                {/* Dark mode overlays */}
+                <div className="hidden dark:block absolute inset-0 bg-background/80 backdrop-blur-[1px]" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+
+                {/* Light mode: NO global overlay over the image! The image is 100% natural, crisp, and vivid on the right.
+                    Only a smooth dark gradient on the left half behind the text content for crystal-clear readability. */}
+                <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none" />
+                <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+
+                {/* Amber/Violet spot glow (Dark mode only) */}
                 <div
-                  className="absolute -top-32 -left-20 size-[350px] sm:size-[500px] rounded-full blur-[140px] pointer-events-none opacity-60 dark:opacity-100"
+                  className="hidden dark:block absolute -top-32 -left-20 size-[350px] sm:size-[500px] rounded-full blur-[140px] pointer-events-none"
                   style={{ background: slide.accentGlow }}
                 />
               </div>
@@ -127,14 +150,12 @@ export function HeroSlider() {
                   <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-primary/30 bg-primary/10 px-2.5 sm:px-3.5 py-1 text-[11px] sm:text-xs font-semibold text-primary backdrop-blur-md mb-3 sm:mb-5 shadow-xs">
                     <Icon className="size-3 sm:size-3.5 text-primary" />
                     <span>{slide.tag}</span>
-                    <span className="size-1 rounded-full bg-primary" />
-                    <span className="text-text-muted font-normal">Peer-to-Peer</span>
                   </div>
 
                   {/* Headline */}
                   <h1
                     style={{ fontFamily: "var(--font-display)" }}
-                    className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-text-primary leading-[1.15] sm:leading-[1.12]"
+                    className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white dark:text-text-primary leading-[1.15] sm:leading-[1.12]"
                   >
                     {slide.title}{" "}
                     <span className="text-gradient block sm:inline">
@@ -143,12 +164,12 @@ export function HeroSlider() {
                   </h1>
 
                   {/* Subtitle */}
-                  <p className="mt-2.5 sm:mt-4 text-xs sm:text-base lg:text-lg font-medium text-text-primary/90 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
+                  <p className="mt-2.5 sm:mt-4 text-xs sm:text-base lg:text-lg font-medium text-white/95 dark:text-text-primary/90 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {slide.subtitle}
                   </p>
 
                   {/* Body description (hidden on tiny screens to avoid excessive height) */}
-                  <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs lg:text-sm text-text-secondary leading-relaxed max-w-xl hidden sm:block">
+                  <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs lg:text-sm text-zinc-300 dark:text-text-secondary leading-relaxed max-w-xl hidden sm:block">
                     {slide.description}
                   </p>
 
@@ -167,47 +188,33 @@ export function HeroSlider() {
                       <ArrowRight className="size-3.5 sm:size-4 transition-transform group-hover:translate-x-1" />
                     </Link>
 
-                    <Link
-                      href="/studios"
+                    <button
+                      type="button"
+                      onClick={handleHostSpaceClick}
                       className={cn(
-                        "inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-11 px-3.5 sm:px-5 rounded-xl",
-                        "border border-border/80 bg-surface-1/70 backdrop-blur-md",
-                        "text-text-primary text-xs sm:text-sm font-medium",
-                        "hover:border-primary/40 hover:bg-surface-2 hover:text-primary",
+                        "inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-11 px-3.5 sm:px-5 rounded-xl cursor-pointer",
+                        "border border-white/30 dark:border-border/80 bg-black/40 dark:bg-surface-1/70 backdrop-blur-md",
+                        "text-white dark:text-text-primary text-xs sm:text-sm font-medium",
+                        "hover:border-primary/50 hover:bg-black/60 dark:hover:bg-surface-2 hover:text-primary",
                         "active:scale-95 transition-all duration-200"
                       )}
                     >
                       <Building className="size-3.5 sm:size-4 text-primary" />
                       <span>Host Your Space</span>
-                    </Link>
+                    </button>
                   </div>
 
-                  {/* Quick Feature Highlights */}
-                  <div className="mt-5 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-6 pt-3 sm:pt-5 border-t border-border/50 text-[11px] sm:text-xs text-text-secondary">
-                    <div className="flex items-center gap-1">
-                      <CheckCircle2 className="size-3.5 text-emerald-500" />
-                      <span>Instant Confirmation</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <CheckCircle2 className="size-3.5 text-emerald-500" />
-                      <span>Zero Hidden Fees</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Sparkles className="size-3.5 text-primary" />
-                      <span>$1M Protection</span>
-                    </div>
-                  </div>
                 </div>
 
-                {/* Floating Preview Card on Large Screens */}
-                <div className="hidden lg:flex absolute right-8 bottom-16 flex-col gap-2 rounded-2xl border border-border/80 bg-surface-1/80 p-4 shadow-2xl backdrop-blur-xl w-72">
+                {/* Floating Preview Card on Large Screens (Placed safely in mid-right to avoid overlaying carousel controls) */}
+                <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 flex-col gap-2.5 rounded-2xl border border-white/20 dark:border-border/80 bg-black/60 dark:bg-surface-1/80 p-4.5 shadow-2xl backdrop-blur-xl w-72">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-text-primary">{slide.badgeText}</span>
+                    <span className="font-semibold text-white dark:text-text-primary">{slide.badgeText}</span>
                     <span className="font-bold text-primary">{slide.badgePrice}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-text-muted">
+                  <div className="flex items-center gap-2 text-[11px] text-zinc-300 dark:text-text-muted">
                     <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Real-time Dynamic Slots Available</span>
+                    <span>Instant Booking Enabled</span>
                   </div>
                 </div>
               </div>

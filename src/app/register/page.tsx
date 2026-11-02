@@ -16,6 +16,8 @@ import {
   AlertCircle,
   Loader2,
   Image as ImageIcon,
+  Upload,
+  X,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
@@ -29,6 +31,7 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
@@ -56,6 +59,34 @@ export default function RegisterPage() {
   };
 
   const passwordValidationMessage = getPasswordValidationMessage();
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file (PNG, JPG, WebP).");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image file size must be under 5MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setImage(base64);
+      setImagePreview(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setImage("");
+    setImagePreview(null);
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +147,7 @@ export default function RegisterPage() {
 
       // Successful registration -> Navigate directly to Login page
       toast.success("Account created successfully!", {
-        description: "Redirecting you to login...",
+        description: "Redirecting to login",
       });
 
       setTimeout(() => {
@@ -148,12 +179,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-8 sm:py-12 px-4 overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 size-[350px] sm:size-[550px] rounded-full bg-primary/8 blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 left-1/4 size-[300px] sm:size-[400px] rounded-full bg-accent/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 size-[320px] rounded-full bg-primary/8 blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-10 left-1/4 size-[260px] rounded-full bg-accent/6 blur-[160px] pointer-events-none" />
 
-      <div className="w-full max-w-md sm:max-w-lg relative z-10">
+      <div className="w-full max-w-[390px] relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-5 sm:mb-6">
           <Link href="/" className="inline-flex items-center gap-2 group mb-2.5 sm:mb-3">
@@ -179,7 +210,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Register Card */}
-        <div className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 sm:p-8 backdrop-blur-xl shadow-xl relative overflow-hidden">
+        <div className="rounded-2xl border border-border/80 bg-surface-1/90 px-6 py-7 sm:px-7 sm:py-8 backdrop-blur-xl shadow-xl relative overflow-hidden">
           {/* Top highlight bar */}
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
@@ -247,33 +278,56 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Profile Image URL Input */}
-            <div className="space-y-1 sm:space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="image"
-                  className="block text-xs font-semibold text-text-primary"
-                >
-                  Profile Image URL
-                </label>
+            {/* Profile Picture Upload from local computer */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="avatar-upload"
+                className="block text-xs font-semibold text-text-primary"
+              >
+                Profile Photo (Optional)
+              </label>
 
-              </div>
-              <div className="relative">
-                <ImageIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-                <input
-                  id="image"
-                  type="url"
-                  name="imageUrl"
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  placeholder="https://example.com/avatar.jpg"
-                  className={cn(
-                    "h-9.5 sm:h-10 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-9 pr-3 text-xs text-text-primary",
-                    "placeholder:text-text-muted transition-all duration-200",
-                    "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  )}
-                />
-              </div>
+              {imagePreview ? (
+                <div className="flex items-center gap-3 p-2 rounded-xl border border-border/80 bg-surface-2/40">
+                  <div
+                    className="size-11 rounded-full bg-cover bg-center shrink-0 border border-primary/40 shadow-xs"
+                    style={{ backgroundImage: `url(${imagePreview})` }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-text-primary truncate">Profile photo selected</p>
+                    <p className="text-[10px] text-emerald-500 font-medium">Ready for registration</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="p-1 rounded-lg text-text-muted hover:text-destructive hover:bg-surface-2 transition-colors cursor-pointer"
+                    title="Remove photo"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="avatar-upload"
+                    className={cn(
+                      "flex items-center justify-center gap-2 p-3 w-full rounded-xl cursor-pointer",
+                      "border border-dashed border-border/80 bg-surface-2/40 text-xs font-medium text-text-secondary",
+                      "hover:border-primary/50 hover:bg-surface-2 hover:text-text-primary transition-all text-center"
+                    )}
+                  >
+                    <Upload className="size-3.5 text-primary" />
+                    <span>Upload profile picture</span>
+                  </label>
+                </div>
+              )}
             </div>
 
             {/* Password Field with Small Error Text */}

@@ -205,8 +205,10 @@ export default function MyBookingsPage() {
 
   const filteredBookings = useMemo(() => {
     return bookings.filter((booking) => {
+      const bookingStatus = (booking.status || "").toLowerCase();
+      const targetStatus = selectedStatus.toLowerCase();
       const matchesStatus =
-        selectedStatus === "All" || booking.status === selectedStatus;
+        selectedStatus === "All" || bookingStatus === targetStatus;
       const matchesQuery =
         searchQuery.trim() === "" ||
         booking.studioTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -264,7 +266,7 @@ export default function MyBookingsPage() {
                   const count =
                     status === "All"
                       ? bookings.length
-                      : bookings.filter((b) => b.status === status).length;
+                      : bookings.filter((b) => (b.status || "").toLowerCase() === status.toLowerCase()).length;
 
                   return (
                     <button
@@ -523,7 +525,7 @@ export default function MyBookingsPage() {
               <div className="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-1">
                 <AlertTriangle className="size-5" />
               </div>
-              <DialogTitle className="text-base sm:text-sm font-bold text-text-primary">
+              <DialogTitle className="text-base sm:text-2xl font-bold text-text-primary tracking-normal leading-snug">
                 Cancel this booking?
               </DialogTitle>
               <DialogDescription className="text-xs sm:text-sm text-text-secondary leading-relaxed">
