@@ -45,7 +45,7 @@ export default function EditStudioPage() {
   const studioId = typeof params?.id === "string" ? params.id : Array.isArray(params?.id) ? params.id[0] : "";
 
   const MAX_IMAGES = 6;
-  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+  const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
   // Page loading & submission state
   const [loading, setLoading] = useState(true);
@@ -257,7 +257,7 @@ export default function EditStudioPage() {
         return false;
       }
       if (file.size > MAX_IMAGE_SIZE) {
-        toast.error(`${file.name} is larger than 5MB.`);
+        toast.error(`${file.name} is larger than 10MB.`);
         return false;
       }
       return true;
@@ -862,7 +862,7 @@ export default function EditStudioPage() {
             {/* Choose from local computer */}
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-text-primary">
-                Upload New Photos (Max {MAX_IMAGES} photos total, 5MB each)
+                Upload New Photos (Max {MAX_IMAGES} photos total, 10MB each)
               </label>
               <div>
                 <input

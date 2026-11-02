@@ -37,7 +37,7 @@ export default function NewStudioPage() {
   const user = session?.user;
 
   const MAX_IMAGES = 6;
-  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB (backend multer limit er sathe mil)
+  const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
   // ── Form State ──
   const [title, setTitle] = useState("");
@@ -139,7 +139,7 @@ export default function NewStudioPage() {
         return false;
       }
       if (file.size > MAX_IMAGE_SIZE) {
-        toast.error(`${file.name} is larger than 5MB.`);
+        toast.error(`${file.name} is larger than 10MB.`);
         return false;
       }
       return true;
@@ -651,7 +651,7 @@ export default function NewStudioPage() {
             {/* Choose from local computer */}
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-text-primary">
-                Upload from Local Device (Max {MAX_IMAGES} photos, 5MB each) *
+                Upload from Local Device (Max {MAX_IMAGES} photos, 10MB each) *
               </label>
               <div>
                 <input
