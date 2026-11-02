@@ -20,6 +20,8 @@ import {
 import { cn } from "@/lib/utils";
 import { StudioCard } from "@/components/studios/StudioCard";
 import { API_BASE_URL, STUDIO_CATEGORIES, StudioListing } from "@/types/studio";
+import { StudioCardSkeleton, StudioLogoSpinner } from "@/components/shared/LoadingSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface CategoryBadgeConfig {
   label: string;
@@ -230,15 +232,7 @@ function StudiosListContent() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="h-[360px] rounded-2xl border border-border/60 bg-surface-1/50 animate-pulse flex flex-col p-4 space-y-3"
-              >
-                <div className="h-44 w-full rounded-xl bg-surface-2" />
-                <div className="h-4 w-3/4 rounded-md bg-surface-2" />
-                <div className="h-3 w-1/2 rounded-md bg-surface-2" />
-                <div className="mt-auto h-8 w-full rounded-xl bg-surface-2" />
-              </div>
+              <StudioCardSkeleton key={i} />
             ))}
           </div>
         ) : filteredStudios.length > 0 ? (
@@ -253,35 +247,25 @@ function StudiosListContent() {
           </div>
         ) : (
           /* Empty State */
-          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-border/80 bg-surface-1/40">
-            <Building2 className="size-12 text-text-muted mb-3" />
-            <h3 className="text-base font-bold text-text-primary">
-              No studios found in {selectedCategory === "All" ? "this query" : selectedCategory}
-            </h3>
-            <p className="text-xs text-text-secondary mt-1 max-w-sm">
-              We couldn&apos;t find workspaces matching your current selection. Try selecting another category badge or clear the search.
-            </p>
-            <div className="mt-4 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory("All");
-                  setSearchQuery("");
-                  router.push("/studios", { scroll: false });
-                }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border bg-surface-2 text-text-primary hover:border-primary/50 transition-colors cursor-pointer"
-              >
-                <span>Reset Filters</span>
-              </button>
-              <Link
-                href="/add-studio"
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover transition-colors"
-              >
-                <span>Add Studio Space</span>
-                <ArrowRight className="size-3" />
-              </Link>
-            </div>
-          </div>
+          <EmptyState
+            icon={Building2}
+            title={`No studios found in ${selectedCategory === "All" ? "this query" : selectedCategory}`}
+            description="We couldn't find workspaces matching your current selection. Try resetting filters or search terms, or be the first to host one."
+            action={{
+              label: "Reset Filters",
+              onClick: () => {
+                setSelectedCategory("All");
+                setSearchQuery("");
+                router.push("/studios", { scroll: false });
+              },
+              icon: SlidersHorizontal,
+            }}
+            secondaryAction={{
+              label: "Add Studio Space",
+              href: "/add-studio",
+              icon: ArrowRight,
+            }}
+          />
         )}
       </div>
     </div>
@@ -292,8 +276,8 @@ export default function StudiosPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen py-16 px-4 flex items-center justify-center text-xs text-text-muted">
-          Loading creative studios...
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-6">
+          <StudioLogoSpinner size="md" label="Loading creative studios..." />
         </div>
       }
     >

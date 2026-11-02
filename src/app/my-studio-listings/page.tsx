@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getTokenFromClient } from "@/lib/getToken";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { StudioCardSkeleton } from "@/components/shared/LoadingSkeleton";
 
 export default function MyStudiosPage() {
   const [userStudios, setUserStudios] = useState<StudioListing[]>([]);
@@ -226,52 +228,43 @@ export default function MyStudiosPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-72 rounded-2xl border border-border/60 bg-surface-1/50 animate-pulse p-4 space-y-3"
-              >
-                <div className="h-36 w-full rounded-xl bg-surface-2" />
-                <div className="h-4 w-3/4 rounded-md bg-surface-2" />
-                <div className="h-3 w-1/2 rounded-md bg-surface-2" />
-                <div className="h-8 w-full rounded-xl bg-surface-2 mt-auto" />
-              </div>
+              <StudioCardSkeleton key={i} />
             ))}
           </div>
         ) : userStudios.length === 0 ? (
-          /* ── EMPTY STATE UI ── */
-          <Card className="rounded-2xl border border-border/80 bg-surface-1/90 p-8 sm:p-12 text-center backdrop-blur-xl shadow-md ring-0 gap-0">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary mb-4 shadow-sm">
-              <Building2 className="size-7" strokeWidth={1.75} />
-            </div>
-
-            <h2
-              style={{ fontFamily: "var(--font-display)" }}
-              className="text-base sm:text-lg font-bold text-text-primary"
-            >
-              You haven&apos;t listed any studio spaces yet
-            </h2>
-
-            <p className="mt-1.5 text-xs text-text-secondary max-w-md mx-auto leading-relaxed">
-              Monetize your photography cyc wall, podcast lounge, cinema sound stage, or recording suite.
-              Reach thousands of verified creators looking for hourly bookings.
-            </p>
-
-            <div className="mt-8 flex justify-center">
-              <Link
-                href="/add-studio"
-                className={cn(
-                  "inline-flex items-center gap-2 h-10 px-6 rounded-xl text-xs font-bold",
-                  "bg-primary text-primary-fg shadow-md",
-                  "hover:bg-primary-hover hover:shadow-[0_0_20px_rgba(245,158,11,0.35)]",
-                  "active:scale-98 transition-all"
-                )}
-              >
-                <Plus className="size-4" />
-                <span>List Your First Studio</span>
-                <ArrowRight className="size-3.5" />
-              </Link>
-            </div>
-          </Card>
+          /* ── EMPTY STATE UI (No studios listed at all) ── */
+          <EmptyState
+            icon={Building2}
+            title="You haven't listed any studio spaces yet"
+            description="Monetize your photography cyc wall, podcast lounge, cinema sound stage, or recording suite. Reach thousands of verified creators looking for hourly bookings."
+            action={{
+              label: "List Your First Studio",
+              href: "/add-studio",
+              icon: Plus,
+            }}
+            secondaryAction={{
+              label: "Browse Market Studios",
+              href: "/studios",
+              icon: ArrowRight,
+            }}
+          />
+        ) : filteredStudios.length === 0 ? (
+          /* ── FILTERED EMPTY STATE (Search query returned no owned studios) ── */
+          <EmptyState
+            icon={Search}
+            title={`No studios match "${searchQuery}"`}
+            description="We couldn't find any of your workspaces matching your search term. Try a different keyword or reset your search."
+            action={{
+              label: "Clear Search",
+              onClick: () => setSearchQuery(""),
+              icon: ArrowRight,
+            }}
+            secondaryAction={{
+              label: "Add New Studio",
+              href: "/add-studio",
+              icon: Plus,
+            }}
+          />
         ) : viewMode === "card" ? (
           /* ── CARD FORMAT ── */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

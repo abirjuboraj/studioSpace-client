@@ -17,6 +17,7 @@ import {
   DollarSign,
   User,
   ShieldCheck,
+  Compass,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -255,7 +256,8 @@ export default function DashboardPage() {
                 </p>
                 <div className="mt-4">
                   <Link href="/studios">
-                    <Button size="sm" variant="outline" className="text-xs h-8 px-3 rounded-lg cursor-pointer">
+                    <Button size="sm" className="text-xs h-8 px-4 rounded-xl bg-primary text-primary-fg hover:bg-primary-hover shadow-md hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all cursor-pointer font-bold">
+                      <Compass className="size-3.5 mr-1.5" />
                       <span>Explore Studios</span>
                     </Button>
                   </Link>

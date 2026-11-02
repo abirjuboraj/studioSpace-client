@@ -41,6 +41,7 @@ import { API_BASE_URL, BookingReservation, BookingStatus } from "@/types/studio"
 import { authClient, useSession } from "@/lib/auth-client";
 import { getTokenFromClient } from "@/lib/getToken";
 import { toast } from "sonner";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 // Status badge helper function (essential status indicator only)
 function getStatusBadge(status: string) {
@@ -329,58 +330,35 @@ export default function MyBookingsPage() {
             </div>
           ) : bookings.length === 0 ? (
             /* ── EMPTY STATE UI (User has no bookings at all) ── */
-            <Card className="rounded-2xl border border-dashed border-border/80 bg-surface-1/60 p-8 sm:p-12 text-center backdrop-blur-xl ring-0 gap-0">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary mb-4 shadow-sm">
-                <CalendarCheck className="size-7" strokeWidth={1.75} />
-              </div>
-
-              <h2
-                style={{ fontFamily: "var(--font-display)" }}
-                className="text-base sm:text-lg font-bold text-text-primary"
-              >
-                You haven&apos;t booked any studio spaces yet
-              </h2>
-
-              <p className="mt-1.5 text-xs text-text-secondary max-w-md mx-auto leading-relaxed">
-                Find photography lofts, podcast recording booths, art spaces, and sound stages. Reserve by the hour with transparent pricing.
-              </p>
-
-              <div className="mt-6 flex justify-center">
-                <Link href="/studios">
-                  <Button
-                    size="sm"
-                    className="h-10 px-6 rounded-xl text-xs font-bold bg-primary text-primary-fg hover:bg-primary-hover shadow-md cursor-pointer"
-                  >
-                    <span>Browse Available Studios</span>
-                    <ArrowRight className="size-3.5 ml-1.5" />
-                  </Button>
-                </Link>
-              </div>
-            </Card>
+            <EmptyState
+              icon={CalendarCheck}
+              title="You haven't booked any studio spaces yet"
+              description="Find photography lofts, podcast recording booths, art spaces, and sound stages. Reserve by the hour with transparent pricing."
+              action={{
+                label: "Browse Available Studios",
+                href: "/studios",
+                icon: ArrowRight,
+              }}
+            />
           ) : filteredBookings.length === 0 ? (
             /* Filtered empty state (User has bookings but not matching active filter) */
-            <Card className="rounded-2xl border border-dashed border-border/80 bg-surface-1/60 p-8 sm:p-10 text-center backdrop-blur-xl ring-0 gap-0">
-              <h3 className="text-sm font-bold text-text-primary">
-                No reservations found under &quot;{selectedStatus}&quot;
-              </h3>
-              <p className="mt-1 text-xs text-text-secondary">
-                Try switching your status filter or clearing your search keywords.
-              </p>
-              <div className="mt-4 flex justify-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  type="button"
-                  onClick={() => {
-                    setSelectedStatus("All");
-                    setSearchQuery("");
-                  }}
-                  className="text-xs h-8 px-4 rounded-xl cursor-pointer hover:border-primary/50"
-                >
-                  Reset Filters
-                </Button>
-              </div>
-            </Card>
+            <EmptyState
+              icon={Search}
+              title={`No reservations found under "${selectedStatus}"`}
+              description="Try switching your status filter or clearing your search keywords to see other reservations."
+              action={{
+                label: "Reset Filters",
+                onClick: () => {
+                  setSelectedStatus("All");
+                  setSearchQuery("");
+                },
+                icon: ArrowRight,
+              }}
+              secondaryAction={{
+                label: "Browse Studios",
+                href: "/studios",
+              }}
+            />
           ) : (
             /* ── Bookings List ── */
             <div className="space-y-4">
