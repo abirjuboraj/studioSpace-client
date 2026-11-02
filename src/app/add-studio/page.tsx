@@ -36,6 +36,9 @@ export default function NewStudioPage() {
   const { data: session } = useSession();
   const user = session?.user;
 
+  const MAX_IMAGES = 6;
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB (backend multer limit er sathe mil)
+
   // ── Form State ──
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<StudioCategory>("Photo Studios");
@@ -48,16 +51,17 @@ export default function NewStudioPage() {
   const [workspaceSize, setWorkspaceSize] = useState("");
   const [overview, setOverview] = useState("");
 
-  // Images state (files or URLs as array)
-  const [imageUrlInput, setImageUrlInput] = useState("");
+  // Images state (local files only)
   const [imageEntries, setImageEntries] = useState<
-    Array<{ type: "url" | "file"; name: string; value: string }>
+    Array<{ id: string; name: string; file: File; preview: string }>
   >([]);
 
   // Category-driven Dynamic Amenities & Equipment
   const activePresets = CATEGORY_PRESETS[category];
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
+  const [customAmenitiesList, setCustomAmenitiesList] = useState<string[]>([]);
+  const [customEquipmentList, setCustomEquipmentList] = useState<string[]>([]);
   const [customAmenity, setCustomAmenity] = useState("");
   const [customEquipment, setCustomEquipment] = useState("");
 
@@ -74,6 +78,8 @@ export default function NewStudioPage() {
     setCategory(newCat);
     setSelectedAmenities([]);
     setSelectedEquipment([]);
+    setCustomAmenitiesList([]);
+    setCustomEquipmentList([]);
   };
 
   const toggleDay = (day: string) => {
@@ -95,47 +101,68 @@ export default function NewStudioPage() {
   };
 
   const addCustomAmenity = () => {
-    if (customAmenity.trim() && !selectedAmenities.includes(customAmenity.trim())) {
-      setSelectedAmenities((prev) => [...prev, customAmenity.trim()]);
-      setCustomAmenity("");
+    const trimmed = customAmenity.trim();
+    if (!trimmed) return;
+    if (!customAmenitiesList.includes(trimmed) && !activePresets.amenities.includes(trimmed)) {
+      setCustomAmenitiesList((prev) => [...prev, trimmed]);
     }
+    if (!selectedAmenities.includes(trimmed)) {
+      setSelectedAmenities((prev) => [...prev, trimmed]);
+    }
+    setCustomAmenity("");
   };
 
   const addCustomEquipment = () => {
-    if (customEquipment.trim() && !selectedEquipment.includes(customEquipment.trim())) {
-      setSelectedEquipment((prev) => [...prev, customEquipment.trim()]);
-      setCustomEquipment("");
+    const trimmed = customEquipment.trim();
+    if (!trimmed) return;
+    if (!customEquipmentList.includes(trimmed) && !activePresets.equipment.includes(trimmed)) {
+      setCustomEquipmentList((prev) => [...prev, trimmed]);
     }
-  };
-
-  const addImageUrl = () => {
-    if (imageUrlInput.trim()) {
-      setImageEntries((prev) => [
-        ...prev,
-        {
-          type: "url",
-          name: imageUrlInput.trim(),
-          value: imageUrlInput.trim(),
-        },
-      ]);
-      setImageUrlInput("");
+    if (!selectedEquipment.includes(trimmed)) {
+      setSelectedEquipment((prev) => [...prev, trimmed]);
     }
+    setCustomEquipment("");
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files).map((file) => ({
-        type: "file" as const,
-        name: file.name,
-        value: file.name,
-      }));
-      setImageEntries((prev) => [...prev, ...newFiles]);
-      e.target.value = "";
+    const selected = Array.from(e.target.files ?? []);
+    e.target.value = ""; // same file abar select korle jeno kaj kore
+    if (selected.length === 0) return;
+
+    const valid = selected.filter((file) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error(`${file.name} is not an image.`);
+        return false;
+      }
+      if (file.size > MAX_IMAGE_SIZE) {
+        toast.error(`${file.name} is larger than 5MB.`);
+        return false;
+      }
+      return true;
+    });
+
+    if (imageEntries.length + valid.length > MAX_IMAGES) {
+      toast.error(`You can upload up to ${MAX_IMAGES} images.`);
+      return;
     }
+
+    setImageEntries((prev) => [
+      ...prev,
+      ...valid.map((file) => ({
+        id: crypto.randomUUID(),
+        name: file.name,
+        file,
+        preview: URL.createObjectURL(file),
+      })),
+    ]);
   };
 
   const removeImageEntry = (index: number) => {
-    setImageEntries((prev) => prev.filter((_, i) => i !== index));
+    setImageEntries((prev) => {
+      const target = prev[index];
+      if (target) URL.revokeObjectURL(target.preview);
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   // Form submit handler with complete arrays & validation
@@ -143,7 +170,7 @@ export default function NewStudioPage() {
     e.preventDefault();
 
     if (imageEntries.length === 0) {
-      toast.error("Please add at least one studio image or URL.");
+      toast.error("Please add at least one studio image.");
       return;
     }
 
@@ -167,7 +194,6 @@ export default function NewStudioPage() {
       state: state.trim(),
       country: country.trim(),
       location: `${city.trim()}, ${state.trim()}`,
-      images: imageEntries.map((img) => img.value),
       amenities: selectedAmenities,
       equipment: selectedEquipment,
       availability: {
@@ -186,17 +212,20 @@ export default function NewStudioPage() {
       createdAt: new Date().toISOString(),
     };
 
-
+    // text data JSON string hishebe, image file gulo alada field e
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(studioData));
+    imageEntries.forEach((img) => formData.append("images", img.file));
 
     try {
-      const token = getTokenFromClient();
-      const res = await fetch(`${API_BASE_URL}/studios/new`, {
+      const token = await getTokenFromClient();
+      console.log("Token:", token);
+      const res = await fetch(`${API_BASE_URL}/studios/add-studio`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(studioData),
+        body: formData,
       });
 
       const resData = await res.json().catch(() => null);
@@ -224,7 +253,7 @@ export default function NewStudioPage() {
         {/* Navigation back and header */}
         <div className="mb-6">
           <Link
-            href="/my-studios"
+            href="/my-studio-listings"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-primary transition-colors mb-3"
           >
             <ArrowLeft className="size-3.5" />
@@ -499,7 +528,7 @@ export default function NewStudioPage() {
             </div>
           </div>
 
-          {/* 3. Studio Images (Upload from Computer or Paste URL — No Preview) */}
+          {/* 3. Studio Images (Local Computer Upload -> Processed & Hosted via ImgBB) */}
           <div className="space-y-3.5 pt-2">
             <div className="flex items-center justify-between pb-2 border-b border-border/60">
               <h4
@@ -509,103 +538,82 @@ export default function NewStudioPage() {
                 Studio Photos
               </h4>
               <span className="text-[11px] text-text-muted">
-                {imageEntries.length} photo(s) selected
+                {imageEntries.length} of {MAX_IMAGES} uploaded (ImgBB)
               </span>
             </div>
 
-            {/* Input options: URL paste & Local File picker */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Option A: Paste Image URL */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-text-primary">
-                  Option A: Paste Image URL
-                </label>
-                <div className="flex items-center gap-1.5">
-                  <div className="relative flex-1">
-                    <LinkIcon className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-muted" />
-                    <input
-                      type="url"
-                      value={imageUrlInput}
-                      name="imageUrl"
-                      onChange={(e) => setImageUrlInput(e.target.value)}
-                      placeholder="https://..."
-                      className={cn(
-                        "h-9.5 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-8.5 pr-2.5 text-xs text-text-primary",
-                        "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                      )}
-                    />
+            {/* Choose from local computer */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-text-primary">
+                Upload from Local Device (Max {MAX_IMAGES} photos, 5MB each) *
+              </label>
+              <div>
+                <input
+                  id={fileInputId}
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <label
+                  htmlFor={fileInputId}
+                  className={cn(
+                    "flex flex-col items-center justify-center gap-2 p-5 w-full rounded-xl cursor-pointer",
+                    "border border-dashed border-border/80 bg-surface-2/40 text-xs font-medium text-text-secondary",
+                    "hover:border-primary/50 hover:bg-surface-2 hover:text-text-primary transition-all text-center"
+                  )}
+                >
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Upload className="size-4" />
                   </div>
-                  <button
-                    type="button"
-                    onClick={addImageUrl}
-                    className="h-9.5 px-3 rounded-xl border border-border/80 bg-surface-2 text-xs font-semibold text-text-primary hover:border-primary/50 transition-colors shrink-0"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-
-              {/* Option B: Choose from local computer */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-text-primary">
-                  Option B: Choose from Local Computer
+                  <div>
+                    <span className="font-semibold text-text-primary">Click to select studio images</span>
+                    <p className="text-[11px] text-text-muted mt-0.5">
+                      Images will be uploaded to ImgBB and saved to your listing
+                    </p>
+                  </div>
                 </label>
-                <div>
-                  <input
-                    id={fileInputId}
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor={fileInputId}
-                    className={cn(
-                      "flex items-center justify-center gap-2 h-9.5 w-full rounded-xl cursor-pointer",
-                      "border border-dashed border-border/80 bg-surface-2/40 px-3 text-xs font-medium text-text-secondary",
-                      "hover:border-primary/50 hover:bg-surface-2 hover:text-text-primary transition-all"
-                    )}
-                  >
-                    <Upload className="size-3.5 text-primary" />
-                    <span>Select Images from Computer</span>
-                  </label>
-                </div>
               </div>
             </div>
 
-            {/* Selected File / URL Name Badges (Names only, no image preview as requested) */}
+            {/* Selected File Badges / Thumbnails */}
             {imageEntries.length > 0 && (
-              <div className="space-y-1.5 pt-1">
+              <div className="space-y-2 pt-1">
                 <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider">
-                  Attached Image Files & URLs:
+                  Selected Images ({imageEntries.length}):
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   {imageEntries.map((entry, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/70 bg-surface-2 px-2.5 py-1 text-xs text-text-primary"
+                    <div
+                      key={entry.id || idx}
+                      className="group relative flex items-center gap-2 rounded-xl border border-border/70 bg-surface-2 p-1.5 pr-2.5 text-xs text-text-primary shadow-xs"
                     >
-                      <FileCheck2 className="size-3 text-emerald-500" />
-                      <span className="max-w-[200px] truncate text-[11px]">
+                      {/* Image thumbnail preview */}
+                      <div
+                        className="size-8 rounded-lg bg-cover bg-center shrink-0 border border-border/60"
+                        style={{ backgroundImage: `url(${entry.preview})` }}
+                      />
+                      <span className="max-w-[150px] sm:max-w-[180px] truncate text-[11px] font-medium">
                         {entry.name}
                       </span>
                       <button
                         type="button"
                         onClick={() => removeImageEntry(idx)}
-                        className="text-text-muted hover:text-destructive transition-colors ml-1"
+                        className="text-text-muted hover:text-red-500 transition-colors ml-1 p-0.5 rounded cursor-pointer"
                         aria-label="Remove image"
+                        title="Remove image"
                       >
-                        <X className="size-3" />
+                        <X className="size-3.5" />
                       </button>
-                    </span>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* 4. Dynamic Amenities & Equipment (Changes based on Category) */}
+          {/* 4. Dynamic Amenities & Equipment (Tags/Checkboxes) */}
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between pb-2 border-b border-border/60">
               <h4
@@ -614,36 +622,60 @@ export default function NewStudioPage() {
               >
                 Features & Gear for {category}
               </h4>
-
+              <span className="text-[11px] text-text-muted">
+                {selectedAmenities.length + selectedEquipment.length} item(s) selected
+              </span>
             </div>
 
-            {/* Category-Specific Amenities */}
+            {/* Category-Specific Amenities (Tags / Checkboxes) */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-text-primary">
-                Included Amenities
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {activePresets.amenities.map((item) => {
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-text-primary">
+                  Included Amenities (Tags / Checkboxes)
+                </label>
+                <span className="text-[10px] text-text-muted">
+                  {selectedAmenities.length} selected
+                </span>
+              </div>
+
+              {/* Combined standard presets + user's added custom amenities */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {[...activePresets.amenities, ...customAmenitiesList].map((item) => {
                   const isChecked = selectedAmenities.includes(item);
+                  const isCustom = customAmenitiesList.includes(item);
                   return (
                     <button
                       key={item}
                       type="button"
                       onClick={() => toggleAmenity(item)}
                       className={cn(
-                        "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition-all",
+                        "flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left text-xs transition-all cursor-pointer group",
                         isChecked
-                          ? "border-primary/60 bg-primary/15 text-primary font-semibold"
-                          : "border-border/60 bg-surface-2/40 text-text-secondary hover:border-border"
+                          ? "border-primary bg-primary/10 text-text-primary font-semibold shadow-xs"
+                          : "border-border/70 bg-surface-2/40 text-text-secondary hover:border-border hover:bg-surface-2/70"
                       )}
                     >
+                      {/* Visual Checkbox element */}
                       <span
                         className={cn(
-                          "size-1.5 rounded-full shrink-0",
-                          isChecked ? "bg-primary" : "bg-border"
+                          "flex size-4 items-center justify-center rounded-[4px] border shrink-0 transition-colors",
+                          isChecked
+                            ? "bg-primary border-primary text-primary-fg"
+                            : "border-border bg-surface-1 group-hover:border-primary/50"
                         )}
-                      />
-                      <span className="truncate">{item}</span>
+                      >
+                        {isChecked && (
+                          <svg className="size-3 fill-current" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          </svg>
+                        )}
+                      </span>
+                      <span className="truncate flex-1">{item}</span>
+                      {isCustom && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary border border-primary/30 bg-primary/15 px-1 rounded">
+                          Custom
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -655,46 +687,75 @@ export default function NewStudioPage() {
                   type="text"
                   value={customAmenity}
                   onChange={(e) => setCustomAmenity(e.target.value)}
-                  placeholder="Add custom amenity..."
-                  className="h-8 flex-1 rounded-lg border border-border/70 bg-surface-2/40 px-2.5 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addCustomAmenity();
+                    }
+                  }}
+                  placeholder="Add custom amenity tag (e.g. 100A 3-Phase Camlock)..."
+                  className="h-8.5 flex-1 rounded-xl border border-border/70 bg-surface-2/40 px-3 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
                 />
                 <button
                   type="button"
                   onClick={addCustomAmenity}
-                  className="h-8 px-2.5 rounded-lg border border-border/70 bg-surface-2 text-xs text-text-primary hover:border-primary/50"
+                  className="inline-flex items-center gap-1 h-8.5 px-3 rounded-xl border border-border/80 bg-surface-2 text-xs font-semibold text-text-primary hover:border-primary/50 transition-colors shrink-0 cursor-pointer"
                 >
-                  <Plus className="size-3" />
+                  <Plus className="size-3.5" />
+                  <span>Add Tag</span>
                 </button>
               </div>
             </div>
 
-            {/* Category-Specific Equipment */}
+            {/* Category-Specific Equipment (Tags / Checkboxes) */}
             <div className="space-y-2 pt-2">
-              <label className="block text-xs font-semibold text-text-primary">
-                Dedicated Gear & Production Kit
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {activePresets.equipment.map((item) => {
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-text-primary">
+                  Dedicated Gear & Production Kit (Tags / Checkboxes)
+                </label>
+                <span className="text-[10px] text-text-muted">
+                  {selectedEquipment.length} selected
+                </span>
+              </div>
+
+              {/* Combined standard presets + user's added custom equipment */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {[...activePresets.equipment, ...customEquipmentList].map((item) => {
                   const isChecked = selectedEquipment.includes(item);
+                  const isCustom = customEquipmentList.includes(item);
                   return (
                     <button
                       key={item}
                       type="button"
                       onClick={() => toggleEquipment(item)}
                       className={cn(
-                        "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition-all",
+                        "flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left text-xs transition-all cursor-pointer group",
                         isChecked
-                          ? "border-primary/60 bg-primary/15 text-primary font-semibold"
-                          : "border-border/60 bg-surface-2/40 text-text-secondary hover:border-border"
+                          ? "border-primary bg-primary/10 text-text-primary font-semibold shadow-xs"
+                          : "border-border/70 bg-surface-2/40 text-text-secondary hover:border-border hover:bg-surface-2/70"
                       )}
                     >
+                      {/* Visual Checkbox element */}
                       <span
                         className={cn(
-                          "size-1.5 rounded-full shrink-0",
-                          isChecked ? "bg-primary" : "bg-border"
+                          "flex size-4 items-center justify-center rounded-[4px] border shrink-0 transition-colors",
+                          isChecked
+                            ? "bg-primary border-primary text-primary-fg"
+                            : "border-border bg-surface-1 group-hover:border-primary/50"
                         )}
-                      />
-                      <span className="truncate">{item}</span>
+                      >
+                        {isChecked && (
+                          <svg className="size-3 fill-current" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          </svg>
+                        )}
+                      </span>
+                      <span className="truncate flex-1">{item}</span>
+                      {isCustom && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary border border-primary/30 bg-primary/15 px-1 rounded">
+                          Custom
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -706,15 +767,22 @@ export default function NewStudioPage() {
                   type="text"
                   value={customEquipment}
                   onChange={(e) => setCustomEquipment(e.target.value)}
-                  placeholder="Add custom gear..."
-                  className="h-8 flex-1 rounded-lg border border-border/70 bg-surface-2/40 px-2.5 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addCustomEquipment();
+                    }
+                  }}
+                  placeholder="Add custom gear tag (e.g. Aputure 600d Pro Light)..."
+                  className="h-8.5 flex-1 rounded-xl border border-border/70 bg-surface-2/40 px-3 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
                 />
                 <button
                   type="button"
                   onClick={addCustomEquipment}
-                  className="h-8 px-2.5 rounded-lg border border-border/70 bg-surface-2 text-xs text-text-primary hover:border-primary/50"
+                  className="inline-flex items-center gap-1 h-8.5 px-3 rounded-xl border border-border/80 bg-surface-2 text-xs font-semibold text-text-primary hover:border-primary/50 transition-colors shrink-0 cursor-pointer"
                 >
-                  <Plus className="size-3" />
+                  <Plus className="size-3.5" />
+                  <span>Add Tag</span>
                 </button>
               </div>
             </div>
@@ -808,10 +876,10 @@ export default function NewStudioPage() {
 
             <div className="flex items-center gap-2.5 w-full sm:w-auto">
               <Link
-                href="/my-studios"
+                href="/my-studio-listings"
                 className={cn(
                   "flex-1 sm:flex-none flex items-center justify-center h-9 px-4 rounded-xl text-xs font-semibold",
-                  "border border-border bg-surface-2 text-text-secondary hover:text-text-primary transition-colors"
+                  "border border-border bg-surface-2 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
                 )}
               >
                 Cancel
@@ -821,7 +889,7 @@ export default function NewStudioPage() {
                 type="submit"
                 disabled={isSubmitting}
                 className={cn(
-                  "flex-1 sm:flex-none flex items-center justify-center gap-2 h-9 px-5 rounded-xl text-xs font-bold",
+                  "flex-1 sm:flex-none flex items-center justify-center gap-2 h-9 px-5 rounded-xl text-xs font-bold cursor-pointer",
                   "bg-primary text-primary-fg shadow-md",
                   "hover:bg-primary-hover hover:shadow-[0_0_20px_rgba(245,158,11,0.35)]",
                   "active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
