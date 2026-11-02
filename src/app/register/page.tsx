@@ -30,7 +30,7 @@ export default function RegisterPage() {
   // Form states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [image, setImage] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -69,22 +69,21 @@ export default function RegisterPage() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image file size must be under 5MB.");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image file size must be under 10MB.");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      setImage(base64);
-      setImagePreview(base64);
-    };
-    reader.readAsDataURL(file);
+    setSelectedFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
   };
 
   const handleRemoveImage = () => {
-    setImage("");
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setSelectedFile(null);
     setImagePreview(null);
   };
 
@@ -124,12 +123,44 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      // Better-Auth email and password signup
+      let hostedImageUrl: string | undefined = undefined;
+
+      // Upload profile image to ImgBB if a file was selected
+      if (selectedFile) {
+        try {
+          const uploadFormData = new FormData();
+          uploadFormData.append("image", selectedFile);
+
+          const uploadRes = await fetch("/api/upload-image", {
+            method: "POST",
+            body: uploadFormData,
+          });
+
+          const uploadData = await uploadRes.json();
+
+          if (!uploadRes.ok || !uploadData.success || !uploadData.url) {
+            toast.error("Profile picture upload failed", {
+              description: uploadData?.message || "Could not upload image to ImgBB.",
+            });
+            setIsSubmitting(false);
+            return;
+          }
+
+          hostedImageUrl = uploadData.url;
+        } catch (uploadErr) {
+          console.error("Profile image upload failed:", uploadErr);
+          toast.error("Failed to upload profile photo to ImgBB. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // Better-Auth email and password signup with ImgBB hosted URL
       const { data, error } = await signUp.email({
         name: name.trim(),
         email: email.trim(),
         password,
-        image: image.trim() || undefined,
+        image: hostedImageUrl,
       });
 
 
