@@ -6,7 +6,7 @@ A modern, peer-to-peer creative workspace rental and studio booking platform bui
 
 ## 🌐 Live URL & Repositories
 
-- **Live Application URL**: [https://studiospace-client.vercel.app](https://studiospace-client.vercel.app) *(or your deployed Vercel domain)*
+- **Live Application URL**: [https://studiospace-client.vercel.app](https://studiospace-client.vercel.app)
 - **Client Repository**: [https://github.com/abirjuboraj/studioSpace-client](https://github.com/abirjuboraj/studioSpace-client)
 - **Server Repository**: [https://github.com/abirjuboraj/studioSpace-server](https://github.com/abirjuboraj/studioSpace-server)
 
@@ -19,7 +19,7 @@ A modern, peer-to-peer creative workspace rental and studio booking platform bui
    - Filter by workspace category, minimum booking duration, hourly rates, and capacity with responsive grid layouts.
 
 2. **Real-time Studio Availability & Slot Validation**:
-   - Supports studio booking availability tracking using the `isBooked` property directly mapped to the database.
+   - Supports studio booking availability by tracking the database.
    - When booked, workspaces clearly display an unavailable alert banner with the booking button disabled.
    - Host-configured operating hour validation prevents bookings outside opening hours with inline error guidance.
 
@@ -124,6 +124,5 @@ Examiners can explore the platform using the pre-configured credentials below or
 | :--- | :--- | :--- | :--- |
 | **Examiner / Host & Creator** | `abiryv10@gmail.com` | `123456aA` | Has active listings and test booking history |
 
-| **New Registration** | Any valid email | Minimum 6 chars (1 upper, 1 lower) | Use photo URL during registration |
 
 > **Note**: You can also use the **"Sign up with Google"** button to authenticate with your own Google account.

@@ -63,6 +63,7 @@ const QUICK_LINKS = [
   { label: "Home", href: "/" },
   { label: "Explore Studios", href: "/studios" },
   { label: "How It Works", href: "/#how-it-works" },
+  { label: "Host Guarantee", href: "/#guarantee" },
   { label: "About Us", href: "/#about" },
 ];
 

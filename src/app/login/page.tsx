@@ -169,6 +169,12 @@ function LoginFormContent() {
                 >
                   Password
                 </label>
+                <button
+                  type="button"
+                  className="text-[11px] font-medium text-text-muted hover:text-primary transition-colors cursor-pointer"
+                >
+                  Forgot password?
+                </button>
               </div>
               <div className="relative">
                 <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted" />

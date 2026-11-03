@@ -2,6 +2,7 @@ import { HeroSlider } from "@/components/home/HeroSlider";
 import { StudioCategories } from "@/components/home/StudioCategories";
 import { FeaturedStudios } from "@/components/home/FeaturedStudios";
 import { HowBookingWorks } from "@/components/home/HowBookingWorks";
+import { HostGuarantee } from "@/components/home/HostGuarantee";
 import { AboutUs } from "@/components/home/AboutUs";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <FeaturedStudios />
       <HowBookingWorks />
       <AboutUs />
+      <HostGuarantee />
     </div>
   );
 }
