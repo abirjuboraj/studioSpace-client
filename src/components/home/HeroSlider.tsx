@@ -125,14 +125,15 @@ export function HeroSlider() {
                 style={{ backgroundImage: `url(${slide.image})` }}
               >
                 {/* Dark mode overlays */}
-                <div className="hidden dark:block absolute inset-0 bg-background/80 backdrop-blur-[1px]" />
+                <div className="hidden dark:block absolute inset-0 bg-background/60 backdrop-blur-[1px]" />
                 <div className="hidden dark:block absolute inset-0 bg-linear-to-r from-background via-background/70 to-transparent" />
                 <div className="hidden dark:block absolute inset-0 bg-linear-to-t from-background via-transparent to-background/40" />
 
-                {/* Light mode: NO global overlay over the image! The image is 100% natural, crisp, and vivid on the right.
-                    Only a smooth dark gradient on the left half behind the text content for crystal-clear readability. */}
-                <div className="dark:hidden absolute inset-0 bg-linear-to-r from-black/85 via-black/45 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none" />
-                <div className="dark:hidden absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                {/* Light mode: NO global veil over the image — it stays crisp and vivid, especially on the right.
+                    A dark gradient behind the copy holds strong across the full text width, then fades out so the
+                    image reads clearly. The extra bottom gradient supports the buttons and lower text. */}
+                <div className="dark:hidden absolute inset-0 bg-linear-to-r from-black/85 via-black/65 via-80% to-transparent w-full xl:w-4/5 pointer-events-none" />
+                <div className="dark:hidden absolute inset-0 bg-linear-to-t from-black/60 via-black/25 to-transparent pointer-events-none" />
 
                 {/* Amber/Violet spot glow (Dark mode only) */}
                 <div
@@ -210,7 +211,7 @@ export function HeroSlider() {
                     <span className="font-semibold text-white dark:text-text-primary">{slide.badgeText}</span>
                     <span className="font-bold text-primary">{slide.badgePrice}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-zinc-300 dark:text-text-muted">
+                  <div className="flex items-center gap-2 text-[11px] text-zinc-300 dark:text-text-secondary">
                     <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <span>Instant Booking Enabled</span>
                   </div>

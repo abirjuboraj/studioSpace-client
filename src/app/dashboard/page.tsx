@@ -9,21 +9,17 @@ import {
   ArrowRight,
   TrendingUp,
   Clock,
-  MapPin,
-  CheckCircle2,
-  Hourglass,
-  Sparkles,
   ArrowUpRight,
-  DollarSign,
-  User,
-  ShieldCheck,
   Compass,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { API_BASE_URL, BookingReservation, StudioListing } from "@/types/studio";
+import {
+  API_BASE_URL,
+  BookingReservation,
+  StudioListing,
+} from "@/types/studio";
 import { authClient, useSession } from "@/lib/auth-client";
 
 export default function DashboardPage() {
@@ -38,14 +34,15 @@ export default function DashboardPage() {
   // Fetch host's studios and creator's bookings in parallel
   useEffect(() => {
     if (!userEmail) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 0);
       return;
     }
 
     async function loadDashboardData() {
       setLoading(true);
       try {
-
         const { data, error } = await authClient.token();
 
         const token = data?.token;
@@ -54,28 +51,31 @@ export default function DashboardPage() {
             cache: "no-store",
             headers: {
               authorization: `Bearer ${token}`,
-            }
+            },
           }).catch(() => null),
           fetch(`${API_BASE_URL}/bookings/${userEmail}`, {
             cache: "no-store",
             headers: {
               authorization: `Bearer ${token}`,
-            }
+            },
           }).catch(() => null),
         ]);
 
         if (studiosRes && studiosRes.ok) {
           const studiosData = await studiosRes.json();
           if (Array.isArray(studiosData)) setStudios(studiosData);
-          else if (Array.isArray(studiosData.studios)) setStudios(studiosData.studios);
-          else if (Array.isArray(studiosData.data)) setStudios(studiosData.data);
+          else if (Array.isArray(studiosData.studios))
+            setStudios(studiosData.studios);
+          else if (Array.isArray(studiosData.data))
+            setStudios(studiosData.data);
         }
 
         if (bookingsRes && bookingsRes.ok) {
           const bookingsData = await bookingsRes.json();
           let list: BookingReservation[] = [];
           if (Array.isArray(bookingsData)) list = bookingsData;
-          else if (Array.isArray(bookingsData.bookings)) list = bookingsData.bookings;
+          else if (Array.isArray(bookingsData.bookings))
+            list = bookingsData.bookings;
           else if (Array.isArray(bookingsData.data)) list = bookingsData.data;
 
           setBookings(list);
@@ -92,17 +92,22 @@ export default function DashboardPage() {
 
   // Compute key metrics cleanly
   const activeBookingsCount = bookings.filter(
-    (b) => (b.status || "").toLowerCase() === "pending" || (b.status || "").toLowerCase() === "confirmed"
+    (b) =>
+      (b.status || "").toLowerCase() === "pending" ||
+      (b.status || "").toLowerCase() === "confirmed",
   ).length;
 
-  const totalSpent = bookings.reduce((acc, curr) => acc + (Number(curr.totalCost) || 0), 0);
+  const totalSpent = bookings.reduce(
+    (acc, curr) => acc + (Number(curr.totalCost) || 0),
+    0,
+  );
 
   const greetingName = user?.name ? user.name.split(" ")[0] : "Creator";
 
   return (
     <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[400px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-75 sm:size-100 rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-6xl z-10 space-y-6 sm:space-y-8">
         {/* ── Welcome Header ── */}
@@ -115,7 +120,8 @@ export default function DashboardPage() {
               Welcome back, {greetingName}
             </h3>
             <p className="text-xs sm:text-sm text-text-secondary">
-              Here is an overview of your listed studio spaces and creative booking reservations.
+              Here is an overview of your listed studio spaces and creative
+              booking reservations.
             </p>
           </div>
 
@@ -147,7 +153,9 @@ export default function DashboardPage() {
           {/* Card 1: Studios Owned */}
           <Card className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 shadow-sm backdrop-blur-md ring-0 gap-0">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-text-muted">My Studios</span>
+              <span className="text-xs font-semibold text-text-muted">
+                My Studios
+              </span>
               <div className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Building2 className="size-4" />
               </div>
@@ -157,7 +165,9 @@ export default function DashboardPage() {
                 {loading ? "—" : studios.length}
               </p>
               <p className="text-[11px] text-text-muted mt-0.5">
-                {studios.length === 1 ? "Listed production space" : "Listed production spaces"}
+                {studios.length === 1
+                  ? "Listed production space"
+                  : "Listed production spaces"}
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/50">
@@ -174,7 +184,9 @@ export default function DashboardPage() {
           {/* Card 2: Active Reservations */}
           <Card className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 shadow-sm backdrop-blur-md ring-0 gap-0">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-text-muted">Active Bookings</span>
+              <span className="text-xs font-semibold text-text-muted">
+                Active Bookings
+              </span>
               <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                 <CalendarCheck className="size-4" />
               </div>
@@ -201,7 +213,9 @@ export default function DashboardPage() {
           {/* Card 3: Total Booking Spend */}
           <Card className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 shadow-sm backdrop-blur-md ring-0 gap-0">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-text-muted">Booking Activity</span>
+              <span className="text-xs font-semibold text-text-muted">
+                Booking Activity
+              </span>
               <div className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <TrendingUp className="size-4" />
               </div>
@@ -245,18 +259,27 @@ export default function DashboardPage() {
             {loading ? (
               <div className="space-y-3">
                 {[1, 2].map((i) => (
-                  <Card key={i} className="h-24 rounded-2xl border border-border/60 bg-surface-1/40 animate-pulse ring-0" />
+                  <Card
+                    key={i}
+                    className="h-24 rounded-2xl border border-border/60 bg-surface-1/40 animate-pulse ring-0"
+                  />
                 ))}
               </div>
             ) : bookings.length === 0 ? (
               <Card className="rounded-2xl border border-dashed border-border/80 bg-surface-1/50 p-6 text-center ring-0 gap-0">
-                <p className="text-xs font-semibold text-text-primary">No booking reservations yet</p>
+                <p className="text-xs font-semibold text-text-primary">
+                  No booking reservations yet
+                </p>
                 <p className="text-[11px] text-text-muted mt-1">
-                  Discover peer-to-peer studios and book by the hour with instant confirmation.
+                  Discover peer-to-peer studios and book by the hour with
+                  instant confirmation.
                 </p>
                 <div className="mt-4">
                   <Link href="/studios">
-                    <Button size="sm" className="text-xs h-8 px-4 rounded-xl bg-primary text-primary-fg hover:bg-primary-hover shadow-md hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all cursor-pointer font-bold">
+                    <Button
+                      size="sm"
+                      className="text-xs h-8 px-4 rounded-xl bg-primary text-primary-fg hover:bg-primary-hover shadow-md hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all cursor-pointer font-bold"
+                    >
                       <Compass className="size-3.5 mr-1.5" />
                       <span>Explore Studios</span>
                     </Button>
@@ -266,7 +289,10 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {bookings.slice(0, 3).map((booking) => {
-                  const id = typeof booking._id === "object" ? booking._id.$oid : booking._id || "";
+                  const id =
+                    typeof booking._id === "object"
+                      ? booking._id.$oid
+                      : booking._id || "";
                   const status = (booking.status || "Pending").toLowerCase();
                   const displayImage =
                     booking.studioImage ||
@@ -306,10 +332,14 @@ export default function DashboardPage() {
                         <span
                           className={cn(
                             "px-2.5 py-0.5 rounded-lg text-[10px] font-bold border shrink-0",
-                            status === "confirmed" && "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-                            status === "pending" && "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
-                            status === "cancelled" && "border-destructive/30 bg-destructive/10 text-destructive",
-                            status === "completed" && "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                            status === "confirmed" &&
+                              "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+                            status === "pending" &&
+                              "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
+                            status === "cancelled" &&
+                              "border-destructive/30 bg-destructive/10 text-destructive",
+                            status === "completed" &&
+                              "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400",
                           )}
                         >
                           {booking.status || "Pending"}
@@ -339,18 +369,27 @@ export default function DashboardPage() {
             {loading ? (
               <div className="space-y-3">
                 {[1, 2].map((i) => (
-                  <Card key={i} className="h-24 rounded-2xl border border-border/60 bg-surface-1/40 animate-pulse ring-0" />
+                  <Card
+                    key={i}
+                    className="h-24 rounded-2xl border border-border/60 bg-surface-1/40 animate-pulse ring-0"
+                  />
                 ))}
               </div>
             ) : studios.length === 0 ? (
               <Card className="rounded-2xl border border-dashed border-border/80 bg-surface-1/50 p-6 text-center ring-0 gap-0">
-                <p className="text-xs font-semibold text-text-primary">No spaces listed yet</p>
+                <p className="text-xs font-semibold text-text-primary">
+                  No spaces listed yet
+                </p>
                 <p className="text-[11px] text-text-muted mt-1">
-                  List your creative photography loft, sound stage, or podcast studio to earn hourly revenue.
+                  List your creative photography loft, sound stage, or podcast
+                  studio to earn hourly revenue.
                 </p>
                 <div className="mt-4">
                   <Link href="/add-studio">
-                    <Button size="sm" className="text-xs h-8 px-3 rounded-lg bg-primary text-primary-fg hover:bg-primary-hover cursor-pointer font-bold">
+                    <Button
+                      size="sm"
+                      className="text-xs h-8 px-3 rounded-lg bg-primary text-primary-fg hover:bg-primary-hover cursor-pointer font-bold"
+                    >
                       <Plus className="size-3 mr-1" />
                       <span>List a Studio</span>
                     </Button>
@@ -360,8 +399,13 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {studios.slice(0, 3).map((studio) => {
-                  const id = typeof studio._id === "object" ? studio._id.$oid : studio._id || "";
-                  const displayImage = studio.images?.[0] || "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=300&auto=format&fit=crop";
+                  const id =
+                    typeof studio._id === "object"
+                      ? studio._id.$oid
+                      : studio._id || "";
+                  const displayImage =
+                    studio.images?.[0] ||
+                    "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=300&auto=format&fit=crop";
 
                   return (
                     <Card
@@ -381,7 +425,9 @@ export default function DashboardPage() {
                             {studio.title}
                           </Link>
                           <div className="flex items-center gap-2 text-[11px] text-text-secondary mt-0.5">
-                            <span className="truncate">{studio.city || studio.location}</span>
+                            <span className="truncate">
+                              {studio.city || studio.location}
+                            </span>
                             <span>•</span>
                             <span className="font-semibold text-text-primary">
                               ${studio.hourlyRate}/hr

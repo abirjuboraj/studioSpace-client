@@ -181,8 +181,12 @@ export function StudioCategories() {
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                       style={{ backgroundImage: `url(${cat.image})` }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-                    <div className="absolute inset-0 bg-background/30" />
+                    {/* Dark theme: soft dark tint (unchanged) */}
+                    <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+                    <div className="hidden dark:block absolute inset-0 bg-background/30" />
+                    {/* Light theme: no full-card white wash — the image stays vivid.
+                        The white scrim is confined to the bottom text block for readability. */}
+                    <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-background from-42% via-background/85 via-50% to-transparent to-62%" />
 
                     {/* Content overlay */}
                     {/* Top Row: Icon and Badge at the top */}
@@ -254,9 +258,12 @@ export function StudioCategories() {
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
                   style={{ backgroundImage: `url(${cat.image})` }}
                 />
-                {/* Gradients for readability in dark & light mode */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-                <div className="absolute inset-0 bg-background/25 transition-opacity group-hover:opacity-10" />
+                {/* Dark theme: soft dark tint (unchanged) */}
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+                <div className="hidden dark:block absolute inset-0 bg-background/25 transition-opacity group-hover:opacity-10" />
+                {/* Light theme: no full-card white wash — the image stays vivid (clearer on hover).
+                    The white scrim is confined to the bottom text block for readability. */}
+                <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-background from-42% via-background/85 via-50% to-transparent to-62% transition-opacity group-hover:opacity-80" />
 
                 {/* Content */}
                 {/* Top Row: Icon and Badge at the top */}

@@ -154,10 +154,10 @@ export default function RegisterPage() {
   return (
     <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-8 sm:py-12 px-4 overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 size-[320px] rounded-full bg-primary/8 blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 left-1/4 size-[260px] rounded-full bg-accent/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 size-80 rounded-full bg-primary/8 blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-10 left-1/4 size-65 rounded-full bg-accent/6 blur-[160px] pointer-events-none" />
 
-      <div className="w-full max-w-[390px] relative z-10">
+      <div className="w-full max-w-97.5 relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-5 sm:mb-6">
           <Link href="/" className="inline-flex items-center gap-2 group mb-2.5 sm:mb-3">
@@ -185,7 +185,7 @@ export default function RegisterPage() {
         {/* Register Card */}
         <div className="rounded-2xl border border-border/80 bg-surface-1/90 px-6 py-7 sm:px-7 sm:py-8 backdrop-blur-xl shadow-xl relative overflow-hidden">
           {/* Top highlight bar */}
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-transparent via-primary/50 to-transparent" />
 
           {/* Form Top Error Notification */}
           {formError && (
