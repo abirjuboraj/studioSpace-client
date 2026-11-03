@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StudioSpace — Creative Workspace & Production Studio Booking Platform
 
-## Getting Started
+A modern, peer-to-peer creative workspace rental and studio booking platform built with **Next.js 15 (Turbopack)**, **Better-Auth**, **Tailwind CSS**, and **MongoDB**. StudioSpace connects photographers, videographers, podcasters, music producers, and artists with professionally equipped studios and soundstages with instant booking capabilities.
 
-First, run the development server:
+---
 
+## 🌐 Live URL & Repositories
+
+- **Live Application URL**: [https://studiospace-client.vercel.app](https://studiospace-client.vercel.app) *(or your deployed Vercel domain)*
+- **Client Repository**: [https://github.com/abirjuboraj/studioSpace-client](https://github.com/abirjuboraj/studioSpace-client)
+- **Server Repository**: [https://github.com/abirjuboraj/studioSpace-server](https://github.com/abirjuboraj/studioSpace-server)
+
+---
+
+## ✨ Key Features (Minimum 5 Highlights)
+
+1. **Dynamic Studio Discovery & Instant Filtering**:
+   - Browse creative spaces across 5 distinct categories: *Photo Studios*, *Sound Stages*, *Podcast Rooms*, *Music Suites*, and *Art Workshops*.
+   - Filter by workspace category, minimum booking duration, hourly rates, and capacity with responsive grid layouts.
+
+2. **Real-time Studio Availability & Slot Validation**:
+   - Supports studio booking availability tracking using the `isBooked` property directly mapped to the database.
+   - When booked, workspaces clearly display an unavailable alert banner with the booking button disabled.
+   - Host-configured operating hour validation prevents bookings outside opening hours with inline error guidance.
+
+3. **Complete Creator Reservation System**:
+   - Interactive scheduling modal calculating dynamic total cost, refundable security deposits, and booking duration in real time.
+   - Server-side conflict detection returning `HTTP 409` if another session requests the slot.
+
+4. **Self-Service Booking Management & Intelligent Cancellation**:
+   - Dedicated "My Bookings" page allowing creators to review all reservations, track status (Pending, Confirmed, Completed, Cancelled), and view receipts.
+   - Cancellations safely mark status as `"Cancelled"` and release the studio without deleting reservation history.
+   - Dynamic Dashboard recalculates and deducts cancelled reservation costs from total spend metrics automatically.
+
+5. **Host Workspace Listing & Image Management**:
+   - Creators and studio owners can list new studios with comprehensive metadata: amenity selections, gear lists, operating windows, pricing, and photo URLs.
+   - Includes full workspace editing, listing status management, and host contact visibility.
+
+6. **Secure Authentication & Session Management**:
+   - Better-Auth credential login/signup and Google OAuth integration with JWT session authorization.
+   - Strict password security validation (min 6 characters, uppercase, and lowercase requirements).
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend (Client)
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router, Turbopack)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **UI Components**: [Shadcn UI](https://ui.shadcn.com/) / Radix UI primitives
+- **Icons**: [Lucide React](https://lucide.dev/), [React Icons](https://react-icons.github.io/react-icons/)
+- **Auth Client**: [Better-Auth](https://www.better-auth.com/)
+- **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
+
+### Backend (Server)
+- **Runtime & Framework**: [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/)
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/atlas)
+- **Security & Tokens**: [jose](https://github.com/panva/jose) (JWT verification)
+- **Media Upload**: ImgBB API & Multer
+
+---
+
+## 🚀 Local Setup Instructions
+
+Follow these steps to run the application locally:
+
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (v18.17+ or v20+ recommended)
+- `npm` or `pnpm` / `yarn`
+- MongoDB database instance (local or MongoDB Atlas connection string)
+
+### 2. Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/abirjuboraj/studioSpace-client.git
+cd studioSpace-client
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Configure Environment Variables
+Create a `.env` file in the root of `studiospace-client`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# MongoDB Connection
+MONGODB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/studioSpace?retryWrites=true&w=majority
 
-## Learn More
+# Better-Auth Configuration
+BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET=your_better_auth_secret_here
 
-To learn more about Next.js, take a look at the following resources:
+# Backend API URL (Default Express Server)
+NEXT_PUBLIC_API_URL=http://localhost:5000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Optional Google OAuth (if testing Google sign-in)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 5. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser to explore StudioSpace.
 
-## Deploy on Vercel
+### 6. (Optional) Run the Backend Server
+In a separate terminal:
+```bash
+cd ../studiospace-server
+npm install
+npm run dev # or node index.js
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔑 Examiner Test Credentials
+
+Examiners can explore the platform using the pre-configured credentials below or register a new account on the registration page:
+
+| Role | Email | Password | Details |
+| :--- | :--- | :--- | :--- |
+| **Examiner / Host & Creator** | `abiryv10@gmail.com` | `123456aA` | Has active listings and test booking history |
+
+| **New Registration** | Any valid email | Minimum 6 chars (1 upper, 1 lower) | Use photo URL during registration |
+
+> **Note**: You can also use the **"Sign up with Google"** button to authenticate with your own Google account.

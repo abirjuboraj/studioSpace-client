@@ -43,6 +43,7 @@ export interface StudioListing {
   equipment: string[];
   amenities: string[];
   availability?: StudioAvailability;
+  isBooked?: boolean;
   status: "active" | "draft" | "inactive";
   createdAt?: string;
   userName?: string;

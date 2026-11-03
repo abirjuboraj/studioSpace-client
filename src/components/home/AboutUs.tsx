@@ -84,9 +84,6 @@ export function AboutUs() {
             Built by Creators, For <span className="text-gradient">Production Visionaries</span>
           </h2>
 
-          <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-text-secondary leading-relaxed">
-            StudioSpace was founded to dismantle the friction of booking creative real estate. We connect passionate studio hosts with filmmakers, photographers, and audio artists worldwide.
-          </p>
         </div>
 
         {/* Narrative & Visual Split */}

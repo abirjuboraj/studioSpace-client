@@ -77,6 +77,11 @@ export default async function StudioDetailsPage({ params }: PageProps) {
               <span className="rounded-lg bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-xs font-bold uppercase tracking-wider">
                 {studio.category}
               </span>
+              {studio.isBooked === true && (
+                <span className="inline-flex items-center gap-1 rounded-lg bg-rose-500/15 border border-rose-500/30 px-2.5 py-1 text-xs font-bold text-rose-600 dark:text-rose-400">
+                  Booked
+                </span>
+              )}
               <span className="inline-flex items-center gap-1 rounded-lg bg-surface-2 border border-border/80 px-2.5 py-1 text-xs text-text-secondary">
                 <ShieldCheck className="size-3.5 text-primary" />
                 <span>Verified Studio</span>

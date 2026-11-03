@@ -204,18 +204,6 @@ export function HeroSlider() {
                   </div>
 
                 </div>
-
-                {/* Floating Preview Card on Large Screens (Placed safely in mid-right to avoid overlaying carousel controls) */}
-                <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 flex-col gap-2.5 rounded-2xl border border-white/20 dark:border-border/80 bg-black/60 dark:bg-surface-1/80 p-4.5 shadow-2xl backdrop-blur-xl w-72">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-white dark:text-text-primary">{slide.badgeText}</span>
-                    <span className="font-bold text-primary">{slide.badgePrice}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-[11px] text-zinc-300 dark:text-text-secondary">
-                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Instant Booking Enabled</span>
-                  </div>
-                </div>
               </div>
             </SwiperSlide>
           );

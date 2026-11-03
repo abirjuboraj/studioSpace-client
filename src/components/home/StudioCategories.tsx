@@ -105,7 +105,7 @@ export function StudioCategories() {
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] sm:text-xs font-semibold text-primary mb-2.5 shadow-xs">
               <Sparkles className="size-3.5" />
-              <span>Curated Disciplines</span>
+              <span>All-Inclusive Categories </span>
             </div>
 
             <h2
@@ -267,33 +267,33 @@ export function StudioCategories() {
 
                 {/* Content */}
                 {/* Top Row: Icon and Badge at the top */}
-                  <div className="relative z-10 flex items-center justify-between w-full">
-                    <div className="flex size-9 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-fg">
-                      <Icon className="size-4.5" />
-                    </div>
-                    <span className="rounded-full border border-border/70 bg-surface-1/90 px-2.5 py-0.5 text-[10px] font-semibold text-text-secondary backdrop-blur-md">
-                      {cat.count}
-                    </span>
+                <div className="relative z-10 flex items-center justify-between w-full">
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-fg">
+                    <Icon className="size-4.5" />
                   </div>
+                  <span className="rounded-full border border-border/70 bg-surface-1/90 px-2.5 py-0.5 text-[10px] font-semibold text-text-secondary backdrop-blur-md">
+                    {cat.count}
+                  </span>
+                </div>
 
-                  {/* Bottom Row: Title, Tagline and Link */}
-                  <div className="relative z-10">
-                    <h3
-                      style={{ fontFamily: "var(--font-display)" }}
-                      className="text-base font-bold text-text-primary group-hover:text-primary transition-colors"
-                    >
-                      {cat.name}
-                    </h3>
+                {/* Bottom Row: Title, Tagline and Link */}
+                <div className="relative z-10">
+                  <h3
+                    style={{ fontFamily: "var(--font-display)" }}
+                    className="text-base font-bold text-text-primary group-hover:text-primary transition-colors"
+                  >
+                    {cat.name}
+                  </h3>
 
-                    <p className="mt-1 text-xs text-text-secondary line-clamp-2 leading-relaxed">
-                      {cat.tagline}
-                    </p>
+                  <p className="mt-1 text-xs text-text-secondary line-clamp-2 leading-relaxed">
+                    {cat.tagline}
+                  </p>
 
-                    <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-semibold text-primary">
-                      <span>Explore spaces</span>
-                      <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-                    </div>
+                  <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-semibold text-primary">
+                    <span>Explore spaces</span>
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
+                </div>
               </Link>
             );
           })}

@@ -97,10 +97,9 @@ export default function DashboardPage() {
       (b.status || "").toLowerCase() === "confirmed",
   ).length;
 
-  const totalSpent = bookings.reduce(
-    (acc, curr) => acc + (Number(curr.totalCost) || 0),
-    0,
-  );
+  const totalSpent = bookings
+    .filter((b) => (b.status || "").toLowerCase() !== "cancelled")
+    .reduce((acc, curr) => acc + (Number(curr.totalCost) || 0), 0);
 
   const greetingName = user?.name ? user.name.split(" ")[0] : "Creator";
 

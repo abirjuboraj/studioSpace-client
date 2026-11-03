@@ -10,6 +10,7 @@ import {
   Sparkles,
   Loader2,
   Lock,
+  AlertCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -28,14 +29,16 @@ import { toast } from "sonner";
 import { useSession } from "@/lib/auth-client";
 import { API_BASE_URL, StudioListing } from "@/types/studio";
 import { getTokenFromClient } from "@/lib/getToken";
+import { cn } from "@/lib/utils";
 
 interface BookingModalProps {
   studio: StudioListing;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onBookingSuccess?: () => void;
 }
 
-export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) {
+export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: BookingModalProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const user = session?.user;
@@ -57,6 +60,35 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
   const minBookingHours = studio.minimumBookingHours || 1;
   const securityDeposit = typeof studio.securityDeposit === "number" ? studio.securityDeposit : 0;
   const cancellationNoticeHours = studio.cancellationNoticeHours || 24;
+
+  const openingStartTime = studio.availability?.startTime;
+  const openingEndTime = studio.availability?.endTime;
+
+  // Check if chosen time slot falls within studio's opening hours fixed by host
+  const openingHoursValidation = useMemo(() => {
+    if (!openingStartTime || !openingEndTime || !startTime || !endTime) {
+      return { isWithinOpeningHours: true, message: null };
+    }
+
+    const [openStartH, openStartM] = openingStartTime.split(":").map(Number);
+    const [openEndH, openEndM] = openingEndTime.split(":").map(Number);
+    const [startH, startM] = startTime.split(":").map(Number);
+    const [endH, endM] = endTime.split(":").map(Number);
+
+    const openStartMinutes = openStartH * 60 + (openStartM || 0);
+    const openEndMinutes = openEndH * 60 + (openEndM || 0);
+    const selectedStartMinutes = startH * 60 + (startM || 0);
+    const selectedEndMinutes = endH * 60 + (endM || 0);
+
+    if (selectedStartMinutes < openStartMinutes || selectedEndMinutes > openEndMinutes) {
+      return {
+        isWithinOpeningHours: false,
+        message: `Selected time (${startTime} - ${endTime}) is outside the studio opening hours (${openingStartTime} - ${openingEndTime}). Please change your booking time to be within ${openingStartTime} and ${openingEndTime}.`,
+      };
+    }
+
+    return { isWithinOpeningHours: true, message: null };
+  }, [openingStartTime, openingEndTime, startTime, endTime]);
 
   // Dynamic cost calculation based on booking hours
   const { totalHours, bookingCost, totalCost, isValidTimeRange } = useMemo(() => {
@@ -93,6 +125,15 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Verify studio is not already booked
+    if (studio.isBooked === true) {
+      toast.error("Studio Unavailable", {
+        description: "This studio is already booked and currently unavailable.",
+      });
+      onOpenChange(false);
+      return;
+    }
+
     // Private check: if not logged in, redirect to login with callback URL
     if (!user) {
       toast.info("Authentication Required", {
@@ -106,6 +147,13 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
     if (!isValidTimeRange || totalHours <= 0) {
       toast.error("Invalid Booking Times", {
         description: "Ending time must be later than starting time.",
+      });
+      return;
+    }
+
+    if (!openingHoursValidation.isWithinOpeningHours) {
+      toast.error("Time Outside Operating Hours", {
+        description: openingHoursValidation.message || "Please select a time within the studio opening hours.",
       });
       return;
     }
@@ -139,43 +187,41 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
       createdAt: new Date().toISOString(),
     };
 
-   try {
-  const token = await getTokenFromClient();
+    try {
+      const token = await getTokenFromClient();
 
-  const res = await fetch(`${API_BASE_URL}/bookings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(bookingPayload),
-  });
+      const res = await fetch(`${API_BASE_URL}/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookingPayload),
+      });
 
-  const resData = await res.json().catch(() => null);
+      const resData = await res.json().catch(() => null);
 
-  if (!res.ok || !resData?.success) {
-    toast.error(
-      resData?.message || "Failed to submit booking request."
-    );
-    return;
-  }
+      if (!res.ok || !resData?.success) {
+        toast.error(
+          resData?.message || (res.status === 409 ? "This studio is already booked." : "Failed to submit booking request.")
+        );
+        return;
+      }
 
-  toast.success("Workspace Booking Requested!", {
-    description: `Total: $${totalCost} for ${totalHours} hours. Host will confirm your slot.`,
-  });
+      toast.success("Workspace Booking Requested!", {
+        description: `Total: $${totalCost} for ${totalHours} hours. Host will confirm your slot.`,
+      });
 
-  onOpenChange(false);
-  router.push("/my-bookings");
-
-} catch (error) {
-  console.error("Booking error:", error);
-
-  toast.error("Something went wrong. Please try again.");
-
-} finally {
-  setIsSubmitting(false);
-}
-  }
+      onBookingSuccess?.();
+      onOpenChange(false);
+      router.push("/my-bookings");
+    } catch (error) {
+      console.error("Booking error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -237,7 +283,10 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
-                className="h-9 text-xs bg-surface-2/60 border-border/80 focus-visible:border-primary/70"
+                className={cn(
+                  "h-9 text-xs bg-surface-2/60 border-border/80 focus-visible:border-primary/70",
+                  !openingHoursValidation.isWithinOpeningHours && "border-rose-500/70 focus-visible:border-rose-500"
+                )}
               />
             </div>
 
@@ -252,10 +301,30 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
-                className="h-9 text-xs bg-surface-2/60 border-border/80 focus-visible:border-primary/70"
+                className={cn(
+                  "h-9 text-xs bg-surface-2/60 border-border/80 focus-visible:border-primary/70",
+                  !openingHoursValidation.isWithinOpeningHours && "border-rose-500/70 focus-visible:border-rose-500"
+                )}
               />
             </div>
           </div>
+
+          {/* Opening hours inline error/warning text */}
+          {!openingHoursValidation.isWithinOpeningHours && (
+            <div className="flex items-start gap-2 p-2.5 rounded-xl border border-rose-500/35 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs animate-in fade-in-50 duration-150">
+              <AlertCircle className="size-4 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <p className="font-semibold">Time outside studio opening hours</p>
+                <p className="text-[11px] leading-relaxed">
+                  opening hours:{" "}
+                  <span className="font-bold">
+                    {openingStartTime} - {openingEndTime}
+                  </span>
+                  . Please adjust your start and end times to fall within this slot.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Expected Persons */}
           <div className="space-y-1.5">
@@ -384,7 +453,7 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
             <Button
               type="submit"
               size="sm"
-              disabled={isSubmitting || !isValidTimeRange}
+              disabled={isSubmitting || !isValidTimeRange || !openingHoursValidation.isWithinOpeningHours}
               className="text-xs h-9 px-5 rounded-xl font-bold bg-primary text-primary-fg hover:bg-primary-hover shadow-md hover:shadow-primary/25 disabled:opacity-50"
             >
               {isSubmitting ? (

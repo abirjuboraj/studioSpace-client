@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Star, ShieldCheck, Sparkles } from "lucide-react";
+import { Star, ShieldCheck, Sparkles, Ban } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StudioListing } from "@/types/studio";
@@ -18,6 +18,9 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [modalOpen, setModalOpen] = useState(false);
+  const [isBookedState, setIsBookedState] = useState<boolean>(studio.isBooked === true);
+
+  const isBooked = isBookedState || studio.isBooked === true;
 
   const studioId =
     typeof studio._id === "object" && studio._id !== null
@@ -30,6 +33,14 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
   const cancelHours = studio.cancellationNoticeHours || 24;
 
   const handleOpenBooking = () => {
+    // If studio is already booked, do not allow opening the modal
+    if (isBooked) {
+      toast.error("Unavailable", {
+        description: "This studio is already booked and currently unavailable.",
+      });
+      return;
+    }
+
     // If not logged in, redirect directly to login with callback URL
     if (!session?.user) {
       toast.info("Sign in required", {
@@ -41,6 +52,11 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
     }
 
     setModalOpen(true);
+  };
+
+  const handleBookingSuccess = () => {
+    setIsBookedState(true);
+    setModalOpen(false);
   };
 
   return (
@@ -81,31 +97,66 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span>Instant confirmation</span>
-            <span className="font-semibold text-emerald-500">Yes</span>
+            <span>Availability</span>
+            <span
+              className={
+                isBooked
+                  ? "font-semibold text-rose-500 dark:text-rose-400"
+                  : "font-semibold text-emerald-500"
+              }
+            >
+              {isBooked ? "Booked" : "Available"}
+            </span>
           </div>
         </div>
+
+        {/* Unavailable alert banner when isBooked is true */}
+        {isBooked && (
+          <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-600 dark:text-rose-400 flex items-start gap-2.5">
+            <Ban className="size-4 shrink-0 mt-0.5" />
+            <p className="font-medium leading-relaxed">
+              This studio is already booked and currently unavailable.
+            </p>
+          </div>
+        )}
 
         {/* Book the workspace button */}
         <Button
           type="button"
+          disabled={isBooked}
           onClick={handleOpenBooking}
-          className="w-full flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-bold bg-primary text-primary-fg shadow-lg hover:bg-primary-hover hover:shadow-[0_0_24px_rgba(245,158,11,0.35)] active:scale-98 transition-all cursor-pointer"
+          className={`w-full flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-bold transition-all ${
+            isBooked
+              ? "bg-muted text-muted-foreground border border-border/60 cursor-not-allowed opacity-75 shadow-none hover:bg-muted"
+              : "bg-primary text-primary-fg shadow-lg hover:bg-primary-hover hover:shadow-[0_0_24px_rgba(245,158,11,0.35)] active:scale-98 cursor-pointer"
+          }`}
         >
-          <Sparkles className="size-4" />
-          <span>Book the workspace</span>
+          {isBooked ? (
+            <>
+              <Ban className="size-4" />
+              <span>Currently Unavailable</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="size-4" />
+              <span>Book the workspace</span>
+            </>
+          )}
         </Button>
 
         <p className="text-[11px] text-center text-text-muted">
-          You won&apos;t be charged immediately. You can review all details in the reservation modal.
+          {isBooked
+            ? "New reservations cannot be placed while this studio is booked."
+            : "You won't be charged immediately. You can review all details in the reservation modal."}
         </p>
       </Card>
 
       {/* Booking Dialog Modal */}
       <BookingModal
-        studio={studio}
+        studio={{ ...studio, isBooked }}
         open={modalOpen}
         onOpenChange={setModalOpen}
+        onBookingSuccess={handleBookingSuccess}
       />
     </>
   );

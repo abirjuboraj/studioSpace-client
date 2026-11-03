@@ -61,6 +61,11 @@ export function StudioCard({ studio, className }: StudioCardProps) {
           <span className="rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
             {studio.category}
           </span>
+          {studio.isBooked === true && (
+            <span className="rounded-lg bg-rose-600/95 text-white backdrop-blur-md px-2 py-0.5 text-[10px] font-bold shadow-xs">
+              Booked
+            </span>
+          )}
           <span className="flex items-center gap-1 rounded-lg bg-primary text-primary-fg px-2 py-0.5 text-[10px] font-bold shadow-xs">
             <ShieldCheck className="size-3" />
             <span>Verified</span>
