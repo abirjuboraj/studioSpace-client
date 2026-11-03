@@ -120,7 +120,9 @@ export default function MyBookingsPage() {
   // Fetch real user bookings from backend
   useEffect(() => {
     if (!userEmail) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false)
+      }, 0);
       return;
     }
 
@@ -223,7 +225,7 @@ export default function MyBookingsPage() {
     <TooltipProvider delay={150}>
       <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
         {/* Background ambient lighting */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[400px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 size-75 sm:size-100 rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
         <div className="relative mx-auto max-w-6xl z-10 space-y-6 sm:space-y-8">
           {/* Page Header */}
@@ -389,7 +391,7 @@ export default function MyBookingsPage() {
                               })`,
                           }}
                         >
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:hidden" />
+                          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:hidden" />
                           <div className="absolute top-2 left-2 sm:hidden">
                             {getStatusBadge(booking.status)}
                           </div>

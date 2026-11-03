@@ -7,7 +7,6 @@ import {
   Building2,
   DollarSign,
   Upload,
-  Link as LinkIcon,
   Users,
   Maximize2,
   Clock,
@@ -15,7 +14,6 @@ import {
   ArrowLeft,
   X,
   Plus,
-  FileCheck2,
   Loader2,
   ShieldCheck,
 } from "lucide-react";
@@ -27,15 +25,13 @@ import {
   DAYS_OF_WEEK,
   API_BASE_URL,
 } from "@/types/studio";
-import { authClient, useSession } from "@/lib/auth-client";
+
 import { toast } from "sonner";
 import { getTokenFromClient } from "@/lib/getToken";
 
 export default function NewStudioPage() {
   const router = useRouter();
   const fileInputId = useId();
-  const { data: session } = useSession();
-  const user = session?.user;
 
   const MAX_IMAGES = 6;
   const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -56,7 +52,7 @@ export default function NewStudioPage() {
   const [workspaceSize, setWorkspaceSize] = useState("");
   const [overview, setOverview] = useState("");
 
-  // Images state (local files only)
+
   const [imageEntries, setImageEntries] = useState<
     Array<{ id: string; name: string; file: File; preview: string }>
   >([]);
@@ -215,13 +211,7 @@ export default function NewStudioPage() {
         endTime,
       },
       status: "active",
-      // Host info from logged in user
-      userId: user?.id,
-      userName: user?.name,
-      userEmail: user?.email,
-      hostId: user?.id,
-      hostName: user?.name,
-      hostEmail: user?.email,
+      
       createdAt: new Date().toISOString(),
     };
 
@@ -259,7 +249,7 @@ export default function NewStudioPage() {
   return (
     <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[450px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-75 sm:size-112.5 rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-3xl z-10">
         {/* Navigation back and header */}
@@ -298,7 +288,7 @@ export default function NewStudioPage() {
           className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 sm:p-7 backdrop-blur-xl shadow-md space-y-6"
         >
           {/* Top accent line */}
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-transparent via-primary/50 to-transparent" />
 
           {/* 1. Basic Details */}
           <div className="space-y-4">

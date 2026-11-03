@@ -7,8 +7,6 @@ import {
   Clock,
   Users,
   FileText,
-  DollarSign,
-  ShieldCheck,
   Sparkles,
   Loader2,
   Lock,
@@ -39,7 +37,7 @@ interface BookingModalProps {
 
 export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) {
   const router = useRouter();
-  const { data: session, isPending: isSessionLoading } = useSession();
+  const { data: session } = useSession();
   const user = session?.user;
 
   // Form state
@@ -137,14 +135,6 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
       cancellationNoticeHours,
       expectedPersons: Number(expectedPersons) || 1,
       specialRequirements: specialRequirements.trim(),
-      // User / creator info
-      userId: user.id,
-      userName: user.name,
-      userEmail: user.email,
-      // Host info
-      hostId: studio.hostId || studio.userId,
-      hostName: studio.hostName || studio.userName,
-      hostEmail: studio.hostEmail || studio.userEmail,
       status: "pending",
       createdAt: new Date().toISOString(),
     };

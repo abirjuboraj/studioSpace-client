@@ -14,11 +14,9 @@ import {
   ArrowLeft,
   X,
   Plus,
-  FileCheck2,
   Loader2,
   UserCheck,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -135,9 +133,9 @@ export default function EditStudioPage() {
 
             // Read-only Host Info
             setHostInfo({
-              name: studio.hostName || studio.userName || currentUser?.name || "Verified Studio Host",
-              email: studio.hostEmail || studio.userEmail || currentUser?.email || "host@studiospace.com",
-              id: studio.hostId || studio.userId || currentUser?.id || studioId,
+              name: studio.hostName || studio.userName || "Verified Studio Host",
+              email: studio.hostEmail || studio.userEmail || "host@studiospace.com",
+              id: studio.hostId || studio.userId || studioId,
             });
 
             // Existing Images
@@ -408,7 +406,7 @@ export default function EditStudioPage() {
   return (
     <div className="relative min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-background overflow-x-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-[300px] sm:size-[450px] rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 size-75 sm:size-112.5 rounded-full bg-primary/6 blur-[160px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-3xl z-10">
         {/* Navigation back and header */}
@@ -447,7 +445,7 @@ export default function EditStudioPage() {
           className="rounded-2xl border border-border/80 bg-surface-1/90 p-5 sm:p-7 backdrop-blur-xl shadow-md space-y-6"
         >
           {/* Top accent line */}
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-transparent via-primary/50 to-transparent" />
 
           {/* 1. Read-Only Host Information Banner */}
           <div className="space-y-2 pb-2">
