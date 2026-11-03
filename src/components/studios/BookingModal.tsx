@@ -139,35 +139,43 @@ export function BookingModal({ studio, open, onOpenChange }: BookingModalProps) 
       createdAt: new Date().toISOString(),
     };
 
-    try {
-      const token = await getTokenFromClient();
-      const res = await fetch(`${API_BASE_URL}/bookings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(bookingPayload),
-      });
+   try {
+  const token = await getTokenFromClient();
 
-      const resData = await res.json().catch(() => null);
+  const res = await fetch(`${API_BASE_URL}/bookings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(bookingPayload),
+  });
 
-      if (res.ok && (!resData || resData.success !== false)) {
-        toast.success("Workspace Booking Requested!", {
-          description: `Total: $${totalCost} for ${totalHours} hours. Host will confirm your slot.`,
-        });
-        onOpenChange(false);
-        router.push("/my-bookings");
-      } else {
-        toast.error(resData?.message || "Failed to submit booking request.");
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
+  const resData = await res.json().catch(() => null);
 
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  if (!res.ok || !resData?.success) {
+    toast.error(
+      resData?.message || "Failed to submit booking request."
+    );
+    return;
+  }
+
+  toast.success("Workspace Booking Requested!", {
+    description: `Total: $${totalCost} for ${totalHours} hours. Host will confirm your slot.`,
+  });
+
+  onOpenChange(false);
+  router.push("/my-bookings");
+
+} catch (error) {
+  console.error("Booking error:", error);
+
+  toast.error("Something went wrong. Please try again.");
+
+} finally {
+  setIsSubmitting(false);
+}
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
