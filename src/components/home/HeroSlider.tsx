@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,12 +10,10 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   Camera,
   Mic2,
   Film,
   Building,
-  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/auth-client";
@@ -115,7 +113,7 @@ export function HeroSlider() {
         loop={true}
         onSwiper={setSwiperInstance}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-        className="relative h-[490px] sm:h-[580px] lg:h-[700px] w-full"
+        className="relative h-122.5 sm:h-145 lg:h-175 w-full"
       >
         {HERO_SLIDES.map((slide) => {
           const Icon = slide.icon;
@@ -128,17 +126,17 @@ export function HeroSlider() {
               >
                 {/* Dark mode overlays */}
                 <div className="hidden dark:block absolute inset-0 bg-background/80 backdrop-blur-[1px]" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+                <div className="hidden dark:block absolute inset-0 bg-linear-to-r from-background via-background/70 to-transparent" />
+                <div className="hidden dark:block absolute inset-0 bg-linear-to-t from-background via-transparent to-background/40" />
 
                 {/* Light mode: NO global overlay over the image! The image is 100% natural, crisp, and vivid on the right.
                     Only a smooth dark gradient on the left half behind the text content for crystal-clear readability. */}
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none" />
-                <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                <div className="dark:hidden absolute inset-0 bg-linear-to-r from-black/85 via-black/45 to-transparent w-full md:w-3/4 lg:w-3/5 pointer-events-none" />
+                <div className="dark:hidden absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
 
                 {/* Amber/Violet spot glow (Dark mode only) */}
                 <div
-                  className="hidden dark:block absolute -top-32 -left-20 size-[350px] sm:size-[500px] rounded-full blur-[140px] pointer-events-none"
+                  className="hidden dark:block absolute -top-32 -left-20 size-87.5 sm:size-125 rounded-full blur-[140px] pointer-events-none"
                   style={{ background: slide.accentGlow }}
                 />
               </div>

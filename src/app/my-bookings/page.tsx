@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL, BookingReservation, BookingStatus } from "@/types/studio";
-import { authClient, useSession } from "@/lib/auth-client";
+import {  useSession } from "@/lib/auth-client";
 import { getTokenFromClient } from "@/lib/getToken";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";

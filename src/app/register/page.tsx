@@ -11,13 +11,9 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
-  Sparkles,
-  ShieldCheck,
   AlertCircle,
   Loader2,
   Image as ImageIcon,
-  Upload,
-  X,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
@@ -30,8 +26,7 @@ export default function RegisterPage() {
   // Form states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [image, setImage] = useState("");
   const [password, setPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
@@ -60,36 +55,17 @@ export default function RegisterPage() {
 
   const passwordValidationMessage = getPasswordValidationMessage();
 
-  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file (PNG, JPG, WebP).");
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Image file size must be under 10MB.");
-      return;
-    }
-
-    setSelectedFile(file);
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
-  };
-
-  const handleRemoveImage = () => {
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
-    setSelectedFile(null);
-    setImagePreview(null);
-  };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+
+    // Profile photo URL required check
+    if (!image.trim()) {
+      const err = "Profile photo URL is required.";
+      setFormError(err);
+      toast.error("Photo Required", { description: err });
+      return;
+    }
 
     // 1. Password validation criteria check
     if (!hasValidLength) {
@@ -123,47 +99,13 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      let hostedImageUrl: string | undefined = undefined;
-
-      // Upload profile image to ImgBB if a file was selected
-      if (selectedFile) {
-        try {
-          const uploadFormData = new FormData();
-          uploadFormData.append("image", selectedFile);
-
-          const uploadRes = await fetch("/api/upload-image", {
-            method: "POST",
-            body: uploadFormData,
-          });
-
-          const uploadData = await uploadRes.json();
-
-          if (!uploadRes.ok || !uploadData.success || !uploadData.url) {
-            toast.error("Profile picture upload failed", {
-              description: uploadData?.message || "Could not upload image to ImgBB.",
-            });
-            setIsSubmitting(false);
-            return;
-          }
-
-          hostedImageUrl = uploadData.url;
-        } catch (uploadErr) {
-          console.error("Profile image upload failed:", uploadErr);
-          toast.error("Failed to upload profile photo to ImgBB. Please try again.");
-          setIsSubmitting(false);
-          return;
-        }
-      }
-
-      // Better-Auth email and password signup with ImgBB hosted URL
+      // Better-Auth email and password signup with photo URL
       const { data, error } = await signUp.email({
         name: name.trim(),
         email: email.trim(),
         password,
-        image: hostedImageUrl,
+        image: image.trim(),
       });
-
-
 
       if (error) {
         const errorMsg =
@@ -309,56 +251,31 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Profile Picture Upload from local computer */}
-            <div className="space-y-1.5">
+            {/* Profile Photo URL */}
+            <div className="space-y-1 sm:space-y-1.5">
               <label
-                htmlFor="avatar-upload"
+                htmlFor="image"
                 className="block text-xs font-semibold text-text-primary"
               >
-                Profile Photo (Optional)
+                Profile Photo URL
               </label>
-
-              {imagePreview ? (
-                <div className="flex items-center gap-3 p-2 rounded-xl border border-border/80 bg-surface-2/40">
-                  <div
-                    className="size-11 rounded-full bg-cover bg-center shrink-0 border border-primary/40 shadow-xs"
-                    style={{ backgroundImage: `url(${imagePreview})` }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-text-primary truncate">Profile photo selected</p>
-                    <p className="text-[10px] text-emerald-500 font-medium">Ready for registration</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleRemoveImage}
-                    className="p-1 rounded-lg text-text-muted hover:text-destructive hover:bg-surface-2 transition-colors cursor-pointer"
-                    title="Remove photo"
-                  >
-                    <X className="size-4" />
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageFileChange}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="avatar-upload"
-                    className={cn(
-                      "flex items-center justify-center gap-2 p-3 w-full rounded-xl cursor-pointer",
-                      "border border-dashed border-border/80 bg-surface-2/40 text-xs font-medium text-text-secondary",
-                      "hover:border-primary/50 hover:bg-surface-2 hover:text-text-primary transition-all text-center"
-                    )}
-                  >
-                    <Upload className="size-3.5 text-primary" />
-                    <span>Upload profile picture</span>
-                  </label>
-                </div>
-              )}
+              <div className="relative">
+                <ImageIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
+                <input
+                  id="image"
+                  type="url"
+                  name="imageUrl"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  placeholder="https://example.com/avatar.jpg"
+                  className={cn(
+                    "h-9.5 sm:h-10 w-full rounded-xl border border-border/80 bg-surface-2/50 pl-9 pr-3 text-xs text-text-primary",
+                    "placeholder:text-text-muted transition-all duration-200",
+                    "focus:border-primary/70 focus:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  )}
+                  required
+                />
+              </div>
             </div>
 
             {/* Password Field with Small Error Text */}

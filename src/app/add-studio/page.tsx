@@ -697,7 +697,7 @@ export default function NewStudioPage() {
                         className="size-8 rounded-lg bg-cover bg-center shrink-0 border border-border/60"
                         style={{ backgroundImage: `url(${entry.preview})` }}
                       />
-                      <span className="max-w-[150px] sm:max-w-[180px] truncate text-[11px] font-medium">
+                      <span className="max-w-37.5 sm:max-w-45 truncate text-[11px] font-medium">
                         {entry.name}
                       </span>
                       <button
