@@ -80,15 +80,69 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
     const selectedStartMinutes = startH * 60 + (startM || 0);
     const selectedEndMinutes = endH * 60 + (endM || 0);
 
-    if (selectedStartMinutes < openStartMinutes || selectedEndMinutes > openEndMinutes) {
+    // Check if end time is after start time
+    if (selectedEndMinutes <= selectedStartMinutes) {
       return {
         isWithinOpeningHours: false,
-        message: `Selected time (${startTime} - ${endTime}) is outside the studio opening hours (${openingStartTime} - ${openingEndTime}). Please change your booking time to be within ${openingStartTime} and ${openingEndTime}.`,
+        message: "End time must be after start time.",
+      };
+    }
+
+    // Check opening hours
+    if (
+      selectedStartMinutes < openStartMinutes ||
+      selectedEndMinutes > openEndMinutes
+    ) {
+      return {
+        isWithinOpeningHours: false,
+        message: `Selected time (${startTime} - ${endTime}) is outside the studio opening hours (${openingStartTime} - ${openingEndTime}).`,
+      };
+    }
+
+    // Calculate total booking hours
+    const totalHours =
+      (selectedEndMinutes - selectedStartMinutes) / 60;
+
+    // Check minimum booking hours
+    if (totalHours < Number(studio.minimumBookingHours)) {
+      return {
+        isWithinOpeningHours: false,
+        message: `Minimum booking duration is ${studio.minimumBookingHours} hours. Your selected booking duration is ${totalHours} hours.`,
       };
     }
 
     return { isWithinOpeningHours: true, message: null };
-  }, [openingStartTime, openingEndTime, startTime, endTime]);
+
+  }, [
+    openingStartTime,
+    openingEndTime,
+    startTime,
+    endTime,
+    studio.minimumBookingHours,
+  ]);
+
+  // Guest capacity validation
+  const capacityValidation = useMemo(() => {
+    if (studio.capacity == null || expectedPersons === "") {
+      return { isValidCapacity: true, message: null };
+    }
+
+    if (Number(expectedPersons) < 1) {
+      return {
+        isValidCapacity: false,
+        message: "At least 1 guest is required for booking.",
+      };
+    }
+
+    if (Number(expectedPersons) > Number(studio.capacity)) {
+      return {
+        isValidCapacity: false,
+        message: `The maximum capacity of this studio is ${studio.capacity}.`,
+      };
+    }
+
+    return { isValidCapacity: true, message: null };
+  }, [studio.capacity, expectedPersons]);
 
   // Dynamic cost calculation based on booking hours
   const { totalHours, bookingCost, totalCost, isValidTimeRange } = useMemo(() => {
@@ -164,6 +218,8 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
       });
       return;
     }
+
+
 
     setIsSubmitting(true);
 
@@ -313,14 +369,24 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
           {!openingHoursValidation.isWithinOpeningHours && (
             <div className="flex items-start gap-2 p-2.5 rounded-xl border border-rose-500/35 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs animate-in fade-in-50 duration-150">
               <AlertCircle className="size-4 shrink-0 mt-0.5" />
+
               <div className="space-y-0.5">
-                <p className="font-semibold">Time outside studio opening hours</p>
+                <p className="font-semibold">
+                  {openingHoursValidation.message}
+                </p>
+
                 <p className="text-[11px] leading-relaxed">
-                  opening hours:{" "}
+                  Opening hours:{" "}
                   <span className="font-bold">
                     {openingStartTime} - {openingEndTime}
                   </span>
-                  . Please adjust your start and end times to fall within this slot.
+                </p>
+
+                <p className="text-[11px] leading-relaxed">
+                  Minimum booking duration:{" "}
+                  <span className="font-bold">
+                    {studio.minimumBookingHours} hours
+                  </span>
                 </p>
               </div>
             </div>
@@ -337,7 +403,7 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
               type="number"
               min={1}
               max={typeof studio.capacity === "number" ? studio.capacity : 100}
-              placeholder={`e.g. 5 (Max capacity: ${studio.capacity})`}
+              placeholder={`Max capacity: ${studio.capacity}`}
               value={expectedPersons}
               onChange={(e) =>
                 setExpectedPersons(e.target.value === "" ? "" : Number(e.target.value))
@@ -346,6 +412,28 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
               className="h-9 text-xs bg-surface-2/60 border-border/80 focus-visible:border-primary/70"
             />
           </div>
+
+          {/* Guest capacity inline error/warning text */}
+          {!capacityValidation.isValidCapacity && (
+            <div className="flex items-start gap-2 p-2.5 rounded-xl border border-rose-500/35 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs animate-in fade-in-50 duration-150">
+              <AlertCircle className="size-4 shrink-0 mt-0.5" />
+
+              <div className="space-y-0.5">
+                <p className="font-semibold">
+                  {capacityValidation.message}
+                </p>
+
+                {Number(expectedPersons) > Number(studio.capacity) && (
+                  <p className="text-[11px] leading-relaxed">
+                    Max capacity:{" "}
+                    <span className="font-bold">
+                      {studio.capacity}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Special Requirements / Note */}
           <div className="space-y-1.5">
@@ -445,7 +533,7 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
               variant="outline"
               size="sm"
               onClick={() => onOpenChange(false)}
-              className="text-xs h-9 rounded-xl border-border bg-surface-1 text-text-secondary hover:text-text-primary"
+              className="text-xs h-9 rounded-xl border-border bg-surface-1 cursor-pointer text-text-secondary hover:text-text-primary"
             >
               Cancel
             </Button>
@@ -454,7 +542,7 @@ export function BookingModal({ studio, open, onOpenChange, onBookingSuccess }: B
               type="submit"
               size="sm"
               disabled={isSubmitting || !isValidTimeRange || !openingHoursValidation.isWithinOpeningHours}
-              className="text-xs h-9 px-5 rounded-xl font-bold bg-primary text-primary-fg hover:bg-primary-hover shadow-md hover:shadow-primary/25 disabled:opacity-50"
+              className="text-xs h-9 px-5 rounded-xl font-bold bg-primary text-primary-fg cursor-pointer hover:bg-primary-hover shadow-md hover:shadow-primary/25 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

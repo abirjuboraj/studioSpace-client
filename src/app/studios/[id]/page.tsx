@@ -153,7 +153,7 @@ export default async function StudioDetailsPage({ params }: PageProps) {
                   <Clock className="size-4" />
                 </div>
                 <div>
-                  <p className="text-[11px] text-text-muted font-medium">Hours</p>
+                  <p className="text-[11px] text-text-muted font-medium">Opening Hours</p>
                   <p className="text-xs sm:text-sm font-bold text-text-primary">
                     {studio.availability
                       ? `${studio.availability.startTime || "09:00"} - ${studio.availability.endTime || "22:00"}`

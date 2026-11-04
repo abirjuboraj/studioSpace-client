@@ -129,9 +129,6 @@ export function HeroSlider() {
                 <div className="hidden dark:block absolute inset-0 bg-linear-to-r from-background via-background/70 to-transparent" />
                 <div className="hidden dark:block absolute inset-0 bg-linear-to-t from-background via-transparent to-background/40" />
 
-                {/* Light mode: NO global veil over the image — it stays crisp and vivid, especially on the right.
-                    A dark gradient behind the copy holds strong across the full text width, then fades out so the
-                    image reads clearly. The extra bottom gradient supports the buttons and lower text. */}
                 <div className="dark:hidden absolute inset-0 bg-linear-to-r from-black/85 via-black/65 via-80% to-transparent w-full xl:w-4/5 pointer-events-none" />
                 <div className="dark:hidden absolute inset-0 bg-linear-to-t from-black/60 via-black/25 to-transparent pointer-events-none" />
 

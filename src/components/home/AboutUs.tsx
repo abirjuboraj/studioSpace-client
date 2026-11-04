@@ -21,6 +21,9 @@ import { cn } from "@/lib/utils";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const STATS = [
   { label: "Active Creative Studios", value: "850+", change: "Across 24 Metro Hubs" },
@@ -59,6 +62,20 @@ const CORE_VALUES = [
 export function AboutUs() {
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleHostSpaceClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!session?.user) {
+      toast.info("Account Required", {
+        description: "Please sign in to list and monetize your space.",
+      });
+      router.push("/login?callbackUrl=/add-studio");
+      return;
+    }
+    router.push("/add-studio");
+  };
 
   return (
     <section
@@ -118,8 +135,8 @@ export function AboutUs() {
                 <ArrowRight className="size-3.5" />
               </Link>
 
-              <Link
-                href="/add-studio"
+              <button
+                onClick={handleHostSpaceClick}
                 className={cn(
                   "inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-10 px-4 sm:px-5 rounded-xl",
                   "border border-border/80 bg-surface-1/70 backdrop-blur-md",
@@ -129,7 +146,7 @@ export function AboutUs() {
               >
                 <Building2 className="size-3.5 text-primary" />
                 <span>List a Creative Space</span>
-              </Link>
+              </button>
             </div>
           </div>
 
