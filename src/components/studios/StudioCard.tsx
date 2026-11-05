@@ -56,26 +56,37 @@ export function StudioCard({ studio, className }: StudioCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
 
-        {/* Badges on Image */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap max-w-[70%]">
-          <span className="rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-semibold text-text-primary shadow-xs">
-            {studio.category}
-          </span>
-          {studio.isBooked === true && (
-            <span className="rounded-lg bg-rose-600/95 text-white backdrop-blur-md px-2 py-0.5 text-[10px] font-bold shadow-xs">
-              Booked
-            </span>
-          )}
-          <span className="flex items-center gap-1 rounded-lg bg-primary text-primary-fg px-2 py-0.5 text-[10px] font-bold shadow-xs">
-            <ShieldCheck className="size-3" />
-            <span>Verified</span>
-          </span>
-        </div>
+        {/* Top Badges Bar: Left badges (Category, Verified) & Right rating badge */}
+        <div className="absolute top-2.5 inset-x-2.5 flex items-start justify-between gap-2 pointer-events-none">
+          {/* Left Column: Line 1 (Category & Verified) + Line 2 (Booked if booked) */}
+          <div className="flex flex-col items-start gap-1.5 min-w-0">
+            {/* Line 1: Category & Verified */}
+            <div className="flex items-center gap-1.5">
+              <span className="rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-text-primary shadow-xs shrink-0">
+                {studio.category}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-lg bg-primary text-primary-fg px-1.5 sm:px-2 py-0.5 text-[10px] font-bold shadow-xs shrink-0">
+                <ShieldCheck className="size-3" />
+                <span>Verified</span>
+              </span>
+            </div>
 
-        {/* Rating Badge */}
-        <div className="absolute top-3 right-3 flex items-center gap-1 rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2.5 py-0.5 text-[11px] font-bold text-text-primary shadow-xs">
-          <Star className="size-3.5 fill-amber-400 text-amber-400" />
-          <span>{rating.toFixed(1)}</span>
+            {/* Line 2: Booked Badge (Always on second line when booked) */}
+            {studio.isBooked === true && (
+              <span className="inline-flex items-center rounded-lg bg-rose-600/95 text-white backdrop-blur-md px-2 py-0.5 text-[10px] font-bold shadow-xs">
+                Booked
+              </span>
+            )}
+          </div>
+
+          {/* Right: Rating Badge with faint review text */}
+          <div className="inline-flex items-center gap-1.5 rounded-lg bg-surface-1/95 backdrop-blur-md border border-border/70 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-text-primary shadow-xs shrink-0">
+            <Star className="size-3 sm:size-3.5 fill-amber-400 text-amber-400 shrink-0" />
+            <span>{rating.toFixed(1)}</span>
+            <span className="text-[9px] sm:text-[10px] font-normal text-text-muted/80 whitespace-nowrap select-none">
+              (not reviewed yet)
+            </span>
+          </div>
         </div>
 
         {/* Price Tag with dark backing protection in light mode */}

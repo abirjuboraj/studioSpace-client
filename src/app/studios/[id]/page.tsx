@@ -96,9 +96,12 @@ export default async function StudioDetailsPage({ params }: PageProps) {
             </h1>
 
             <div className="flex items-center gap-4 flex-wrap text-xs sm:text-sm text-text-secondary">
-              <div className="flex items-center gap-1.5 text-text-primary font-semibold">
-                <Star className="size-4 fill-amber-400 text-amber-400" />
+              <div className="flex items-center gap-1.5 text-text-primary font-semibold shrink-0">
+                <Star className="size-4 fill-amber-400 text-amber-400 shrink-0" />
                 <span>{rating.toFixed(1)}</span>
+                <span className="text-xs font-normal text-text-muted/80 whitespace-nowrap select-none">
+                  (not reviewed yet)
+                </span>
               </div>
               <span className="text-border">•</span>
               <div className="flex items-center gap-1">

@@ -70,9 +70,12 @@ export function BookingCardSidebar({ studio }: BookingCardSidebarProps) {
             </span>
             <span className="text-xs text-text-muted font-medium ml-1.5">/ hour</span>
           </div>
-          <div className="flex items-center gap-1 text-xs font-semibold text-text-primary">
-            <Star className="size-3.5 fill-amber-400 text-amber-400" />
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-text-primary shrink-0">
+            <Star className="size-3.5 fill-amber-400 text-amber-400 shrink-0" />
             <span>{rating.toFixed(1)}</span>
+            <span className="text-[11px] font-normal text-text-muted/80 whitespace-nowrap select-none">
+              (not reviewed yet)
+            </span>
           </div>
         </div>
 
