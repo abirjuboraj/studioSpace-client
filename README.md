@@ -122,7 +122,7 @@ Examiners can explore the platform using the pre-configured credentials below or
 
 | Role | Email | Password | Details |
 | :--- | :--- | :--- | :--- |
-| **Examiner / Host & Creator** | `examiner@gmail.com` | `examineR` | Has active listings and test booking history |
+| **Examiner** | `examiner@gmail.com` | `examineR` | Has active listings and test booking history |
 
 
 > **Note**: You can also use the **"Sign up with Google"** button to authenticate with your own Google account.
